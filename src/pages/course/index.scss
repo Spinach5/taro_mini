@@ -1,0 +1,19 @@
+// 导入全局变量
+@use '../../styles/variables.scss' as *;
+
+
+
+// 响应式
+@media (max-width: 375px) {
+  .grid {
+    gap: $spacing-sm;
+    
+    .grid-item {
+      padding: $spacing-sm;
+      
+      .icon {
+        font-size: 40px;
+      }
+    }
+  }
+}
