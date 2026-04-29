@@ -1,11 +1,29 @@
-
-/* 轮播图 */
-SafeAreaView Swiper SwiperItem Image{
+/* 轮播容器 - 双端正常 */
+.swiper-box {
   width: 100%;
-  height: auto;
+  height: 360rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+/* 图片 - 双端铺满、不拉伸、不裁切 */
+.slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* 网格容器美化 */
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* 这里就是你要的 gutter=10 间距 */
+  padding: 15px;
+  background: #fff;
+  border-radius: 16rpx;
+}
+
 .my-item {
   display: flex;
   flex-direction: column;
@@ -15,6 +33,8 @@ SafeAreaView Swiper SwiperItem Image{
   border-radius: 24rpx;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: transparent;
+
+    width: calc(25% - 8px); /* 减去间距，保证刚好4个 */
 
 }
 
@@ -90,6 +110,8 @@ SafeAreaView Swiper SwiperItem Image{
   transform: translateY(-8rpx);
   box-shadow: 0 12rpx 24rpx rgba(0, 0, 0, 0.15);
 }
+
+
 
 /* 搜索栏样式 */
 .search-bar {
@@ -236,7 +258,7 @@ SafeAreaView Swiper SwiperItem Image{
   }
 }
 
-/* overrdie */
+
 .card{
     background-color: white;
     padding: 8px;

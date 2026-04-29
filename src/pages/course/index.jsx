@@ -25,6 +25,11 @@ export default function Index() {
   const [closeSwitchWeek, setCloseSwitchWeek] = useState(false);
   const showClassDetails = (item) => {};
   const switchToWeek = (week_number) => {};
+export default async function Course() {
+  if (!cookies) {
+    console.log('登录失败');
+    return;
+  }
 
   return (
     <SafeAreaView>

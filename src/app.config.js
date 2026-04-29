@@ -1,11 +1,20 @@
-/* eslint-disable no-undef */
+// 判断当前编译平台
+const isH5 = process.env.TARO_ENV === 'h5';
+
 export default defineAppConfig({
   pages: [
-    'pages/index/index',
-    "pages/course/index",
-    "pages/user/index",
-    "pages/copyright/index"
-  ],
+  'pages/index/index', 
+  "pages/course/index",
+    'pages/student-union/index',  // 这里改成 index！
+    'pages/club/index',
+    'pages/food/index',
+    'pages/admin/index',
+    'pages/books/index',
+    'pages/daily-goods/index',
+    'pages/map/index',
+    'pages/secondhand-book/index'
+
+],
 
   window: {
     backgroundTextStyle: 'light',
