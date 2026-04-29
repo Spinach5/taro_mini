@@ -1,19 +1,17 @@
-import { enc, mode as _mode, pad, AES } from "crypto-js";
+// src/utils/xxt.js
+import CryptoJS from 'crypto-js'
 
-function encryptByAES(message, key){
-    let CBCOptions = {
-        iv: enc.Utf8.parse(key),
-        mode:_mode.CBC,
-        padding: pad.Pkcs7
-    };
-    let aeskey = enc.Utf8.parse(key);
-    let secretData = enc.Utf8.parse(message);
-    let encrypted = AES.encrypt(
-        secretData,
-        aeskey,
-        CBCOptions
-    );
-    return enc.Base64.stringify(encrypted.ciphertext);
+export function encryptByAES(message, key) {
+  const CBCOptions = {
+    iv: CryptoJS.enc.Utf8.parse(key),
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7
+  }
+  const aeskey = CryptoJS.enc.Utf8.parse(key)
+  const secretData = CryptoJS.enc.Utf8.parse(message)
+  const encrypted = CryptoJS.AES.encrypt(secretData, aeskey, CBCOptions)
+  return CryptoJS.enc.Base64.stringify(encrypted.ciphertext)
 }
 
-export default { encryptByAES };
+// 如果有需要默认导出
+export default { encryptByAES }
