@@ -1,3 +1,14 @@
+import {
+	View,
+	Swiper,
+	SwiperItem,
+	Image,
+	Text,
+	Navigator,
+} from "@tarojs/components";
+import defaultPic from "../../assets/tower.jpeg";
+import "./index.scss";
+import SafeAreaView from "../../components/safeView";
 import { View, Swiper, SwiperItem, Image, Text, Navigator } from '@tarojs/components'
 import defaultPic from '../../assets/tower.jpeg'
 import img1 from '../../assets/p1.jpg'
@@ -17,6 +28,11 @@ import mapIcon from '../../assets/8个功能/世界地图.png';
 import secondHandIcon from '../../assets/8个功能/书本.png';
 
 export default function Index() {
+	const bannerList = [
+		{ id: 1, imageUrl: defaultPic },
+		{ id: 2, imageUrl: defaultPic },
+		{ id: 3, imageUrl: defaultPic },
+	];
   const bannerList = [
     { id: 1, imageUrl: defaultPic },
     { id: 2, imageUrl: img1 },
@@ -56,6 +72,25 @@ export default function Index() {
   }
 
 
+	return (
+		<SafeAreaView>
+			<Swiper
+				indicatorDots
+				autoplay
+				interval={3000}
+				duration={500}
+				circular
+			>
+				{bannerList.map((item) => (
+					<SwiperItem key={item.id}>
+						<Image
+							src={item.imageUrl}
+							mode="aspectFit"
+							className="swiperPic"
+						/>
+					</SwiperItem>
+				))}
+			</Swiper>
   return (
     <SafeAreaView className='page'>
 <Swiper
