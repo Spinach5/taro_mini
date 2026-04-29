@@ -1,7 +1,7 @@
 import Taro from '@tarojs/taro'
 
 class CacheManager {
-  constructor(prefix = 'app_') {
+  constructor(prefix = '') {//默认不加前缀
     this.prefix = prefix
   }
 
@@ -117,6 +117,7 @@ class CacheManager {
   clear() {
     try {
       Taro.clearStorageSync()
+      console.log('清空缓存成功')
       return true
     } catch (error) {
       console.error('清空缓存失败:', error)

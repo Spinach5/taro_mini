@@ -7,7 +7,7 @@ function App({ children }) {
     console.log('App launched.')
     
     // 异步初始化安全距离
-    await safeAreaManager.init()
+    await safeAreaManager.init(true)
     
     console.log('安全距离初始化完成')
   })
