@@ -1,22 +1,47 @@
 import Taro from '@tarojs/taro'
+import cacheManager from './cache'   // 导入 CacheManager 实例（默认无前缀，或自定义）
 
 class SafeAreaManager {
   constructor() {
     this.safeAreaTop = 44
     this.safeAreaBottom = 34
-    this.statusBarHeight = 44
     this.isReady = false
-    this.cacheKey = 'safe_area_cache'
-    this._syncCache = null // 同步缓存值
+    this.cacheKey = 'safeArea'        // 缓存 key（由 cacheManager 决定是否加前缀）
+    this._syncCache = null
   }
 
-  // 初始化，返回 Promise
-  async init(forceRefresh = false) {
-    if (this.isReady && !forceRefresh) {
-      return this.getValues()
-    }
+  // 保存到缓存（使用 CacheManager，永不过期）
+  saveToCache(values) {
+    // 第三个参数传 null 表示永不过期（或省略，默认 null）
+    cacheManager.set(this.cacheKey, values, null)
+  }
 
-    // 1. 尝试从本地缓存读取
+  // 从缓存读取（使用 CacheManager）
+  getFromCache() {
+    return cacheManager.get(this.cacheKey)  // 如果没有或过期会返回 null
+  }
+
+  // 同步获取安全距离（优先内存，其次缓存，最后默认值）
+  getSafeAreaSync() {
+    if (this._syncCache) {
+      return this._syncCache
+    }
+    // 尝试从缓存同步读取（cacheManager.get 本身就是同步的）
+    const cached = cacheManager.get(this.cacheKey)
+    if (cached && typeof cached === 'object') {
+      const { top, bottom } = cached
+      this._syncCache = { top, bottom }
+      return { top, bottom }
+    }
+    // 返回默认值
+    return { top: 44, bottom: 34 }
+  }
+
+  // 初始化（异步获取系统信息）
+  async init(forceRefresh = false) {
+    if (this.isReady && !forceRefresh) return this.getValues()
+
+    // 1. 尝试从缓存读取
     const cached = this.getFromCache()
     if (cached && !forceRefresh) {
       this.applyValues(cached)
@@ -28,28 +53,32 @@ class SafeAreaManager {
 
     // 2. 获取系统信息
     try {
-      const res = await Taro.getSystemInfo({})
-      const { safeArea, statusBarHeight, screenHeight } = res
-
       let top, bottom
+      if(process.env.TARO_ENV === 'h5'){
+        top = 0
+        bottom = 0
+      }else{
+        const res = await Taro.getSystemInfo({})
+      const { safeArea, statusBarHeight } = res
       if (safeArea) {
         top = safeArea.top || 44
-        bottom = screenHeight - safeArea.bottom || 0
+        const rawbottom = safeArea.bottom
+        bottom = (rawbottom && rawbottom < 200)? rawbottom : 0
+        
       } else {
         top = statusBarHeight || 44
         bottom = 0
       }
+      }
+      
 
       const values = {
         top,
         bottom,
-        statusBarHeight: statusBarHeight || 44,
-        left: safeArea?.left || 0,
-        right: safeArea?.right || 0,
       }
 
       this.applyValues(values)
-      this.saveToCache(values)
+      this.saveToCache(values)       // 使用 cacheManager 保存
       this.setCSSVariables()
       this.isReady = true
       this._syncCache = { top, bottom }
@@ -58,13 +87,7 @@ class SafeAreaManager {
       return this.getValues()
     } catch (error) {
       console.error('获取安全距离失败，使用默认值:', error)
-      const defaultValues = {
-        top: 44,
-        bottom: 34,
-        statusBarHeight: 44,
-        left: 0,
-        right: 0,
-      }
+      const defaultValues = { top: 44, bottom: 34}
       this.applyValues(defaultValues)
       this.setCSSVariables()
       this.isReady = true
@@ -73,67 +96,13 @@ class SafeAreaManager {
     }
   }
 
-  // ✅ 同步获取安全距离（优先从实例属性，若不 ready 则尝试读缓存或返回默认）
-  getSafeAreaSync() {
-    if (this._syncCache) {
-      return this._syncCache
-    }
-
-    // 尝试从缓存同步读取
-    try {
-      const cache = Taro.getStorageSync(this.cacheKey)
-      if (cache && cache.data) {
-        const { top, bottom } = cache.data
-        this._syncCache = { top, bottom }
-        return { top, bottom }
-      }
-    } catch (e) {
-      // ignore
-    }
-
-    // 返回默认值
-    return { top: 44, bottom: 34 }
-  }
-
-  // 保存到本地缓存（24小时过期）
-  saveToCache(values) {
-    try {
-      const cacheData = {
-        data: values,
-        timestamp: Date.now(),
-      }
-      Taro.setStorageSync(this.cacheKey, cacheData)
-    } catch (e) {
-      console.warn('缓存安全距离失败', e)
-    }
-  }
-
-  // 从缓存读取（检查是否过期）
-  getFromCache() {
-    try {
-      const cache = Taro.getStorageSync(this.cacheKey)
-      if (!cache) return null
-      const now = Date.now()
-      if (now - cache.timestamp > 24 * 60 * 60 * 1000) {
-        Taro.removeStorageSync(this.cacheKey)
-        return null
-      }
-      return cache.data
-    } catch (e) {
-      return null
-    }
-  }
-
   // 应用数值到实例属性
   applyValues(values) {
     this.safeAreaTop = values.top
     this.safeAreaBottom = values.bottom
-    this.statusBarHeight = values.statusBarHeight
-    this.safeAreaLeft = values.left || 0
-    this.safeAreaRight = values.right || 0
   }
 
-  // 设置 CSS 变量（仅在 H5 环境有效）
+  // 设置 CSS 变量（仅 H5）
   setCSSVariables() {
     if (process.env.TARO_ENV === 'h5' && typeof document !== 'undefined') {
       const root = document.documentElement
@@ -148,17 +117,11 @@ class SafeAreaManager {
     return {
       top: this.safeAreaTop,
       bottom: this.safeAreaBottom,
-      left: this.safeAreaLeft,
-      right: this.safeAreaRight,
-      statusBarHeight: this.statusBarHeight,
       isReady: this.isReady,
     }
   }
 }
 
-// 导出单例
 const safeAreaManager = new SafeAreaManager()
 export default safeAreaManager
-
-// ✅ 导出一个便捷的同步获取函数，页面可以直接调用
 export const getSafeArea = () => safeAreaManager.getSafeAreaSync()
