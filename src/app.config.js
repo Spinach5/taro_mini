@@ -4,7 +4,6 @@ export default defineAppConfig({
 		'pages/index/index',
 		"pages/course/index",
 		"pages/user/index",
-		"pages/course/index",
 	],
 
 	window: {
