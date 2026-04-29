@@ -22,7 +22,7 @@ export default function SafeAreaView({ children, className = "" }) {
 				paddingBottom: `${bottom}px`,
 				paddingLeft: "8px",
 				paddingRight: "8px",
-				minHeight: isH5 ? '100dvh':'100%',
+				minHeight: isH5 ? '100dvh':'100%',// 解决手机H5端页面高度塌陷问题
 				background: `linear-gradient(to bottom, rgba(71,165,253,1.00) 0%, rgba(255,255,255,0) 40%)`,
 			}}
 		>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Image, Text } from '@tarojs/components';
-// import SafeAreaView from '../../components/safeView';
-import BasePage from '../../components/basePage'
+import SafeAreaView from '../../components/safeView';
+// import BasePage from '../../components/basePage'
 import './index.scss';
 
 
@@ -28,8 +28,8 @@ export default function Index() {
 	const closeModal = () => setShowModal(false);
 
 	return (
-		<BasePage>
-			<View>
+		<SafeAreaView>
+
 				<View className='gradient'>
 					<View className='bora card item user'>
 						<View className='nick-name'>
@@ -117,7 +117,7 @@ export default function Index() {
 						</View>
 					</View>
 				)}
-			</View>
-		</BasePage>
+
+		</SafeAreaView>
 	);
 }

@@ -4,8 +4,7 @@ import img1 from '../../assets/p1.jpg'
 import img2 from '../../assets/p2.jpg'
 import img3 from '../../assets/p3.jpg'
 import './index.scss'
-// 👇 把 SafeAreaView 这行删掉！
-// import SafeAreaView from "../../components/safeView"
+import SafeAreaView from "../../components/safeView"
 import BasePage from "../../components/basePage";
 import Taro from '@tarojs/taro'
 
@@ -24,7 +23,7 @@ export default function Index() {
     { id: 1, imageUrl: defaultPic },
     { id: 2, imageUrl: img1 },
     { id: 3, imageUrl: img2 },
-    { id: 4, imageUrl: img3 }, 
+    { id: 4, imageUrl: img3 },
   ]
 
   const goToPage = (page) => {
@@ -60,7 +59,7 @@ export default function Index() {
 
   return (
     // 👇 这里换成普通 View！！！！！
-    <BasePage className=''>
+    <SafeAreaView className=''>
       <Swiper
         indicatorDots
         autoplay
@@ -114,6 +113,6 @@ export default function Index() {
       <View className='bora card list'>
         <View className='item'>最终可能展示公告或活动</View>
       </View>
-    </BasePage>
+    </SafeAreaView>
   )
 }
