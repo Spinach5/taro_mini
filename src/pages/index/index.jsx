@@ -5,7 +5,6 @@ import img2 from '../../assets/p2.jpg'
 import img3 from '../../assets/p3.jpg'
 import './index.scss'
 import SafeAreaView from "../../components/safeView"
-import BasePage from "../../components/basePage";
 import Taro from '@tarojs/taro'
 
 // 顶部导入所有图标

@@ -10,7 +10,6 @@ import {
 import "./index.scss";
 import { useState } from "react";
 import SafeAreaView from "../../components/safeView";
-// import BasePage from "../../components/basePage";
 
 
 export default function Index() {

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { View, Image, Text } from '@tarojs/components';
 import SafeAreaView from '../../components/safeView';
-// import BasePage from '../../components/basePage'
 import './index.scss';
 
 
