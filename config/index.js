@@ -1,9 +1,7 @@
 import { defineConfig } from '@tarojs/cli'
-
 import devConfig from './dev'
 import prodConfig from './prod'
 
-// https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig(async (merge, { command, mode }) => {
   const baseConfig = {
     projectName: 'ysx',
@@ -19,15 +17,12 @@ export default defineConfig(async (merge, { command, mode }) => {
     outputRoot: 'dist',
     plugins: [
       "@tarojs/plugin-generator",
-      '@tarojs/plugin-http'
     ],
     defineConstants: {
     },
     copy: {
-      patterns: [
-      ],
-      options: {
-      }
+      patterns: [],
+      options: {}
     },
     framework: 'react',
     compiler: 'vite',
@@ -35,14 +30,12 @@ export default defineConfig(async (merge, { command, mode }) => {
       postcss: {
         pxtransform: {
           enable: true,
-          config: {
-
-          }
+          config: {}
         },
         cssModules: {
-          enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
+          enable: false,
           config: {
-            namingPattern: 'module', // 转换模式，取值为 global/module
+            namingPattern: 'module',
             generateScopedName: '[name]__[local]___[hash:base64:5]'
           }
         }
@@ -51,7 +44,37 @@ export default defineConfig(async (merge, { command, mode }) => {
     h5: {
       publicPath: '/',
       staticDirectory: 'static',
-
+      // ✅ 添加代理配置
+      devServer: {
+        port: 10086,
+        proxy: {
+          '/chaoxing': {
+            target: 'https://passport2-static.chaoxing.com',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/chaoxing/, '')
+          },
+          '/api-passport': {
+            target: 'https://passport2.chaoxing.com',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api-passport/, '')
+          },
+          '/api-hbut': {
+            target: 'https://hbut.jw.chaoxing.com',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api-hbut/, '')
+          },
+          '/api-vkb': {
+            target: 'https://vkb.jw.chaoxing.com',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api-vkb/, '')
+          },
+          '/api-i': {
+            target: 'https://i.chaoxing.com',
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api-i/, '')
+          }
+        }
+      },
       miniCssExtractPluginOption: {
         ignoreOrder: true,
         filename: 'css/[name].[hash].css',
@@ -63,9 +86,9 @@ export default defineConfig(async (merge, { command, mode }) => {
           config: {}
         },
         cssModules: {
-          enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
+          enable: false,
           config: {
-            namingPattern: 'module', // 转换模式，取值为 global/module
+            namingPattern: 'module',
             generateScopedName: '[name]__[local]___[hash:base64:5]'
           }
         }
@@ -75,7 +98,7 @@ export default defineConfig(async (merge, { command, mode }) => {
       appName: 'taroDemo',
       postcss: {
         cssModules: {
-          enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
+          enable: false,
         }
       }
     }
@@ -84,9 +107,7 @@ export default defineConfig(async (merge, { command, mode }) => {
   process.env.BROWSERSLIST_ENV = process.env.NODE_ENV
 
   if (process.env.NODE_ENV === 'development') {
-    // 本地开发构建配置（不混淆压缩）
     return merge({}, baseConfig, devConfig)
   }
-  // 生产构建配置（默认开启压缩混淆等）
   return merge({}, baseConfig, prodConfig)
 })
