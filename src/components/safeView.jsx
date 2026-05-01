@@ -1,32 +1,31 @@
-/* eslint-disable react/jsx-indent-props */
 import { View } from "@tarojs/components";
 import { getSafeArea } from "../utils/safeArea";
-import Taro, { getEnv } from '@tarojs/taro'
 
-export default function SafeAreaView({ children, className = "" }) {
-	console.log("SafeAreaView 开始渲染");
-	const isH5 = Taro.getEnv() === Taro.ENV_TYPE.WEB
+export default function SaveAreaView({
+    children,
+    className = ''
+}) {
+    const isH5 = process.env.TARO_ENV === 'h5'
+    const { top: cachedTop, bottom: cachedBottom } = getSafeArea();
+    console.log('读取到安全距离:', { cachedTop, cachedBottom });
+    const paddingtop = cachedTop
+    return (
+        <View
+            className={className}
+            style={{
+                height: isH5 ? 'calc(100dvh -55px)' : '100%',
+                // paddingTop: 'env(safe-area-inset-top)',
+                paddingTop: `${paddingtop}px`,
+                paddingLeft: "8px",
+                paddingRight: "8px",
+                // paddingBottom: 'calc(env(safe-area-inset-bottom) + var(--tab-bar-height, 0px))',
+                background: `linear-gradient(to bottom, rgba(71,165,253,1.00) 0%, rgba(255,255,255,0) 40%)`,
+                // 低版本兼容
+                boxSizing: 'border-box',
 
-	// getSafeArea 返回的是 { top, bottom } 直接对象
-	const { top: cachedTop, bottom: cachedBottom } = getSafeArea();
-	console.log("读取到的安全距离:", { cachedTop, cachedBottom });
-
-	const top = cachedTop;
-	const bottom = cachedBottom;
-
-	return (
-		<View
-			className={className}
-			style={{
-				paddingTop: `${top}px`,
-				paddingBottom: `${bottom}px`,
-				paddingLeft: "8px",
-				paddingRight: "8px",
-				minHeight: isH5 ? '100dvh':'100%',// 解决手机H5端页面高度塌陷问题
-				background: `linear-gradient(to bottom, rgba(71,165,253,1.00) 0%, rgba(255,255,255,0) 40%)`,
-			}}
-		>
-			{children}
-		</View>
-	);
+            }}
+        >
+            {children}
+        </View>
+    )
 }

@@ -5,7 +5,8 @@ import img2 from '../../assets/p2.jpg'
 import img3 from '../../assets/p3.jpg'
 import './index.scss'
 import SafeAreaView from "../../components/safeView"
-import BasePage from "../../components/basePage";
+import HeadStatus from '../../components/headStatus'
+import GridItem  from '../../components/gridItem'
 import Taro from '@tarojs/taro'
 
 // 顶部导入所有图标
@@ -25,41 +26,9 @@ export default function Index() {
     { id: 3, imageUrl: img2 },
     { id: 4, imageUrl: img3 },
   ]
-
-  const goToPage = (page) => {
-    switch(page) {
-      case 'student-union':
-        Taro.navigateTo({ url: '/pages/student-union/index' });
-        break;
-      case 'club':
-        Taro.navigateTo({ url: '/pages/club/index' });
-        break;
-      case 'food':
-        Taro.navigateTo({ url: '/pages/food/index' });
-        break;
-      case 'admin':
-        Taro.navigateTo({ url: '/pages/admin/index' });
-        break;
-      case 'books':
-        Taro.navigateTo({ url: '/pages/books/index' });
-        break;
-      case 'daily-goods':
-        Taro.navigateTo({ url: '/pages/daily-goods/index' });
-        break;
-      case 'map':
-        Taro.navigateTo({ url: '/pages/map/index' });
-        break;
-      case 'secondhand-book':
-        Taro.navigateTo({ url: '/pages/secondhand-book/index' });
-        break;
-      default:
-        Taro.showToast({ title: '功能开发中', icon: 'none' });
-    }
-  }
-
   return (
-    // 👇 这里换成普通 View！！！！！
     <SafeAreaView className=''>
+		<HeadStatus >首页</HeadStatus>
       <Swiper
         indicatorDots
         autoplay
@@ -76,43 +45,52 @@ export default function Index() {
       </Swiper>
 
       <View className="grid-container">
-        <View className="my-item" onClick={() => goToPage('student-union')}>
-          <View className="icon-wrapper icon-1"><Image src={studentIcon} className="my-icon" /></View>
-          <Text className="my-font">学生会</Text>
-        </View>
-        <View className="my-item" onClick={() => goToPage('club')}>
-          <View className="icon-wrapper icon-2" ><Image src={clubIcon} className="my-icon" /></View>
-          <Text className="my-font">社团</Text>
-        </View>
-        <View className="my-item" onClick={() => goToPage('food')}>
-          <View className="icon-wrapper icon-3" ><Image src={foodIcon} className="my-icon" /></View>
-          <Text className="my-font">美食</Text>
-        </View>
-        <View className="my-item" onClick={() => goToPage('admin')}>
-          <View className="icon-wrapper icon-4" ><Image src={adminIcon} className="my-icon" /></View>
-          <Text className="my-font">行政事务</Text>
-        </View>
-        <View className="my-item" onClick={() => goToPage('books')}>
-          <View className="icon-wrapper icon-5"><Image src={bookIcon} className="my-icon" /></View>
-          <Text className="my-font">书籍资料</Text>
-        </View>
-        <View className="my-item" onClick={() => goToPage('daily-goods')}>
-          <View className="icon-wrapper icon-6"><Image src={dailyIcon} className="my-icon" /></View>
-          <Text className="my-font">日常用品</Text>
-        </View>
-        <View className="my-item" onClick={() => goToPage('map')}>
-          <View className="icon-wrapper icon-7"><Image src={mapIcon} className="my-icon" /></View>
-          <Text className="my-font">地图</Text>
-        </View>
-        <View className="my-item" onClick={() => goToPage('secondhand-book')}>
-          <View className="icon-wrapper icon-8"><Image src={secondHandIcon} className="my-icon" /></View>
-          <Text className="my-font">二手书</Text>
-        </View>
-      </View>
+		<GridItem
+		url="/pages/student-union/index"
+          icon={studentIcon}
+          text="学生会"
+		/>
+		<GridItem
+		url="/pages/club/index"
+          icon={clubIcon}
+          text="社团"
+		/>
+		<GridItem
+		url="/pages/food/index"
+          icon={foodIcon}
+          text="美食"
+		/>
+		<GridItem
+		url="/pages/admin/index"
+          icon={adminIcon}
+          text="行政事务"
+		/>
 
+		<GridItem
+		url="/pages/books/index"
+          icon={bookIcon}
+          text="书籍资料"
+		/>
+
+		<GridItem
+		url="/pages/daily-goods/index"
+          icon={dailyIcon}
+          text="日常用品"
+		/>
+		<GridItem
+		url="/pages/map/index"
+          icon={mapIcon}
+          text="地图"
+		/>
+		<GridItem
+		url="/pages/secondhand-book/index"
+          icon={secondHandIcon}
+          text="二手书"
+		/>
       <View className='bora card list'>
         <View className='item'>最终可能展示公告或活动</View>
       </View>
+	  </View>
     </SafeAreaView>
   )
 }
