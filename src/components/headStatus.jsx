@@ -1,6 +1,6 @@
 import { View } from "@tarojs/components";
 
-export default function headStatus({
+export default function HeadStatus({
   children,
   className = ''
 }) {

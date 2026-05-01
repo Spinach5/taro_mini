@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View, Image, Text } from '@tarojs/components';
+import HeadStatus from '../../components/headStatus'
 import SafeAreaView from '../../components/safeView';
 import './index.scss';
 
@@ -28,7 +29,7 @@ export default function Index() {
 
 	return (
 		<SafeAreaView>
-
+			<headStatus>我的</headStatus>
 			<View className='bora card item user'>
 				<View className='nick-name'>
 					{nickname ? nickname : '昵称'}
