@@ -5,6 +5,7 @@ import img2 from '../../assets/p2.jpg'
 import img3 from '../../assets/p3.jpg'
 import './index.scss'
 import SafeAreaView from "../../components/safeView"
+import headStatus from '../../components/headStatus'
 import Taro from '@tarojs/taro'
 
 // 顶部导入所有图标
@@ -57,8 +58,13 @@ export default function Index() {
   }
 
   return (
-    // 👇 这里换成普通 View！！！！！
     <SafeAreaView className=''>
+		<headStatus
+			style={{
+				color: '#fff',
+				display: 'flex',
+			}}
+		>首页</headStatus>
       <Swiper
         indicatorDots
         autoplay
