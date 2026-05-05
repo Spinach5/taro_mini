@@ -27,8 +27,8 @@ export default function GridContainer({ className = "" }) {
 		<View
 			className={`grid-container ${className}`}
 			style={{
-				display: "flex",
-				flexWrap: "wrap",
+				display: 'grid',
+    			gridTemplateColumns: 'repeat(4, 1fr)',
 				gap: "10px",
 				padding: "15px",
 				background: "#fff",

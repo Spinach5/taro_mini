@@ -1,11 +1,12 @@
 import { View } from "@tarojs/components"
 import './Btn.scss'
 import Taro from '@tarojs/taro'
+import loginAndGetCookies from '../utils/auth'
 
 export default function Btn({
   children,
   className = '',
-  onClick=() => {Taro.showActionSheet({ itemList: ['拍照', '从相册选择'] })},
+  onClick=() => {loginAndGetCookies('13687106362','Spinach114514!')},
 }) {
   return (
     <View

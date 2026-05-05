@@ -49,17 +49,7 @@ export default function Index() {
 	return (
 		<SafeAreaView className="page">
 			{/* 工具栏 */}
-			<CourseHeader>
-				<Btn>
-					<Image src="../../assets/more.svg" />
-				</Btn>
-				<Btn>
-					<Text>第{now_week_number}周</Text>
-					<Image
-						src="../../assets/down.svg"
-					/>
-				</Btn>
-			</CourseHeader>
+			<CourseHeader />
 			{/* 日期区域 */}
 			<View className="date">
 				<View className="month">

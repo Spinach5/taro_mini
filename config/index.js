@@ -53,25 +53,30 @@ export default defineConfig(async (merge, { command, mode }) => {
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/chaoxing/, '')
           },
-          '/api-passport': {
+          '/passport2': {
             target: 'https://passport2.chaoxing.com',
             changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/api-passport/, '')
+            rewrite: (path) => path.replace(/^\/passport2/, '')
           },
-          '/api-hbut': {
+          '/hbut': {
             target: 'https://hbut.jw.chaoxing.com',
             changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/api-hbut/, '')
+            rewrite: (path) => path.replace(/^\/hbut/, '')
           },
-          '/api-vkb': {
+          '/vkb': {
             target: 'https://vkb.jw.chaoxing.com',
             changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/api-vkb/, '')
+            rewrite: (path) => path.replace(/^\/vkb/, '')
           },
-          '/api-i': {
+          '/i': {
             target: 'https://i.chaoxing.com',
             changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/api-i/, '')
+            rewrite: (path) => path.replace(/^\/i/, '')
+          },
+		  '/note': {
+            target: "https://noteyd.chaoxing.com",
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/note/, '')
           }
         }
       },

@@ -6,7 +6,6 @@
   border-radius: 24rpx;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: transparent;
-  width: calc(25% - 8px);
 
   &:active {
     transform: scale(0.95);
