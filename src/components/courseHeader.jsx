@@ -1,5 +1,7 @@
 import { View, Image, Text } from "@tarojs/components";
 import Btn from "./Btn";
+import more from "../assets/more.svg";
+import down from "../assets/down.svg";
 
 export default function CourseHeader({ className = "" }) {
 	return (
@@ -14,11 +16,11 @@ export default function CourseHeader({ className = "" }) {
 			}}
 		>
 			<Btn>
-				<Image src="../assets/more.svg" />
+				<Image src={more} />
 			</Btn>
 			<Btn>
 				<Text>第1周</Text>
-				<Image src="../assets/down.svg" />
+				<Image src={down} />
 			</Btn>
 		</View>
 	);

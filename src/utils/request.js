@@ -1,79 +1,60 @@
-import Taro from '@tarojs/taro'
-import cacheManager from './cache'
+// utils/request.js
+import axios from 'axios';
+import { createAdapter } from 'taro-axios-adapter';
+import CookiesManager from './cookies'; // 导入 CookiesManager 类
 
-// 存储 Cookie 的 key
-const COOKIE_KEY = 'app_cookies'
+/**
+ * 创建带有 Cookie 自动管理的请求实例
+ * @param {string} baseURL      基础 URL
+ * @param {string} cookiesPrefix Cookie 管理器前缀（区分不同服务）
+ */
+const createRequest = (baseURL, cookiesPrefix = '') => {
+  // 为此后端创建独立的 Cookie 管理器实例
+  const cookieManager = new CookiesManager(cookiesPrefix);
 
-// 获取存储的 Cookie 对象
-export function getCookieObject() {
-  try {
-    const cookies = cacheManager.get(COOKIE_KEY)
-    // 如果缓存值为 null 或非对象，则返回空对象
-    return (cookies && typeof cookies === 'object') ? cookies : {}
-  } catch (e) {
-    return {}
-  }
-}
+  // eslint-disable-next-line import/no-named-as-default-member
+  const instance = axios.create({
+    baseURL,
+    timeout: 15000,
+    adapter: createAdapter(),
+  });
 
-// 保存 Cookie 对象
-export function setCookieObject(cookies) {
-  try {
-    cacheManager.set(COOKIE_KEY, cookies)
-  } catch (e) {}
-}
+  // 请求拦截器：添加 Cookie 头
+  instance.interceptors.request.use(
+    config => {
+      const cookieString = cookieManager.toString();
+      if (cookieString) {
+        config.headers['Cookie'] = cookieString;
+      }
+      return config;
+    },
+    error => Promise.reject(error)
+  );
 
-// 从响应头中解析 Set-Cookie，合并到现有 Cookie
-export function mergeCookiesFromResponse(res) {
-  const setCookieHeader = res.header['Set-Cookie'] || res.header['set-cookie']
-  if (!setCookieHeader) return
+  // 响应拦截器：提取并保存 Set-Cookie
+  instance.interceptors.response.use(
+    response => {
+      const setCookie = response.headers['set-cookie'];
 
-  let cookieStr = ''
-  if (typeof setCookieHeader === 'string') cookieStr = setCookieHeader
-  else if (Array.isArray(setCookieHeader)) cookieStr = setCookieHeader.join(';')
+      if (setCookie) {
+        // 兼容数组（axios 会将多个同名头合并为数组）或字符串
+        const cookieHeaders = Array.isArray(setCookie) ? setCookie : [setCookie];
+        cookieHeaders.forEach(header => {
+          cookieManager.parseAndMerge(header);
+        });
+      }
 
-  // 简单解析 key=value（忽略 path、expires 等）
-  const cookies = getCookieObject()
-  const pairs = cookieStr.split(/,(?=[^,]*=)/)
-  pairs.forEach(pair => {
-    const match = pair.match(/([^=]+)=([^;]+)/)
-    if (match) {
-      cookies[match[1].trim()] = match[2].trim()
-    }
-  })
-  setCookieObject(cookies)
-}
+      return response.data; // 直接返回数据，也可以保留整个 response
+    },
+    error => Promise.reject(error)
+  );
 
-// 构建请求头中的 Cookie 字符串
-export function buildCookieHeader() {
-  const cookies = getCookieObject()
-  // 如果没有 Cookie 字段，返回空字符串
-  if (Object.keys(cookies).length === 0) return ''
-  return Object.entries(cookies).map(([k, v]) => `${k}=${v}`).join('; ')
-}
+  return instance;
+};
 
-// 封装的请求方法，自动携带并保存 Cookie
-export async function request(options) {
-  const { url, method = 'GET', data, header = {}, ...rest } = options
+// 为不同后端创建实例（自动隔离 Cookie）
+export const userRequest = createRequest('https://user-api.example.com', 'user');
+export const courseRequest = createRequest('https://hbut.jw.chaoxing.com', 'course');
 
-  const requestHeader = {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    ...header,
-  }
-  const cookieStr = buildCookieHeader()
-  if (cookieStr) {
-    requestHeader['Cookie'] = cookieStr
-  }
-
-  const res = await Taro.request({
-    url,
-    method,
-    data,
-    header: requestHeader,
-    ...rest,
-  })
-
-  // 保存响应的 Cookie
-  mergeCookiesFromResponse(res)
-
-  return res
-}
+// 默认实例（无 URL，用于相对路径请求）
+export default createRequest('');

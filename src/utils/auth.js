@@ -15,6 +15,7 @@ export default async function loginAndGetCookies(username, password) {
 				Referer: "https://i.chaoxing.com",
 			},
 		});
+		console.log('当前 Cookie:', getCookieObject());
 		console.log("获取密钥响应状态:", res.statusCode);
 
 		if (res.data && typeof res.data === "string") {
@@ -35,7 +36,6 @@ export default async function loginAndGetCookies(username, password) {
 	const params = new URLSearchParams();
 	params.append("uname", encodedUser);
 	params.append("password", encodedPass);
-	params.append("refer", "https%3A%2F%2Fi.chaoxing.com");
 	params.append("t", "true");
 
 	const loginRes = await request({
@@ -44,30 +44,31 @@ export default async function loginAndGetCookies(username, password) {
 		data: params.toString(),
 		header: {
 			"Content-Type": "application/x-www-form-urlencoded",
-			Referer: "https://passport2.chaoxing.com/login",
+			 Referer: "https://passport2.chaoxing.com/login",
 		},
 	});
-
+	console.log('当前 Cookie:', getCookieObject());
 	const data = loginRes.data;
 	if (!data || !data.status) {
 		throw new Error("登录失败：" + JSON.stringify(data));
 	}
 
-	// const realUrl = decodeURIComponent(data.url);
-	const realUrl = `${API_BASE.i}`;
+	const realUrl = decodeURIComponent(data.url);
 	console.log("登录成功，跳转地址：", realUrl);
 
 	// 4. 依次访问几个关键 URL，同步 Cookie（后续请求会自动携带之前存储的 Cookie）
 	// 访问跳转 URL
 	await request({
 		url: realUrl,
-		header: { Referer: "https://passport2.chaoxing.com/login" },
+		header: { Referer: "https://i.chaoxing.com" },
 	});
-	// 访问个人空间
+	console.log('当前 Cookie:', getCookieObject());
+	// // 访问个人空间
 	await request({
 		url: `${API_BASE.i}/base`,
 		header: { Referer: "https://i.chaoxing.com" },
 	});
+	console.log('当前 Cookie:', getCookieObject());
 	// 访问 SSO 跳转地址
 	const authUrl =
 		`${API_BASE.vkb}/admin/api/xxtlogin?loginUrl=https%3A%2F%2Fhbut.jw.chaoxing.com%2Fadmin%2Flogin2%3Frole%3Dxs%26url%3Dhttps%253A%252F%252Fmitudz.jw.chaoxing.com%252Fviews%252FhomePage.html%253Frole%253D1%2526domainUrl%253Dhbut.jw.chaoxing.com`;
@@ -75,7 +76,7 @@ export default async function loginAndGetCookies(username, password) {
 		url: authUrl,
 		header: { Referer: "https://i.chaoxing.com/base" },
 	});
-
+	console.log('当前 Cookie:', getCookieObject());
 	console.log("登录与 Cookie 同步完成");
 	// 最后返回当前存储的 Cookie 对象（供外部使用）
 	const finalCookies = getCookieObject(); // 从 request.js 中导入

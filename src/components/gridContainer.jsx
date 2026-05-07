@@ -1,5 +1,7 @@
 import { View } from "@tarojs/components";
 import GridItem from "./gridItem";
+
+
 // 功能图标统一导入
 import studentIcon from "../assets/8个功能/Workgroup.png";
 import clubIcon from "../assets/8个功能/社团.png";
@@ -9,6 +11,8 @@ import bookIcon from "../assets/8个功能/手绘书本.png";
 import dailyIcon from "../assets/8个功能/日常用品.png";
 import mapIcon from "../assets/8个功能/世界地图.png";
 import secondHandIcon from "../assets/8个功能/书本.png";
+
+
 
 // 功能入口配置数据
 const gridItems = [

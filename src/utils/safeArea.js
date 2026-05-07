@@ -14,6 +14,7 @@ class SafeAreaManager {
   saveToCache(values) {
     // 第三个参数传 null 表示永不过期（或省略，默认 null）
     cacheManager.set(this.cacheKey, values, null)
+
   }
 
   // 从缓存读取（使用 CacheManager）
@@ -64,13 +65,13 @@ class SafeAreaManager {
         top = safeArea.top || 44
         const rawbottom = safeArea.bottom
         bottom = (rawbottom && rawbottom < 200)? rawbottom : 0
-        
+
       } else {
         top = statusBarHeight || 44
         bottom = 0
       }
       }
-      
+
 
       const values = {
         top,

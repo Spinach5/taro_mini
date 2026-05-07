@@ -7,7 +7,7 @@ export default function GridItem({
   icon,
   text='无',
   className = '',
-  onClick,
+  onClick=()=>{Taro.showToast({title: '功能正在开发中', icon: 'none', duration: 1500})},
   navigate = true,
   navigateType = 'navigateTo'
 }) {
@@ -20,7 +20,7 @@ const handleClick = async () => {
 
   if (!navigate) return
   if (!url) {
-    Taro.showToast({ title: `${text}暂无链接`, icon: 'none' })
+    console.warn('url is required for navigate')
     return
   }
 

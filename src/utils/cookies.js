@@ -1,37 +1,124 @@
-import Taro from '@tarojs/taro'
-import cacheManager from './cache'   // 导入 CacheManager 实例（默认无前缀，或自定义）
+import cacheManager from './cache' // 全局唯一的缓存管理器
+import { parseCookiesToKeyValue, stringifyCookieObj } from './rex'
 
-class cookiesManager {
-  constructor() {
-	this.token = ''
-	this.jwuf=''
-	this.cacheKey = 'cookies'
-	this._syncCache = null          // 缓存同步标识（用于判断是否需要同步缓存）
+/**
+ * Cookie 管理器
+ * - 可通过不同 prefix 创建多个实例，对应缓存中不同的 key
+ * - 内部自动从缓存加载、修改后写回缓存（永不过期）
+ */
+class CookiesManager {
+  /**
+   * @param {string} prefix 用于生成缓存键的前缀，区分不同的 cookie 集合
+   */
+  constructor(prefix = '') {
+    this.prefix = prefix
+    this.cacheKey = `cookies_${prefix}` // 缓存键，例如 "cookies_" 或 "cookies_user"
+    this.cookies = {}                   // 内存中的 cookie 对象（与缓存同步）
+    this._loadFromCache()               // 初始化时立即从缓存加载
   }
-	// 保存到缓存（使用 CacheManager，永不过期）
-	saveToCache(values) {
-	  // 第三个参数传 null 表示永不过期（或省略，默认 null）
-	  cacheManager.set(this.cacheKey, values, null)
-	}
 
-	// 从缓存读取（使用 CacheManager）
-	getFromCache() {
-	  return cacheManager.get(this.cacheKey)  // 如果没有或过期会返回 null
-	}
+  /** 从缓存读取并解析到内存 */
+  _loadFromCache() {
+    const cached = cacheManager.get(this.cacheKey)
+    if (cached && typeof cached === 'object') {
+      this.cookies = { ...cached }
+    } else {
+      this.cookies = {}
+    }
+  }
 
-	getSafeAreaSync() {
-		if (this._syncCache) {
-		  return this._syncCache
-		}
-		// 尝试从缓存同步读取
-		const cached = cacheManager.get(this.cacheKey)
-		if (cached && typeof cached === 'object') {
-		  const { account, password, name, school } = cached
-		  this._syncCache = { account, password, name, school }
-		  return { account, password, name, school }
-		}
-		// 返回默认值
-		return { token: '', jwuf:'' }
-	  }
+  /** 将当前内存对象持久化到缓存，永不过期 */
+  _saveToCache() {
+    cacheManager.set(this.cacheKey, this.cookies, null)
+  }
+
+  // ---------- 公共 API ----------
+  /**
+   * 获取当前所有 cookie 的浅拷贝
+   * @returns {object}
+   */
+  getAll() {
+    return { ...this.cookies }
+  }
+
+  /**
+   * 获取指定 cookie 的值
+   * @param {string} name
+   * @returns {string|undefined}
+   */
+  get(name) {
+    return this.cookies.hasOwnProperty(name) ? this.cookies[name] : undefined
+  }
+
+  /**
+   * 设置一个 cookie
+   * @param {string} name
+   * @param {string|number} value
+   * @returns {this} 支持链式调用
+   */
+  set(name, value) {
+    this.cookies[name] = String(value)
+    this._saveToCache()
+    return this
+  }
+
+  /**
+   * 批量设置 cookie（合并方式）
+   * @param {object} obj - 键值对
+   * @returns {this}
+   */
+  setAll(obj) {
+    for (const [key, val] of Object.entries(obj)) {
+      this.cookies[key] = String(val)
+    }
+    this._saveToCache()
+    return this
+  }
+
+  /**
+   * 删除一个 cookie
+   * @param {string} name
+   * @returns {this}
+   */
+  remove(name) {
+    if (this.cookies.hasOwnProperty(name)) {
+      delete this.cookies[name]
+      this._saveToCache()
+    }
+    return this
+  }
+
+  /**
+   * 清空所有 cookie
+   * @returns {this}
+   */
+  clear() {
+    this.cookies = {}
+    this._saveToCache()
+    return this
+  }
+
+  /**
+   * 将标准 cookie 字符串解析并合并到当前集合（使用 rex 的 parse）
+   * 例如从响应头 Set-Cookie 处获取的字符串
+   * @param {string} cookieStr
+   * @returns {this}
+   */
+  parseAndMerge(cookieStr) {
+    const parsed = parseCookiesToKeyValue(cookieStr)
+    this.setAll(parsed)
+    return this
+  }
+
+  /**
+   * 将当前 cookie 集合序列化为请求头字符串（使用 rex 的 stringify）
+   * 格式："key1=val1; key2=val2"
+   * @returns {string}
+   */
+  toString() {
+    return stringifyCookieObj(this.cookies)
+  }
+
 }
 
+export default CookiesManager
