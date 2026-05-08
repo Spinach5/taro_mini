@@ -1,7 +1,8 @@
 // utils/request.js
 import axios from 'axios';
-import { createAdapter } from 'taro-axios-adapter';
+import TaroAdapter from 'taro-axios-adapter';
 import CookiesManager from './cookies'; // 导入 CookiesManager 类
+import { API_BASE } from '../config/api';
 
 /**
  * 创建带有 Cookie 自动管理的请求实例
@@ -16,7 +17,7 @@ const createRequest = (baseURL, cookiesPrefix = '') => {
   const instance = axios.create({
     baseURL,
     timeout: 15000,
-    adapter: createAdapter(),
+    adapter: TaroAdapter,
   });
 
   // 请求拦截器：添加 Cookie 头
@@ -35,7 +36,6 @@ const createRequest = (baseURL, cookiesPrefix = '') => {
   instance.interceptors.response.use(
     response => {
       const setCookie = response.headers['set-cookie'];
-
       if (setCookie) {
         // 兼容数组（axios 会将多个同名头合并为数组）或字符串
         const cookieHeaders = Array.isArray(setCookie) ? setCookie : [setCookie];
@@ -44,7 +44,7 @@ const createRequest = (baseURL, cookiesPrefix = '') => {
         });
       }
 
-      return response.data; // 直接返回数据，也可以保留整个 response
+      return response; //保留整个 response
     },
     error => Promise.reject(error)
   );
@@ -53,8 +53,7 @@ const createRequest = (baseURL, cookiesPrefix = '') => {
 };
 
 // 为不同后端创建实例（自动隔离 Cookie）
-export const userRequest = createRequest('https://user-api.example.com', 'user');
-export const courseRequest = createRequest('https://hbut.jw.chaoxing.com', 'course');
+export const hbutRequest = createRequest(`${API_BASE.hbut}`, 'hbut');
 
 // 默认实例（无 URL，用于相对路径请求）
 export default createRequest('');

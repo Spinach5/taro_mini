@@ -63,11 +63,10 @@
     "@tarojs/shared": "4.2.0",
     "@tarojs/taro": "4.2.0",
     "axios": "^1.16.0",
-    "crypto-js": "^4.2.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "taro-axios-adapter": "^0.0.3",
-    "weapp-cookie": "^1.4.8"
+    "wx-jsencrypt": "^3.0.0-rc.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4",
