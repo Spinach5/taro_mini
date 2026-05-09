@@ -1,6 +1,5 @@
 import { hbutRequest } from "../request";
 import encryptPassword from "./loginEncrypt";
-import { API_BASE } from "../../config/api";
 
 // 登录教务系统
 export async function login(stuID, password) {
@@ -16,17 +15,6 @@ export async function login(stuID, password) {
 		console.error(`执行 JS 加密函数出错: ${e.message}`);
 		return null;
 	}
-	const initRes = await hbutRequest.get("/admin", {
-		responseType: 'text',
-		dataType: 'text',//规定返回结果是文本
-		headers: {
-			Referer: "https://jwxt.hbut.edu.cn/",
-			"User-Agent":
-				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-		},
-	});
-
-	console.log(initRes.data)
 	const params = new URLSearchParams();
 	params.append("username", stuID);
 	params.append("password", encodedPassword);
@@ -48,4 +36,12 @@ export async function login(stuID, password) {
 		loginConfig,
 	);
 	console.log("登录请求结果:", response.data);
+	const params2 = new URLSearchParams();
+	params2.append("zc", 10);
+	const response2 = await hbutRequest.post(
+		"/admin/getXqByZc",
+		params2,
+		loginConfig,
+	);
+	console.log("获取学期请求结果:", response2.data);
 }

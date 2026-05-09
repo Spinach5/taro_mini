@@ -24,6 +24,7 @@ const createRequest = (baseURL, cookiesPrefix = '') => {
   // 请求拦截器：添加 Cookie 头
   instance.interceptors.request.use(
     config => {
+		console.log("请求拦截器")
       const cookieString = cookieManager.toString();
       if (cookieString) {
         config.headers['Cookie'] = cookieString;
@@ -36,10 +37,12 @@ const createRequest = (baseURL, cookiesPrefix = '') => {
   // 响应拦截器：提取并保存 Set-Cookie
   instance.interceptors.response.use(
     response => {
+		console.log("响应拦截器")
       const setCookie = response.headers['set-cookie'];
       if (setCookie) {
         // 兼容数组（axios 会将多个同名头合并为数组）或字符串
         const cookieHeaders = Array.isArray(setCookie) ? setCookie : [setCookie];
+		console.log(cookieHeaders)
         cookieHeaders.forEach(header => {
           cookieManager.parseAndMerge(header);
         });
