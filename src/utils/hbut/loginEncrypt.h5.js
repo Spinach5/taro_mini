@@ -1,4 +1,8 @@
+
 /* eslint-disable import/no-commonjs */
+/**
+ * h5端加密函数
+ */
 import {JSEncrypt} from 'jsencrypt';
 
 function encryptPassword(password) {

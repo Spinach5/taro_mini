@@ -18,6 +18,7 @@ const createRequest = (baseURL, cookiesPrefix = '') => {
     baseURL,
     timeout: 15000,
     adapter: TaroAdapter,
+	withCredentials: true, // 允许跨域带 Cookie
   });
 
   // 请求拦截器：添加 Cookie 头
@@ -53,7 +54,7 @@ const createRequest = (baseURL, cookiesPrefix = '') => {
 };
 
 // 为不同后端创建实例（自动隔离 Cookie）
-export const hbutRequest = createRequest(`${API_BASE.hbut}`, 'hbut');
+export const hbutRequest = createRequest(API_BASE.hbut, 'hbut');
 
 // 默认实例（无 URL，用于相对路径请求）
 export default createRequest('');
