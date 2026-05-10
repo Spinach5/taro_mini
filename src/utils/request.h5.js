@@ -19,6 +19,7 @@ const createRequest = (baseURL, cookiesPrefix = '') => {
     timeout: 15000,
     adapter: TaroAdapter,
 	withCredentials: true, // 允许跨域带 Cookie
+	responseType: 'text',
   });
 
   // 请求拦截器：添加 Cookie 头
