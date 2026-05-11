@@ -14,7 +14,7 @@ export default function SaveAreaView({
         <View
             className={className}
             style={{
-                height: isH5 ? 'calc(100dvh - 55px)' : '100%',
+                height: '100%',
                 paddingTop: `${paddingTop}px`,
                 paddingBottom: `${paddingBottom}px`,
                 paddingLeft: "8px",

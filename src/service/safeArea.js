@@ -133,5 +133,5 @@ class SafeAreaManager {
 }
 
 const safeAreaManager = new SafeAreaManager();
-await safeAreaManager.init();// 初始化
+safeAreaManager.init();// 初始化
 export const getSafeArea = () => safeAreaManager.getSafeAreaSync();

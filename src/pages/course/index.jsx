@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Text, View, Image } from "@tarojs/components";
-import { AtButton, AtIcon, AtFab, AtAvatar, AtBadge ,AtCurtain} from "taro-ui";
 import SafeAreaView from "../../components/safeView";
 import "./index.scss";
 import Btn from "../../components/Btn";

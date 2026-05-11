@@ -1,6 +1,5 @@
 import { useLaunch } from "@tarojs/taro";
 import "./app.scss";
-import 'taro-ui/dist/style/index.scss';// 引入taro-ui样式
 import cacheManager from "./utils/cache";
 
 function App({ children }) {
