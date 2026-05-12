@@ -3,7 +3,7 @@
 import { hbutRequest } from "../../utils/request";
 import { getSortedClassTimes } from "../../utils/hbut/timeHelper";
 
-export async function getAllWeek(semester) {
+export async function getTimeTable(semester) {
 	const loginConfig = {
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
