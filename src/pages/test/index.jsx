@@ -5,7 +5,7 @@ import { login } from "../../utils/hbut/login";
 import { getCurrentWeek } from "../../service/hubt/CurrentWeek";
 import { getExtroInfo } from "../../service/hubt/ExtroInfo";
 import { getXhid } from "../../service/hubt/GetXhid";
-import { getSchedule } from "../../service/hubt/Schedule";
+import { getDaily_Schedule } from "../../service/hubt/Daily_Schedule";
 import { getAllWeek } from "../../service/hubt/GetAllWeek";
 
 export default function Index() {

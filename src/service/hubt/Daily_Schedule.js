@@ -1,24 +1,24 @@
 import { hbutRequest } from "../../utils/request";
 
-export async function getCurrentWeek() {
+export async function getDaily_Schedule(time) {
 	const loginConfig = {
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
 			Referer: "https://jwxt.hbut.edu.cn",
 			Origin: "https://jwxt.hbut.edu.cn",
 		},
-		dataType: "text",
 		withCredentials: true,
 	};
 
-	const response = await hbutRequest.post(
-		"/admin/api/getXlzc",
-		 loginConfig);
+	const response = await hbutRequest.get(
+		`/admin/getDayBz?rq=${time}`,
+        loginConfig);
+        console.log(response.data.ret)
 	if(response.data.ret === 0){
-		return response.data.data.xlzc;
+        console.log(response.data.data.bzList)
+		return response.data.data.bzList;
 	}
 	else{
-		return -1;
-		console.log(response.data);
+		return [];
 	}
 }
