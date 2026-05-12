@@ -11,7 +11,9 @@ export async function getCurrentWeek() {
 		withCredentials: true,
 	};
 
-	const response = await hbutRequest.post("/admin/api/getXlzc", loginConfig);
+	const response = await hbutRequest.post(
+		"/admin/api/getXlzc",
+		 loginConfig);
 	if(response.data.ret === 0){
 		return response.data.data.xlzc;
 	}

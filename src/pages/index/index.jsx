@@ -5,13 +5,13 @@ import HeadStatus from "../../components/headStatus";
 import IndexSwiper from "../../components/IndexSwiper";
 import GridContainer from "../../components/gridContainer";
 import { useLoad ,useLaunch, useDidShow, useDidHide} from "@tarojs/taro";
+import { getPersonal_Details } from "../../service/hubt/Personal_Details";
+
 
 export default function Index() {
-
-
   // 页面加载时执行
   useLoad(() => {
-    console.log("页面已加载");
+
   });
 
   // 页面显示时执行（每次切换到前台都会执行）

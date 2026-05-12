@@ -6,7 +6,7 @@ import { login } from "../../service/hubt/login";
 import { getCurrentWeek } from "../../service/hubt/CurrentWeek";
 import { getExtroInfo } from "../../service/hubt/ExtroInfo";
 import { getXhid } from "../../service/hubt/GetXhid";
-import { getSchedule } from "../../service/hubt/TodaySchedule";
+import { getDaily_Schedule } from "../../service/hubt/TodayDaily_Schedule";
 import { getAllWeek } from "../../service/hubt/GetAllWeek";
 import { fetchXHid } from "../../service/hubt/XHid";
 
