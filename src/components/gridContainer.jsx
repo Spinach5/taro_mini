@@ -12,8 +12,6 @@ import dailyIcon from "../assets/8个功能/日常用品.png";
 import mapIcon from "../assets/8个功能/世界地图.png";
 import secondHandIcon from "../assets/8个功能/书本.png";
 
-
-
 // 功能入口配置数据
 const gridItems = [
 	{ url: "", icon: studentIcon, text: "学生会" },
@@ -29,10 +27,10 @@ const gridItems = [
 export default function GridContainer({ className = "" }) {
 	return (
 		<View
-			className={`grid-container ${className}`}
+			className={`${className}`}
 			style={{
-				display: 'grid',
-    			gridTemplateColumns: 'repeat(4, 1fr)',
+				display: "grid",
+				gridTemplateColumns: "repeat(4, 1fr)",
 				gap: "10px",
 				padding: "15px",
 				background: "#fff",
@@ -45,6 +43,7 @@ export default function GridContainer({ className = "" }) {
 					url={item.url}
 					icon={item.icon}
 					text={item.text}
+					className=""
 				/>
 			))}
 		</View>
