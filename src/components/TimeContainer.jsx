@@ -35,7 +35,7 @@ export default function TimeContainer({ className = "" }) {
 					flexDirection: "column",
 					justifyContent: "flex-start",
 					alignItems: "stretch",
-					overflowY: "auto",
+					// overflowY: "auto",
 				}}
 			>
 				{/* 可显示加载占位符 */}
@@ -48,28 +48,22 @@ export default function TimeContainer({ className = "" }) {
 			className={`time-container ${className}`}
 			style={{
 				width: "12.5%", // 八分之一宽度
+				height: "100%", // 高度自适应
 				display: "flex",
 				flexDirection: "column",
 				justifyContent: "flex-start",
 				alignItems: "stretch",
-				overflowY: "auto", // 允许垂直滚动
+				// overflowY: "auto", // 允许垂直滚动
 			}}
 		>
 			{timeTable.map((item) => (
-				<View
+				<TimeSlot
 					key={item.jc}
-					style={{
-						height: "90px", // 每个 TimeSlot 高度固定
-						flexShrink: 0, // 防止压缩
-						margin: "10px", // 间距
-					}}
-				>
-					<TimeSlot
-						startTime={item.startTime}
-						endTime={item.endTime}
-						order={`${item.jc}`}
-					/>
-				</View>
+					startTime={item.startTime}
+					endTime={item.endTime}
+					order={`${item.jc}`}
+					style={{ height: "80px" }} // 可以在 TimeSlot 组件内接收 style 属性
+				/>
 			))}
 		</View>
 	);

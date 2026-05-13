@@ -9,6 +9,7 @@ import { getDailySchedule } from "../../service/hubt/DailySchedule";
 import { getAllWeek } from "../../service/hubt/GetAllWeek";
 import { getXhid } from "../../service/hubt/GetXhid";
 import { getCurrentSemester } from "../../service/hubt/CurrentSemester";
+import { getAllSchedule } from "../../service/hubt/AllSchedule";
 import { getExamInfo } from "../../service/hubt/ExamInfo";
 import { getScores } from "../../service/hubt/Scores";
 import { getTimeTable } from "../../service/hubt/GetTimeTable";
@@ -73,6 +74,15 @@ export default function Index() {
 				}
 			>
 				今日课表
+			</Button>
+			<Button
+				type="warning"
+				style={{ margin: "0px" }}
+				onClick={async () =>
+					console.log(await getAllSchedule("2025-2026-1"))
+				}
+			>
+				所有课表
 			</Button>
 			<Button
 				type="success"

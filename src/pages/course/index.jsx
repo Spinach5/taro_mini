@@ -1,32 +1,33 @@
-import { useState ,useEffect} from "react";
-import { Text, View, Image } from "@tarojs/components";
+// index.jsx
+import { useState, useEffect } from "react";
+import { View, ScrollView } from "@tarojs/components";
 import SafeAreaView from "../../components/safeView";
-import "./index.scss";
-import Btn from "../../components/Btn";
 import CourseHeader from "../../components/courseHeader";
 import WeekHeader from "../../components/courseWeek";
-import TimeContainer from "../../components/TimeContainer";
+import CourseTable from "../../components/courseTable";
 import { getCurrentWeek } from "../../service/hubt/CurrentWeek";
+import "./index.scss";
 
 export default function Index() {
-const [currentWeek, setCurrentWeek] = useState(null);
-useEffect(() => {
-	getCurrentWeek().then((week) => setCurrentWeek(week));
-}, []);
+  const [currentWeek, setCurrentWeek] = useState(null);
 
-const handleWeekChange = (week) => {
-	setCurrentWeek(week);
-};
+  useEffect(() => {
+    getCurrentWeek().then((week) => setCurrentWeek(week));
+  }, []);
 
-if (currentWeek === null) return <View>加载中...</View>;
-	return (
-		<SafeAreaView>
-			<CourseHeader
-				currentWeek={currentWeek}
-				onWeekChange={handleWeekChange}
-			/>
-			<WeekHeader currentWeek={currentWeek} />
-			<TimeContainer />
-		</SafeAreaView>
-	);
+  const handleWeekChange = (week) => {
+    setCurrentWeek(week);
+  };
+
+  if (currentWeek === null) return <View>加载中...</View>;
+
+  return (
+    <SafeAreaView>
+      <CourseHeader currentWeek={currentWeek} onWeekChange={handleWeekChange} />
+      <WeekHeader currentWeek={currentWeek} />
+      <View className="schedule-body">
+        <CourseTable currentWeek={currentWeek} />
+      </View>
+    </SafeAreaView>
+  );
 }

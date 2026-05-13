@@ -1,38 +1,35 @@
+// TimeSlot.jsx
 import { View } from "@tarojs/components";
-import "./TimeSlot.scss";
 
-/**
- * 课程时间段组件
- * @param {string} className - 外部传入的样式类名
- * @param {string} startTime - 开始时间
- * @param {string} endTime   - 结束时间
- * @param {string|number} order - 课程次序
- */
-export default function TimeSlot({
-	className = "",
-	startTime,
-	endTime,
-	order,
-}) {
-	return (
-		<View
-			className={`time-slot ${className}`}
-		>
-			<View
-				className="start-time"
-			>
-				{startTime}
-			</View>
-			<View
-				className="order"
-			>
-				{order}
-			</View>
-			<View
-				className="start-time"
-			>
-				{endTime}
-			</View>
-		</View>
-	);
+export default function TimeSlot({ startTime, endTime, order, style = {} }) {
+  return (
+    <View
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%", // 占满父容器高度
+        ...style,
+      }}
+    >
+      <View style={{ color: "#999", fontSize: "12px", lineHeight: 1.4 }}>
+        {startTime}
+      </View>
+      <View
+        style={{
+          color: "#000",
+          fontWeight: "bold",
+          fontSize: "16px",
+          margin: "4px 0",
+        }}
+      >
+        {order}
+      </View>
+      <View style={{ color: "#999", fontSize: "12px", lineHeight: 1.4 }}>
+        {endTime}
+      </View>
+    </View>
+  );
 }
