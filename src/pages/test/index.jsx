@@ -8,11 +8,44 @@ import { getExtroInfo } from "../../service/hubt/ExtroInfo";
 import { getDailySchedule } from "../../service/hubt/DailySchedule";
 import { getAllWeek } from "../../service/hubt/GetAllWeek";
 import { fetchXHid } from "../../service/hubt/XHid";
+import TimeSlot from "../../components/TimeSlot";
+import { getCurrentSemester } from "../../service/hubt/CurrentSemester";
+import { getExamInfo } from "../../service/hubt/ExamInfo";
+import { getScores } from "../../service/hubt/Scores";
+import print from "../../utils/hbut/getscore";
 import { getTimeTable } from "../../service/hubt/GetTimeTable";
 
 export default function Index() {
 	return (
 		<SafeAreaView className="">
+			<Button
+				type="info"
+				style={{ margin: "0px" }}
+				onClick={ () => print()}
+			>
+				登录
+			</Button>
+			<Button
+				type="info"
+				style={{ margin: "0px" }}
+				onClick={async () => console.log(await getScores())}
+			>
+				登录
+			</Button>
+			<Button
+				type="primary"
+				style={{ margin: "0px" }}
+				onClick={async () => console.log(await getExamInfo())}
+			>
+				登录
+			</Button>
+			<Button
+				type="primary"
+				style={{ margin: "0px" }}
+				onClick={async () => console.log(await getCurrentSemester())}
+			>
+				登录
+			</Button>
 			<Button
 				type="primary"
 				style={{ margin: "0px" }}

@@ -7,7 +7,6 @@ export async function getCurrentWeek() {
 			Referer: "https://jwxt.hbut.edu.cn",
 			Origin: "https://jwxt.hbut.edu.cn",
 		},
-		dataType: "text",
 		withCredentials: true,
 	};
 
