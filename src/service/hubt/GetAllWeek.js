@@ -15,10 +15,10 @@ export async function getAllWeek() {
 		loginConfig,
 	);
 	if(response.data.ret === 0){
-		return response.data.data.length-1;
+		return response.data.data;
 	}
 	else{
 		console.log("获取排课周次失败,尝试重新登录");
-		return 0;
+		return [0];
 	}
 }

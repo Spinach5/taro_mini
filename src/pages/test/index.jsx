@@ -5,7 +5,6 @@ import { Button } from "@tarojs/components";
 import { login } from "../../service/hubt/login";
 import { getCurrentWeek } from "../../service/hubt/CurrentWeek";
 import { getExtroInfo } from "../../service/hubt/ExtroInfo";
-import { getXhid } from "../../service/hubt/GetXhid";
 import { getDailySchedule } from "../../service/hubt/DailySchedule";
 import { getAllWeek } from "../../service/hubt/GetAllWeek";
 import { fetchXHid } from "../../service/hubt/XHid";
@@ -14,6 +13,8 @@ import { getCurrentSemester } from "../../service/hubt/CurrentSemester";
 import { getExamInfo } from "../../service/hubt/ExamInfo";
 import { getScores } from "../../service/hubt/Scores";
 import print from "../../utils/hbut/getscore";
+import { getTimeTable } from "../../service/hubt/GetTimeTable";
+
 export default function Index() {
 	return (
 		<SafeAreaView className="">
@@ -107,7 +108,15 @@ export default function Index() {
 			>
 				测试get缓存
 			</Button>
-			<TimeSlot startTime="08:00" endTime="08:45" order="1" />
+			<Button
+				type="success"
+				style={{ margin: "0px" }}
+				onClick={async () => {
+					console.log(await getTimeTable("2025-2026-1"));
+				}}
+			>
+				测试获取每天课程时间
+			</Button>
 		</SafeAreaView>
 	);
 }
