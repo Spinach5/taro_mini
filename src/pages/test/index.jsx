@@ -21,6 +21,13 @@ export default function Index() {
 			<Button
 				type="info"
 				style={{ margin: "0px" }}
+				onClick={ async () => console.log(await getTimeTable("2025-2026-2"))}
+			>
+				登录
+			</Button>
+			<Button
+				type="info"
+				style={{ margin: "0px" }}
 				onClick={ () => print()}
 			>
 				登录
