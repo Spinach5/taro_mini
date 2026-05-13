@@ -29,7 +29,7 @@ export default function TimeSlot({
 				{order}
 			</View>
 			<View
-				className="end-time"
+				className="start-time"
 			>
 				{endTime}
 			</View>

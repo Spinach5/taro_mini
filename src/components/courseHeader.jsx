@@ -1,51 +1,34 @@
+// components/CourseHeader.jsx
 import { View, Image, Text, ScrollView } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import Btn from "./Btn";
-import { getCurrentWeek } from "../service/hubt/CurrentWeek";
 import { getAllWeek } from "../service/hubt/GetAllWeek";
 import more from "../assets/more.svg";
 import down from "../assets/down.svg";
-import { useDidHide } from "@tarojs/taro";
 
-export default function CourseHeader({ className = "", onWeekChange }) {
-	const [currentWeek, setCurrentWeek] = useState(null);
+export default function CourseHeader({
+	currentWeek,
+	onWeekChange,
+	className = "",
+}) {
 	const [weekList, setWeekList] = useState([]);
 	const [showPicker, setShowPicker] = useState(false);
-	const [selectedWeek, setSelectedWeek] = useState(null);
 
 	useEffect(() => {
-		// 获取当前周数（可能也是从0开始）
-		getCurrentWeek().then((week) => {
-			setCurrentWeek(week);
-			setSelectedWeek(week);
-		});
-		// 获取所有周数列表（数组，例如 [0,1,2,3,4]）
-		getAllWeek().then((list) => {
-			setWeekList(list || []);
-		});
+		getAllWeek().then((list) => setWeekList(list || []));
 	}, []);
-	useDidHide(() => {// 页面隐藏时，重新获取当前周数
-		getCurrentWeek().then((week) => {
-			setCurrentWeek(week);
-			setSelectedWeek(week);
-		});
-	});
 
 	const handleSelectWeek = (week) => {
-		setSelectedWeek(week);
-		setCurrentWeek(week);
 		setShowPicker(false);
 		onWeekChange?.(week);
 	};
 
-	const closePicker = () => {
-		setShowPicker(false);
-	};
+	const closePicker = () => setShowPicker(false);
 
 	return (
 		<>
 			<View
-				className={`${className}`}
+				className={className}
 				style={{
 					padding: "4px",
 					marginBottom: "16px",
@@ -59,7 +42,7 @@ export default function CourseHeader({ className = "", onWeekChange }) {
 					<Image src={more} />
 				</Btn>
 				<Btn onClick={() => setShowPicker(true)}>
-					<Text>第{currentWeek !== null ? currentWeek : "?"}周</Text>
+					<Text>第{currentWeek ?? "?"}周</Text>
 					<Image src={down} />
 				</Btn>
 			</View>
@@ -122,8 +105,7 @@ export default function CourseHeader({ className = "", onWeekChange }) {
 									}}
 								>
 									{weekList.map((week) => {
-										const isSelected =
-											selectedWeek === week;
+										const isSelected = currentWeek === week;
 										return (
 											<View
 												key={week}
