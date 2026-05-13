@@ -78,6 +78,7 @@ const print = () => {
     gpa,
     avgScore,
     gpaRank,
+    avgRank
   });
 };
 

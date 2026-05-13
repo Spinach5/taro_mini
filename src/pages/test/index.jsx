@@ -13,10 +13,40 @@ import { getAllSchedule } from "../../service/hubt/AllSchedule";
 import { getExamInfo } from "../../service/hubt/ExamInfo";
 import { getScores } from "../../service/hubt/Scores";
 import { getTimeTable } from "../../service/hubt/GetTimeTable";
+import { getAllSchedule } from "../../service/hubt/AllSchedule";
+import { getStuInfo } from "../../service/hubt/StuInfo";
 
 export default function Index() {
 	return (
 		<SafeAreaView className="">
+			<Button
+				type="info"
+				style={{ margin: "0px" }}
+				onClick={ async () => console.log(await getStuInfo())}
+			>
+				获取学生信息
+			</Button>
+				<Button
+				type="info"
+				style={{ margin: "0px" }}
+				onClick={ async () => console.log(await getAllSchedule())}
+			>
+				获取课表
+			</Button>
+			<Button
+				type="info"
+				style={{ margin: "0px" }}
+				onClick={ async () => console.log(await getTimeTable())}
+			>
+				获取课表时间
+			</Button>
+			<Button
+				type="info"
+				style={{ margin: "0px" }}
+				onClick={ () => print()}
+			>
+				打印个人信息
+			</Button>
 			<Button
 				type="info"
 				style={{ margin: "0px" }}
@@ -57,7 +87,7 @@ export default function Index() {
 				style={{ margin: "0px" }}
 				onClick={async () => console.log(await getExtroInfo())}
 			>
-				所有考试信息
+				实习信息
 			</Button>
 			<Button
 				type="danger"
