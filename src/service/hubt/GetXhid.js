@@ -32,7 +32,7 @@ export async function getXhid() {
 		console.log("[getXhid] 登录失效，请重新登录");
 		throw new Error("获取 xhid 失败：登录失效，请重新登录");
 	}
-	if (response.data.data.ret !== 0) {
+	if (response.data.ret !== 0) {
 		console.log("[getCurrentWeek] 接口返回异常:", response.data);
 		throw new Error("获取课表失败：接口返回 ret 不为 0");
 	}
