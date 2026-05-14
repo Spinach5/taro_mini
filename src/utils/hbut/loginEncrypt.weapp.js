@@ -1,7 +1,7 @@
 // loginEncrypt.weapp.js - 微信小程序专用
 
 /**
- * 小程序端加密函数
+ * 微信小程序端加密函数
  */
 import JSEncrypt from 'wx-jsencrypt';
 

@@ -1,0 +1,50 @@
+.week-header {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: 12.5% repeat(7, 1fr);
+  background-color: transparent;
+}
+
+.month-box,
+.week-day-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  box-sizing: border-box;
+}
+
+.month-number,
+.month-unit {
+  font-size: 35px;
+  font-weight: bold;
+  color: #000;
+  line-height: 1.2;
+}
+
+.day-number {
+  font-size: 30px;
+  font-weight: normal;
+  color: #000;
+}
+
+.day-week {
+  font-size: 30px;
+  font-weight: bold;
+  color: #000;
+}
+
+.week-day-box.today {
+  background-color: #fff;
+  border-radius: 8px;
+  .day-number,
+  .day-week {
+    color: #007aff;
+    font-weight: bold;
+  }
+}

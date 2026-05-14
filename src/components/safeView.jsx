@@ -1,31 +1,29 @@
 import { View } from "@tarojs/components";
-import { getSafeArea } from "../utils/safeArea";
+import { getSafeArea } from "../service/safeArea";
 
-export default function SaveAreaView({
-    children,
-    className = ''
-}) {
-    const isH5 = process.env.TARO_ENV === 'h5'
-    const { top: cachedTop, bottom: cachedBottom } = getSafeArea();
-    console.log('读取到安全距离:', { cachedTop, cachedBottom });
-    const paddingtop = cachedTop
-    return (
-        <View
-            className={className}
-            style={{
-                height: isH5 ? 'calc(100dvh -55px)' : '100%',
-                // paddingTop: 'env(safe-area-inset-top)',
-                paddingTop: `${paddingtop}px`,
-                paddingLeft: "8px",
-                paddingRight: "8px",
-                // paddingBottom: 'calc(env(safe-area-inset-bottom) + var(--tab-bar-height, 0px))',
-                background: `linear-gradient(to bottom, rgba(71,165,253,1.00) 0%, rgba(255,255,255,0) 40%)`,
-                // 低版本兼容
-                boxSizing: 'border-box',
-
-            }}
-        >
-            {children}
-        </View>
-    )
+export default function SaveAreaView({ children, className = "" }) {
+	const safeArea = (() => {
+		const { top, bottom } = getSafeArea();
+		console.log("全局安全距离获取一次:", { top, bottom });
+		return { top, bottom };
+	})();
+	return (
+		<View
+			className={className}
+			style={{
+				height: "100vh",
+				overflow: "hidden", // 防止页面本身滚动
+				display: "flex",
+				flexDirection: "column",
+				paddingTop: `${safeArea.top}px`,
+				paddingBottom: `${safeArea.bottom}px`,
+				paddingLeft: "8px",
+				paddingRight: "8px",
+				background: `linear-gradient(to bottom, rgba(71,165,253) 0%, rgba(255,255,255) 40%)`,
+				boxSizing: "border-box",
+			}}
+		>
+			{children}
+		</View>
+	);
 }
