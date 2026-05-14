@@ -4,11 +4,11 @@ import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { getXhid } from './GetXhid';  // 需要获取 xhid
 
-const SCORES_CACHE_KEY = "ScoresData";  // 定义缓存key
+const CACHE_KEY = "ScoresData";  // 定义缓存key
 
 export async function getScores() {
   // 1. 优先从缓存获取
-  const cached = cacheManager.get(SCORES_CACHE_KEY);
+  const cached = cacheManager.get(CACHE_KEY);
   if (cached) {
     console.log("[getScores] 从缓存获取成绩数据");
     return cached;
@@ -29,7 +29,7 @@ export async function getScores() {
 
     // 注意：原 URL 中还有 fasz=1 参数，一并加上
     const response = await hbutRequest.get(
-      `/admin/xsd/xskp/xyqk?fasz=1&xhid=${xhid}`,
+      `/admin/xsd/xskp/xyqk?xhid=${xhid}`,
       loginConfig
     );
 
@@ -67,7 +67,7 @@ export async function getScores() {
     }
 
     // 3. 存入缓存（永不过期）
-    cacheManager.set(SCORES_CACHE_KEY, scoresData);
+    cacheManager.set(CACHE_KEY, scoresData);
     console.log("[getScores] 已缓存成绩数据");
 
     return scoresData;

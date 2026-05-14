@@ -2,11 +2,11 @@
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 
-const EXTRO_INFO_CACHE_KEY = "ExtroInfoData";  // 定义缓存key
+const CACHE_KEY = "ExtroInfoData";  // 定义缓存key
 
 export async function getExtroInfo() {
   // 1. 优先从缓存获取
-  const cached = cacheManager.get(EXTRO_INFO_CACHE_KEY);
+  const cached = cacheManager.get(CACHE_KEY);
   if (cached) {
     console.log("[getExtroInfo] 从缓存获取实践信息");
     return cached;
@@ -65,7 +65,7 @@ const response = await hbutRequest.post(
     }
 
     // 3. 存入缓存（永不过期）
-    cacheManager.set(EXTRO_INFO_CACHE_KEY, sjkData);
+    cacheManager.set(CACHE_KEY, sjkData);
     console.log("[getExtroInfo] 已缓存实践信息");
 
     return sjkData;

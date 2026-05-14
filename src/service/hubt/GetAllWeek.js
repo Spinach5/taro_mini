@@ -2,11 +2,11 @@
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 
-const ALL_WEEK_CACHE_KEY = "AllWeekData";  // 定义缓存key
+const CACHE_KEY = "AllWeekData";  // 定义缓存key
 
 export async function getAllWeek() {
   // 1. 优先从缓存获取
-  const cached = cacheManager.get(ALL_WEEK_CACHE_KEY);
+  const cached = cacheManager.get(CACHE_KEY);
   if (cached) {
     console.log("[getAllWeek] 从缓存获取排课周次");
     return cached;
@@ -54,7 +54,7 @@ export async function getAllWeek() {
     }
 
     // 3. 存入缓存（永不过期）
-    cacheManager.set(ALL_WEEK_CACHE_KEY, weekData);
+    cacheManager.set(CACHE_KEY, weekData);
     console.log("[getAllWeek] 已缓存排课周次");
 
     return weekData;
