@@ -1,5 +1,6 @@
 import { hbutRequest } from "../../utils/request";
 import { getXhid } from "./GetXhid";
+
 export async function getStuInfo() {
 	const loginConfig = {
 		headers: {

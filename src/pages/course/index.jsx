@@ -9,25 +9,26 @@ import { getCurrentWeek } from "../../service/hubt/CurrentWeek";
 import "./index.scss";
 
 export default function Index() {
-  const [currentWeek, setCurrentWeek] = useState(null);
+	const [currentWeek, setCurrentWeek] = useState(null);
 
-  useEffect(() => {
-    getCurrentWeek().then((week) => setCurrentWeek(week));
-  }, []);
+	useEffect(() => {
+		getCurrentWeek().then((week) => setCurrentWeek(week));
+	}, []);
 
-  const handleWeekChange = (week) => {
-    setCurrentWeek(week);
-  };
+	const handleWeekChange = (week) => {
+		setCurrentWeek(week);
+	};
 
-  if (currentWeek === null) return <View>加载中...</View>;
+	if (currentWeek === null) return <View>加载中...</View>;
 
-  return (
-    <SafeAreaView>
-      <CourseHeader currentWeek={currentWeek} onWeekChange={handleWeekChange} />
-      <WeekHeader currentWeek={currentWeek} />
-      <View className="schedule-body">
-        <CourseTable currentWeek={currentWeek} />
-      </View>
-    </SafeAreaView>
-  );
+	return (
+		<SafeAreaView>
+			<CourseHeader
+				currentWeek={currentWeek}
+				onWeekChange={handleWeekChange}
+			/>
+			<WeekHeader currentWeek={currentWeek} />
+			<CourseTable currentWeek={currentWeek} />
+		</SafeAreaView>
+	);
 }

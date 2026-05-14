@@ -2,7 +2,7 @@
 // https://hbut.jw.chaoxing.com/admin/xsd/xskp/xyqk?fasz=1&xhid=...
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
-import { getXhid } from './getXhid';  // 需要获取 xhid
+import { getXhid } from './GetXhid';  // 需要获取 xhid
 
 const SCORES_CACHE_KEY = "ScoresData";  // 定义缓存key
 
@@ -26,7 +26,7 @@ export async function getScores() {
   try {
     // 获取 xhid（参考 URL 中的 xhid 参数）
     const xhid = await getXhid();
-    
+
     // 注意：原 URL 中还有 fasz=1 参数，一并加上
     const response = await hbutRequest.get(
       `/admin/xsd/xskp/xyqk?fasz=1&xhid=${xhid}`,
