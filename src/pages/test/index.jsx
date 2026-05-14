@@ -14,7 +14,8 @@ import { getExamInfo } from "../../service/hubt/ExamInfo";
 import { getScores } from "../../service/hubt/Scores";
 import { getTimeTable } from "../../service/hubt/GetTimeTable";
 import { getStuInfo } from "../../service/hubt/StuInfo";
-import  printf  from "../../utils/hbut/getscore";
+import { cleanH5Cookies } from "../../utils/hbut/cleanH5Cookies";
+import printf from "../../utils/hbut/getscore";
 
 export default function Index() {
 	return (
@@ -147,6 +148,15 @@ export default function Index() {
 				}}
 			>
 				测试获取每天课程时间
+			</Button>
+			<Button
+				type="success"
+				style={{ margin: "0px" }}
+				onClick={async () => {
+					await cleanH5Cookies();
+				}}
+			>
+				清除H5cookies
 			</Button>
 		</SafeAreaView>
 	);

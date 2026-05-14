@@ -14,7 +14,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 			828: 1.81 / 2,
 		},
 		sourceRoot: "src",
-		outputRoot: "dist",
+		 outputRoot: `dist/${process.env.TARO_ENV}`,
 		plugins: ["@tarojs/plugin-generator"],
 		defineConstants: {},
 		copy: {
