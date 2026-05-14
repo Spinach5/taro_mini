@@ -14,6 +14,7 @@ import { getExamInfo } from "../../service/hubt/ExamInfo";
 import { getScores } from "../../service/hubt/Scores";
 import { getTimeTable } from "../../service/hubt/GetTimeTable";
 import { getStuInfo } from "../../service/hubt/StuInfo";
+import  printf  from "../../utils/hbut/getscore";
 
 export default function Index() {
 	return (
@@ -38,6 +39,13 @@ export default function Index() {
 				onClick={async () => console.log(await getTimeTable())}
 			>
 				获取课表时间
+			</Button>
+			<Button
+				type="info"
+				style={{ margin: "0px" }}
+				onClick={ () => printf()}
+			>
+				打印个人信息
 			</Button>
 			<Button
 				type="info"
