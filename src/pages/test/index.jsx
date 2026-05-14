@@ -43,7 +43,7 @@ export default function Index() {
 			<Button
 				type="info"
 				style={{ margin: "0px" }}
-				onClick={ () => printf()}
+				onClick={() => printf()}
 			>
 				打印个人信息
 			</Button>

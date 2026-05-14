@@ -15,7 +15,6 @@ export default function CourseGrid({ gridCourses }) {
 						gridColumn: course.col + 2,
 						gridRow: `${course.row + 1} / span ${course.rowSpan}`,
 						backgroundColor: getBgFromColor(course.color),
-						// margin: "5px",
 						padding: "10px",
 						borderRadius: "8px",
 						display: "flex",
@@ -33,7 +32,7 @@ export default function CourseGrid({ gridCourses }) {
 						className="course-name"
 						style={{
 							fontWeight: "bold",
-							fontSize: "14px",
+							fontSize: "12px",
 							lineHeight: 1.4,
 							color: course.color,
 							display: "-webkit-box",
@@ -42,6 +41,7 @@ export default function CourseGrid({ gridCourses }) {
 							overflow: "hidden",
 							textOverflow: "ellipsis",
 							wordBreak: "break-word",
+							marginBottom: "auto"
 						}}
 					>
 						{course.name}
@@ -51,7 +51,7 @@ export default function CourseGrid({ gridCourses }) {
 						style={{
 							fontSize: "12px",
 							color: course.color,
-							marginTop: "4px",
+							marginTop: "auto",
 							display: "-webkit-box",
 							WebkitBoxOrient: "vertical",
 							WebkitLineClamp: 2,
