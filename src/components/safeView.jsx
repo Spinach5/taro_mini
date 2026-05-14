@@ -11,7 +11,10 @@ export default function SaveAreaView({ children, className = "" }) {
 		<View
 			className={className}
 			style={{
-				height: "100%",
+				height: "100vh",
+				overflow: "hidden", // 防止页面本身滚动
+				display: "flex",
+				flexDirection: "column",
 				paddingTop: `${safeArea.top}px`,
 				paddingBottom: `${safeArea.bottom}px`,
 				paddingLeft: "8px",

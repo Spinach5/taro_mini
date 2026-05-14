@@ -1,0 +1,21 @@
+.course-table {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: visible;
+  height: 100%;
+}
+
+.grid-container {
+  min-width: 100%;
+}
+
+.course-card {
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.course-table-loading {
+  flex: 1;
+  text-align: center;
+  padding-top: 20px;
+}
