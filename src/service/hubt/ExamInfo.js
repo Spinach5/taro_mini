@@ -3,11 +3,11 @@
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 
-const EXAM_INFO_CACHE_KEY = "ExamInfoData";  // 定义缓存key
+const CACHE_KEY = "ExamInfoData";  // 定义缓存key
 
 export async function getExamInfo() {
   // 1. 优先从缓存获取
-  const cached = cacheManager.get(EXAM_INFO_CACHE_KEY);
+  const cached = cacheManager.get(CACHE_KEY);
   if (cached) {
     console.log("[getExamInfo] 从缓存获取考试信息");
     return cached;
@@ -55,7 +55,7 @@ export async function getExamInfo() {
     }
 
     // 3. 存入缓存（永不过期）
-    cacheManager.set(EXAM_INFO_CACHE_KEY, examResults);
+    cacheManager.set(CACHE_KEY, examResults);
     console.log("[getExamInfo] 已缓存考试信息");
 
     return examResults;

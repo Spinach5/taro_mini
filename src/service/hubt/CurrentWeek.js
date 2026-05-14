@@ -2,11 +2,11 @@
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 
-const CurrentWeek_CACHE_KEY = "CurrentWeekData";  // 定义缓存key
+const CACHE_KEY = "CurrentWeek ";  // 定义缓存key
 
 export async function getCurrentWeek() {
-  // 1. 优先从缓存获取（和 getCurrentSemester 一致）
-  const cached = cacheManager.get(CurrentWeek_CACHE_KEY);
+  // 1. 优先从缓存获取
+  const cached = cacheManager.get(CACHE_KEY);
   if (cached) {
     console.log("[getCurrentWeek] 从缓存获取当前周数");
     return cached;
@@ -54,7 +54,7 @@ export async function getCurrentWeek() {
     }
 
     // 3. 存入缓存（永不过期，和 getCurrentSemester 一致）
-    cacheManager.set(CurrentWeek_CACHE_KEY, currentWeek);
+    cacheManager.set(CACHE_KEY, currentWeek);
     console.log("[getCurrentWeek] 已缓存当前周数:", currentWeek);
 
     return currentWeek;

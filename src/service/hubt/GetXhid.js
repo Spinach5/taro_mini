@@ -2,11 +2,11 @@
 import cacheManager from "../../utils/cache";
 import { hbutRequest } from "../../utils/request";
 
-const XHID_CACHE_KEY = "xhid";
+const CACHE_KEY = "xhid";
 
 export async function getXhid() {
 	// 1. 优先从缓存获取
-	const cached = cacheManager.get(XHID_CACHE_KEY);
+	const cached = cacheManager.get(CACHE_KEY);
 	if (cached) {
 		return cached;
 	}
@@ -32,7 +32,7 @@ export async function getXhid() {
 		console.log("[getXhid] 登录失效，请重新登录");
 		throw new Error("获取 xhid 失败：登录失效，请重新登录");
 	}
-	if (response.data?.ret !== 0) {
+	if (response.data.data.ret !== 0) {
 		console.log("[getCurrentWeek] 接口返回异常:", response.data);
 		throw new Error("获取课表失败：接口返回 ret 不为 0");
 	}
@@ -43,7 +43,7 @@ export async function getXhid() {
 	}
 
 	// 3. 存入缓存（永不过期）
-	cacheManager.set(XHID_CACHE_KEY, xhid);
+	cacheManager.set(CACHE_KEY, xhid);
 	console.log("[getXhid] 已缓存 xhid:", xhid);
 
 	return xhid;
