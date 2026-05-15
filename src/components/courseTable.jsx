@@ -12,33 +12,6 @@ export default function CourseTable({ currentWeek, onSwipeWeek }) {
 	const [timeTable, setTimeTable] = useState([]);
 	const [gridCourses, setGridCourses] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [touchStartX, setTouchStartX] = useState(0);
-	const [touchStartY, setTouchStartY] = useState(0);
-	const SWIPE_THRESHOLD = 50; // 滑动阈值（px）
-
-	const handleTouchStart = (e) => {
-		const touch = e.touches[0];
-		setTouchStartX(touch.clientX);
-		setTouchStartY(touch.clientY);
-	};
-	const handleTouchEnd = (e) => {
-		const touch = e.changedTouches[0];
-		const deltaX = touch.clientX - touchStartX;
-		const deltaY = touch.clientY - touchStartY;
-		// 水平滑动为主且超过阈值
-		if (
-			Math.abs(deltaX) > SWIPE_THRESHOLD &&
-			Math.abs(deltaX) > Math.abs(deltaY)
-		) {
-			if (deltaX < 0) {
-				// 左滑 → 下一周
-				onSwipeWeek && onSwipeWeek("next");
-			} else {
-				// 右滑 → 上一周
-				onSwipeWeek && onSwipeWeek("prev");
-			}
-		}
-	};
 
 	useEffect(() => {
 		Promise.all([
@@ -111,9 +84,6 @@ export default function CourseTable({ currentWeek, onSwipeWeek }) {
 	return (
 		<View
 			className="course-table"
-			onTouchStart={handleTouchStart}
-			onTouchEnd={handleTouchEnd}
-			// 可选：阻止滚动穿透（根据需要）
 			catchMove
 		>
 			<View className="grid-container">

@@ -10,3 +10,7 @@
   width: 0;
   height: 0;
 }
+.swiper-container {
+  flex: 1;
+  width: 100%;
+}
