@@ -4,28 +4,41 @@ import { getAllSchedule } from "../service/hubt/AllSchedule";
 import { getTimeTable } from "../service/hubt/GetTimeTable";
 import TimeColumn from "./courseTImeColumn.jsx";
 import CourseGrid from "./courseGrid";
+import { getColorFromName } from "../utils/getHashCode.js";
 import "./courseTable.css";
 
-// 工具函数：字符串哈希
-function getHashCode(str) {
-	let hash = 0;
-	for (let i = 0; i < str.length; i++) {
-		hash = (hash << 5) - hash + str.charCodeAt(i);
-		hash |= 0;
-	}
-	return Math.abs(hash);
-}
-
-function getColorFromName(courseName) {
-	const hue = getHashCode(courseName) % 360;
-	return `hsl(${hue}, 70%, 55%)`;
-}
-
-export default function CourseTable({ currentWeek }) {
+export default function CourseTable({ currentWeek, onSwipeWeek }) {
 	const [courses, setCourses] = useState([]);
 	const [timeTable, setTimeTable] = useState([]);
 	const [gridCourses, setGridCourses] = useState([]);
 	const [loading, setLoading] = useState(true);
+	const [touchStartX, setTouchStartX] = useState(0);
+	const [touchStartY, setTouchStartY] = useState(0);
+	const SWIPE_THRESHOLD = 50; // 滑动阈值（px）
+
+	const handleTouchStart = (e) => {
+		const touch = e.touches[0];
+		setTouchStartX(touch.clientX);
+		setTouchStartY(touch.clientY);
+	};
+	const handleTouchEnd = (e) => {
+		const touch = e.changedTouches[0];
+		const deltaX = touch.clientX - touchStartX;
+		const deltaY = touch.clientY - touchStartY;
+		// 水平滑动为主且超过阈值
+		if (
+			Math.abs(deltaX) > SWIPE_THRESHOLD &&
+			Math.abs(deltaX) > Math.abs(deltaY)
+		) {
+			if (deltaX < 0) {
+				// 左滑 → 下一周
+				onSwipeWeek && onSwipeWeek("next");
+			} else {
+				// 右滑 → 上一周
+				onSwipeWeek && onSwipeWeek("prev");
+			}
+		}
+	};
 
 	useEffect(() => {
 		Promise.all([
@@ -78,7 +91,7 @@ export default function CourseTable({ currentWeek }) {
 					color: getColorFromName(course.kcmc),
 					kcxz: course.kcxz || "未知",
 					xf: course.xf || "未知",
-					jxbzc:course.jxbzc || "未知",
+					jxbzc: course.jxbzc || "未知",
 					weeks: course.zcstr ? course.zcstr.join(",") : "未知",
 					periods: course.djc.join(","),
 					weekDay: course.xingqi,
@@ -96,7 +109,13 @@ export default function CourseTable({ currentWeek }) {
 	}
 
 	return (
-		<View className="course-table">
+		<View
+			className="course-table"
+			onTouchStart={handleTouchStart}
+			onTouchEnd={handleTouchEnd}
+			// 可选：阻止滚动穿透（根据需要）
+			catchMove
+		>
 			<View className="grid-container">
 				<TimeColumn timeTable={timeTable} />
 				<CourseGrid gridCourses={gridCourses} />

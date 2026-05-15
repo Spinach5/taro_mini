@@ -1,27 +1,7 @@
-import { View, Text, ScrollView} from "@tarojs/components";
+import { View, Text, ScrollView } from "@tarojs/components";
 import "./courseGrid.css";
 import { useState } from "react";
-/**
- * 课表卡片背景,将颜色变淡（提高亮度、降低饱和度）
- * @param {string} color - 格式如 "hsl(120, 70%, 55%)"
- * @returns {string} 变淡后的颜色，格式 "hsl(hue, 30%, 85%)" 或带透明度
- */
-function getBgFromColor(color) {
-	// 匹配 hsl(数字, 数字%, 数字%)
-	const match = color.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
-	if (!match) return "rgba(200,200,200,0.2)"; // 降级
-
-	const hue = parseInt(match[1]);
-	// 原饱和度一般为70%，变淡后降到 30% 左右
-	const sat = 90;
-	// 原亮度一般为55%，变淡后提高到 85% 左右
-	const light = 85;
-
-	// 如果需要半透明背景，可以在后面加上 alpha，例如：
-	// return `hsla(${hue}, ${sat}%, ${light}%, 0.8)`;
-	// 如果不需透明，直接返回 hsl
-	return `hsl(${hue}, ${sat}%, ${light}%)`;
-}
+import { getBgFromColor } from "../utils/getHashCode";
 
 export default function CourseGrid({ gridCourses }) {
 	const [modalVisible, setModalVisible] = useState(false);
@@ -69,21 +49,8 @@ export default function CourseGrid({ gridCourses }) {
 			))}
 			{/* 弹窗 */}
 			{modalVisible && currentCourse && (
-				<View
-					style={{
-						position: "fixed",
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-						backgroundColor: "rgba(0,0,0,0.5)",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						zIndex: 1000,
-					}}
-					onClick={closeModal}
-				>
+				<View className="course-info" onClick={closeModal}>
+					{/* 窗口 */}
 					<View
 						style={{
 							width: "80%",
@@ -91,7 +58,7 @@ export default function CourseGrid({ gridCourses }) {
 							backgroundColor: "#fff",
 							borderRadius: "16px",
 							overflow: "hidden",
-							padding:"10px"
+							padding: "10px",
 						}}
 						onClick={(e) => e.stopPropagation()}
 					>
@@ -168,11 +135,38 @@ export default function CourseGrid({ gridCourses }) {
 	);
 }
 function DetailRow({ label, value }) {
-  const displayValue = value && value !== 'undefined' ? value : '未知';
-  return (
-    <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
-      <Text style={{ fontWeight: "bold", fontSize: "16px", color: "#333", flexShrink: 0 }}>{label}：</Text>
-      <Text style={{ fontSize: "16px", color: "#555", flex: 1, textAlign: "left", wordBreak: "break-word", whiteSpace: "normal",}}>{displayValue}</Text>
-    </View>
-  );
+	const displayValue = value && value !== "undefined" ? value : "未知";
+	return (
+		<View
+			style={{
+				display: "flex",
+				flexDirection: "row",
+				justifyContent: "space-between",
+				alignItems: "flex-start",
+			}}
+		>
+			<Text
+				style={{
+					fontWeight: "bold",
+					fontSize: "16px",
+					color: "#333",
+					flexShrink: 0,
+				}}
+			>
+				{label}：
+			</Text>
+			<Text
+				style={{
+					fontSize: "16px",
+					color: "#555",
+					flex: 1,
+					textAlign: "left",
+					wordBreak: "break-word",
+					whiteSpace: "normal",
+				}}
+			>
+				{displayValue}
+			</Text>
+		</View>
+	);
 }

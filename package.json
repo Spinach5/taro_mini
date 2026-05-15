@@ -1,6 +1,7 @@
 {
   "name": "taro_mini",
   "version": "1.0.0",
+  "license": "MIT",
   "private": true,
   "description": "taor跨平台开发",
   "templateInfo": {
