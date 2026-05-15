@@ -10,6 +10,7 @@ export default function TimeColumn({ timeTable }) {
           style={{
             gridColumn: 1,
             gridRow: idx + 1,
+			height: "130px",
           }}
         >
           <TimeSlot

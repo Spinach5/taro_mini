@@ -1,50 +1,58 @@
+.course-grid-container {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+  grid-auto-rows: 130px;
+}
+
+/* 以下保持你原有的 .course-card 等样式不变 */
 .course-card {
-	padding: 10px;
-	border-radius: 20px;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	height: 98%;
-	width: 92%;
-	margin: auto;
-	z-index: 2;
-	cursor: pointer;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 98%;
+  width: 92%;
+  margin: auto;
+  z-index: 2;
+  cursor: pointer;
 }
 
 .course-name {
-	font-weight: bold;
-	font-size: 23px;
-	line-height: 1.4;
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 3;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	word-break: break-word;
-	margin-bottom: auto;
+  font-weight: bold;
+  font-size: 23px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+  margin-bottom: auto;
 }
 
 .course-room {
-	font-size: 23px;
-	margin-top: auto;
-	display: -webkit-box;
-	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 2;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	word-break: break-word;
+  font-size: 23px;
+  margin-top: auto;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
+
 .course-info {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(0, 0, 0, 0.5);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 1000;
-	color: white;
-	font-size: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  color: white;
+  font-size: 20px;
 }
