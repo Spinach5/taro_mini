@@ -5,7 +5,6 @@
   grid-auto-rows: 130px;
 }
 
-/* 以下保持你原有的 .course-card 等样式不变 */
 .course-card {
   border-radius: 20px;
   display: flex;
@@ -13,9 +12,10 @@
   overflow: hidden;
   height: 98%;
   width: 92%;
-  margin: auto;
   z-index: 2;
   cursor: pointer;
+  box-sizing: border-box;  /* 新增，使 padding 不撑大元素 */
+  padding: 15px;
 }
 
 .course-name {
@@ -29,6 +29,7 @@
   text-overflow: ellipsis;
   word-break: break-word;
   margin-bottom: auto;
+  margin-top: 10px;
 }
 
 .course-room {
