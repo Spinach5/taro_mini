@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { View, Text, Input, Button, Picker, Image } from "@tarojs/components";
 import "./index.css";
+<<<<<<< HEAD:src/modules/pages/login/index.jsx
 import HeadStatus from "../../../components/headStatus";
 import SafeAreaView from "../../../components/safeView";
 import img from "../../../assets/微信.png";
 import Taro from "@tarojs/taro";
 import { checkStuID } from "../../../utils/checkStuID";
+=======
+import HeadStatus from "../../components/headStatus";
+import SafeAreaView from "../../components/safeView";
+import img from "../../assets/微信.png";
+import { login } from "../../service/hubt/login";
+import Taro from "@tarojs/taro";
+import { getAllSchedule } from "../../service/hubt/AllSchedule";
+>>>>>>> c036b02c63b262eb990eead676c62ee4fe4b2437:src/pages/login/index.jsx
 
 export default function Index() {
 	const [university, setUniversity] = useState("湖北工业大学");
@@ -19,6 +28,7 @@ export default function Index() {
 	const universityList = ["湖北工业大学", "其他大学"];
 
 	const handleLogin = () => {
+<<<<<<< HEAD:src/modules/pages/login/index.jsx
 		// 学号验证
 		if (!checkStuID(studentId)) {
 			setStudentIdError(true);
@@ -44,6 +54,56 @@ export default function Index() {
 
 		console.log("登录", { university, studentId, password });
 	};
+=======
+  // 学号验证
+  if (!studentId) {
+    Taro.showToast({
+      title: '请输入学号',
+      icon: 'none'
+    });
+    setStudentIdError(true);
+    return;
+  }
+  
+  // 学号长度验证
+  if (studentId.length !== 10) {
+    Taro.showToast({
+      title: '学号必须为10位数字',
+      icon: 'none'
+    });
+    setStudentIdError(true);
+    return;
+  }
+  
+  setStudentIdError(false);
+  
+  // 密码验证
+  if (!password) {
+    Taro.showToast({
+      title: '请输入密码',
+      icon: 'none'
+    });
+    return;
+  }
+  
+  if (!agreed) {
+    Taro.showToast({
+      title: '请阅读并同意用户协议和隐私政策',
+      icon: 'none'
+    });
+    return;
+  }
+  login(studentId, password)
+  console.log("登录中...", { university, studentId, password });
+  Taro.showToast({
+    title: '登录成功',
+    icon: 'success'
+  });
+  Taro.switchTab({
+    url: '/pages/index/index'
+  });
+};
+>>>>>>> c036b02c63b262eb990eead676c62ee4fe4b2437:src/pages/login/index.jsx
 
 	const handleStudentIdInput = (e) => {
 		let value = e.detail.value;
