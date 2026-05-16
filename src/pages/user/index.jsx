@@ -24,7 +24,7 @@ export default function Index() {
 	// 完善登录跳转函数
 	const handleLogin = () => {
 		Taro.navigateTo({
-			url: '/pages/login/index'
+			url: 'modules/pages/login/index'
 		});
 	};
 

@@ -5,7 +5,6 @@ export default defineAppConfig({
 		"pages/course/index",
 		"pages/user/index",
 		"pages/test/index",
-		"pages/login/index",
 	],
 
 	window: {
@@ -45,8 +44,17 @@ export default defineAppConfig({
 				iconPath: "./assets/我的.png",
 				selectedIconPath: "./assets/我的1.png",
 			},
-	
+
 		]
-	}
+	},
+	subPackages: [
+    {
+      root: 'modules',
+      pages: [
+        'pages/login/index', // 分包页面
+		'pages/copyright/index'
+      ],
+    }
+  ],
 
 });

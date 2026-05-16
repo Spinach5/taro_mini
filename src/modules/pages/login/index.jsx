@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { View, Text, Input, Button, Picker, Image } from "@tarojs/components";
 import "./index.css";
-import HeadStatus from "../../components/headStatus";
-import SafeAreaView from "../../components/safeView";
-import img from "../../assets/微信.png";
+import HeadStatus from "../../../components/headStatus";
+import SafeAreaView from "../../../components/safeView";
+import img from "../../../assets/微信.png";
 import Taro from "@tarojs/taro";
+import { checkStuID } from "../../../utils/checkStuID";
 
 export default function Index() {
 	const [university, setUniversity] = useState("湖北工业大学");
@@ -15,70 +16,47 @@ export default function Index() {
 	const [studentIdError, setStudentIdError] = useState(false); // 学号输入错误状态
 
 	// 大学列表（只展示湖北工业大学）
-	const universityList = ["湖北工业大学"];
+	const universityList = ["湖北工业大学", "其他大学"];
 
 	const handleLogin = () => {
-  // 学号验证
-  if (!studentId) {
-    Taro.showToast({
-      title: '请输入学号',
-      icon: 'none'
-    });
-    setStudentIdError(true);
-    return;
-  }
-  
-  // 学号长度验证
-  if (studentId.length !== 10) {
-    Taro.showToast({
-      title: '学号必须为10位数字',
-      icon: 'none'
-    });
-    setStudentIdError(true);
-    return;
-  }
-  
-  setStudentIdError(false);
-  
-  // 密码验证
-  if (!password) {
-    Taro.showToast({
-      title: '请输入密码',
-      icon: 'none'
-    });
-    return;
-  }
-  
-  if (!agreed) {
-    Taro.showToast({
-      title: '请阅读并同意用户协议和隐私政策',
-      icon: 'none'
-    });
-    return;
-  }
-  
-  console.log("登录中...", { university, studentId, password });
-};
+		// 学号验证
+		if (!checkStuID(studentId)) {
+			setStudentIdError(true);
+			return;
+		}
 
-	// 学号输入处理（只允许数字）
+		// 密码验证
+		if (!password) {
+			Taro.showToast({
+				title: "请输入密码",
+				icon: "error",
+			});
+			return;
+		}
+
+		if (!agreed) {
+			Taro.showToast({
+				title: "请阅读并同意用户协议和隐私政策",
+				icon: "none",
+			});
+			return;
+		}
+
+		console.log("登录", { university, studentId, password });
+	};
+
 	const handleStudentIdInput = (e) => {
 		let value = e.detail.value;
 		// 只保留数字
 		value = value.replace(/\D/g, "");
-		if (value.length <= 12) {
-			setStudentId(value);
-		}
-		// if (value.length > 0 && value.length !== 10) {
-		// 	setStudentIdError(true);
-		// } else {
-		// 	setStudentIdError(false);
+		setStudentId(value);
+		// if (checkStuID(value)) {
+
 		// }
 	};
 
-	// 密码输入处理（不允许空格）
 	const handlePasswordInput = (e) => {
 		let value = e.detail.value;
-		// 移除所有空格
 		value = value.replace(/\s/g, "");
 		setPassword(value);
 	};
@@ -92,9 +70,9 @@ export default function Index() {
 				>
 					<Text className="back-icon">←</Text>
 				</View>
-				<HeadStatus text="门户登录" />
+				<HeadStatus text="登录" />
 
-				{/* 顶部区域 */}
+				{/* 顶部选择学校 */}
 				<View className="header">
 					<Picker
 						mode="selector"
@@ -111,31 +89,34 @@ export default function Index() {
 							<Text className="arrow">▼</Text>
 						</View>
 					</Picker>
-					<Text className="subtitle">统一身份认证</Text>
 				</View>
 
 				{/* 登录表单 */}
 				<View className="form">
 					<View className="input-item">
 						<Text className="input-label">学号</Text>
-						<view className="input-wrapper">
+						<View className="input-wrapper">
 							<Input
 								className={`"input-field" ${studentIdError ? "input-error" : ""}`}
 								placeholder="请输入学号"
 								placeholderClass="placeholder"
 								value={studentId}
 								onInput={handleStudentIdInput}
-								onBlur={()=>{
+								onBlur={() => {
 									//失去焦点时验证
-									if(studentId&&studentId.length!==10){
+									if (!checkStuID(studentId)) {
 										setStudentIdError(true);
-									}else{
+									} else {
 										setStudentIdError(false);
 									}
 								}}
 							/>
-							{studentIdError && <Text className="input-error-text">学号长度不正确</Text>}
-						</view>
+							{studentIdError && (
+								<Text className="input-error-text">
+									学号格式不正确
+								</Text>
+							)}
+						</View>
 					</View>
 
 					<View className="input-item">
