@@ -67,10 +67,20 @@
   font-size: 34px;
   font-weight: 600;
 }
+/* 退出登录按钮样式 */
+.logout-btn {
+	background-color: #ff4444;
+	color: white;
+	text-align: center;
+	padding: 24rpx 0;
+	border-radius: 16rpx;
+	margin: 20rpx;
+	font-size: 32rpx;
+	font-weight: 500;
+}
 
-.descript {
-  font-size: 24px;
-  color: #999;
+.logout-btn:active {
+	background-color: #cc0000;
 }
 
 .copyleft {

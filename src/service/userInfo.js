@@ -1,7 +1,7 @@
 // src/utils/userManager.js
 import Taro from "@tarojs/taro";
-import cacheManager from "./cache";
-import { getSchoolService } from "./schoolService";
+import cacheManager from "../utils/cache.js";
+// import { getSchoolService } from "./schoolService";
 
 class UserManager {
 	constructor() {
