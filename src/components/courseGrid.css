@@ -16,6 +16,7 @@
   cursor: pointer;
   box-sizing: border-box;  /* 新增，使 padding 不撑大元素 */
   padding: 5px;
+  margin: 0 auto;
 }
 
 .course-name {
