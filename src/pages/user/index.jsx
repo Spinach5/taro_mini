@@ -5,13 +5,7 @@ import HeadStatus from '../../components/headStatus'
 import SafeAreaView from '../../components/safeView';
 import './index.css';
 import {logout} from '../../service/userInfo';
-// import cacheManager from "../cache";
-import { useState } from "react";
-import { View, Image, Text } from "@tarojs/components";
-import Taro, { useRouter } from "@tarojs/taro";
-import HeadStatus from "../../components/headStatus";
-import SafeAreaView from "../../components/safeView";
-import "./index.css";
+
 
 export default function Index() {
 	const router = useRouter();
