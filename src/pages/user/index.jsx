@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Image, Text } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro ,{useRouter}from '@tarojs/taro';
 import HeadStatus from '../../components/headStatus'
 import SafeAreaView from '../../components/safeView';
 import './index.css';
@@ -23,7 +23,6 @@ export default function Index() {
   // 获取登录状态的函数
   const loadUserInfo = () => {
     console.log('加载用户信息');
-    const is_loggedin_xxt = Taro.getStorageSync('is_loggedin_xxt');
     console.log('是否登录:', is_loggedin_xxt);
 
     if (is_loggedin_xxt) {
