@@ -3,8 +3,6 @@ import { View, Image, Text, ScrollView } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import Btn from "./Btn";
 import { getAllWeek } from "../service/hubt/GetAllWeek";
-import more from "../assets/more.svg";
-import down from "../assets/down.svg";
 
 export default function CourseHeader({
 	currentWeek,
@@ -39,11 +37,11 @@ export default function CourseHeader({
 				}}
 			>
 				<Btn>
-					<Image src={more} />
+					<View className="fa fa-list-ul" />
 				</Btn>
 				<Btn onClick={() => setShowPicker(true)}>
 					<Text>第{currentWeek ?? "?"}周</Text>
-					<Image src={down} />
+					<View className="fa fa-angle-down" />
 				</Btn>
 			</View>
 

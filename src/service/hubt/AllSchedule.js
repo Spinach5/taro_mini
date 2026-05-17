@@ -3,13 +3,14 @@ import cacheManager from "../../utils/cache";
 import { hbutRequest } from "../../utils/request";
 import { getXhid } from "./GetXhid";
 import { extractCourseData } from "../../utils/hbut/courseHelper";
+import { getCurrentSemester } from "./CurrentSemester";
 
 const CACHE_KEY = "All_COURSE_"; // 定义缓存key
 
-export async function getAllSchedule(semester) {
+export async function getAllSchedule(forceRefresh = false) {
 	// 1. 优先从缓存获取（和第一段一致）
-	const cached = cacheManager.get(CACHE_KEY + semester);
-	if (cached) {
+	const cached = cacheManager.get(CACHE_KEY );
+	if (cached && !forceRefresh) {
 		console.log("[getCurrentWeek] 从缓存获取课表");
 		return cached;
 	}
@@ -26,7 +27,7 @@ export async function getAllSchedule(semester) {
 
 	try {
 		const xhid = await getXhid();
-
+		const semester = await getCurrentSemester();
 		const response = await hbutRequest.get(
 			`admin/pkgl/xskb/sdpkkbList?xnxq=${semester}&xhid=${xhid}`,
 			loginConfig,
@@ -48,7 +49,7 @@ export async function getAllSchedule(semester) {
 		}
 
 		// 检查业务返回码
-		if (response.data?.ret !== 0) {
+		if (response.data.ret !== 0) {
 			console.log("[getCurrentWeek] 接口返回异常:", response.data);
 			throw new Error("获取课表失败：接口返回 ret 不为 0");
 		}

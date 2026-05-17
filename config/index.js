@@ -14,7 +14,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 			828: 1.81 / 2,
 		},
 		sourceRoot: "src",
-		outputRoot: "dist",
+		outputRoot: `dist/${process.env.TARO_ENV}`,
 		plugins: ["@tarojs/plugin-generator"],
 		defineConstants: {},
 		copy: {
@@ -24,6 +24,9 @@ export default defineConfig(async (merge, { command, mode }) => {
 		framework: "react",
 		compiler: "vite",
 		mini: {
+			optimizeMainPackage: {
+				enable: true,
+			},
 			postcss: {
 				pxtransform: {
 					enable: true,

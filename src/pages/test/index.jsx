@@ -1,7 +1,7 @@
-import "./index.scss";
+import "./index.css";
 import SafeAreaView from "../../components/safeView";
-import Taro from "@tarojs/taro";
-import { Button } from "@tarojs/components";
+import Taro, { useRouter } from "@tarojs/taro";
+import { Button, Icon, View, Text } from "@tarojs/components";
 import { login } from "../../service/hubt/login";
 import { getCurrentWeek } from "../../service/hubt/CurrentWeek";
 import { getExtroInfo } from "../../service/hubt/ExtroInfo";
@@ -14,11 +14,13 @@ import { getExamInfo } from "../../service/hubt/ExamInfo";
 import { getScores } from "../../service/hubt/Scores";
 import { getTimeTable } from "../../service/hubt/GetTimeTable";
 import { getStuInfo } from "../../service/hubt/StuInfo";
-import  printf  from "../../utils/hbut/getscore";
+import { cleanH5Cookies } from "../../utils/cleanH5Cookies";
 
 export default function Index() {
+	const router = useRouter();
+	const currentPath = router.path.split('?')[0];
 	return (
-		<SafeAreaView className="">
+		<SafeAreaView currentPath={currentPath}>
 			<Button
 				type="info"
 				style={{ margin: "0px" }}
@@ -39,13 +41,6 @@ export default function Index() {
 				onClick={async () => console.log(await getTimeTable())}
 			>
 				获取课表时间
-			</Button>
-			<Button
-				type="info"
-				style={{ margin: "0px" }}
-				onClick={() => printf()}
-			>
-				打印个人信息
 			</Button>
 			<Button
 				type="info"
@@ -71,7 +66,7 @@ export default function Index() {
 			<Button
 				type="primary"
 				style={{ margin: "0px" }}
-				onClick={() => login("2410321409", "Spinach114514!")}
+				onClick={() => login()}
 			>
 				登录
 			</Button>
@@ -148,6 +143,19 @@ export default function Index() {
 			>
 				测试获取每天课程时间
 			</Button>
+			<Button
+				type="success"
+				style={{ margin: "0px" }}
+				onClick={async () => {
+					await cleanH5Cookies();
+				}}
+			>
+				清除H5cookies
+			</Button>
+			<Text
+				class="fa fa-arrow-left"
+				style="font-size:48px; color:#F00"
+			></Text>
 		</SafeAreaView>
 	);
 }

@@ -1,6 +1,6 @@
 import { View, Text, Image } from "@tarojs/components"
 import Taro from '@tarojs/taro'
-import './gridItem.scss'
+import './gridItem.css'
 
 export default function GridItem({
   url,
@@ -54,7 +54,7 @@ const handleClick = async () => {
   return (
     <View className={`my-item ${className}`} >
       <View className="icon-wrapper" onClick={handleClick}>
-        <Image src={icon} className="grid-icon" />
+        <View className={`${icon} grid-icon`} />
       </View>
       <Text className="grid-text">{text}</Text>
     </View>

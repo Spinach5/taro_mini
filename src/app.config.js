@@ -4,7 +4,7 @@ export default defineAppConfig({
 		'pages/index/index',
 		"pages/course/index",
 		"pages/user/index",
-		"pages/test/index"
+		"pages/test/index",
 	],
 
 	window: {
@@ -15,10 +15,11 @@ export default defineAppConfig({
 		navigationStyle: 'custom'
 	},
 	tabBar: {
+		custom:true,
 		color: '#666666',
 		selectedColor: '#007bff',
 		backgroundColor: '#ffffff',
-		borderStyle: 'black',
+		borderStyle: 'white',
 		list: [
 			{
 				pagePath: "pages/index/index",
@@ -44,7 +45,17 @@ export default defineAppConfig({
 				iconPath: "./assets/我的.png",
 				selectedIconPath: "./assets/我的1.png",
 			},
+
 		]
-	}
+	},
+	subPackages: [
+    {
+      root: 'modules',
+      pages: [
+        'pages/login/index', // 分包页面
+		'pages/copyright/index'
+      ],
+    }
+  ],
 
 });

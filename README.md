@@ -1,7 +1,8 @@
 <p align="center">
-<img src="https://docs.rsshub.app/img/logo.png" width="100">
+<img src="https://foruda.gitee.com/avatar/1777480666913616794/16193480_damn_2_1777480666.png" width="100">
 </p>
 本项目采用Vite+React+Sass构建，基于Taro框架
+
 ## 部署教程
 ```sh
 #克隆项目
@@ -60,4 +61,17 @@ NODE_ENV=production taro build --type weapp --watch # Bash
 - 需要设置关闭上传代码时样式自动补全，开启可能报错
 - 需要设置关闭代码压缩上传，开启可能报错
 
-[Taro官网](https://docs.taro.zone/docs/)
+## 使用到的技术
+[Taro](https://docs.taro.zone/docs/)
+
+[React](https://zh-hans.react.dev/learn)
+
+[Vite](https://cn.vitejs.dev/)
+
+[Sass](https://sass-lang.com/)
+
+[ESLint](https://eslint.org/)
+
+[Prettier](https://prettier.io/)
+
+[husky](https://typicode.github.io/husky/#/)
