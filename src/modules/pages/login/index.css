@@ -19,6 +19,7 @@
 .header {
   /* text-align: center; */
   margin-bottom: 60px;
+  width: 300px;  
 }
 
 
@@ -33,6 +34,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   margin-bottom: 16px;
   cursor: pointer;
+    width: 100%;
 }
 
 .university-name {

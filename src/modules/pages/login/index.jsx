@@ -12,13 +12,12 @@ export default function Index() {
 	const [studentId, setStudentId] = useState("");
 	const [password, setPassword] = useState("");
 	const [agreed, setAgreed] = useState(false);
-	const [showPassword, setShowPassword] = useState(false); // 密码可见性状态
-	const [studentIdError, setStudentIdError] = useState(false); // 学号输入错误状态
+	const [showPassword, setShowPassword] = useState(false);
+	const [studentIdError, setStudentIdError] = useState(false);
 
-	// 大学列表（只展示湖北工业大学）
 	const universityList = ["湖北工业大学", "其他大学"];
 
-	const handleLogin = () => {
+	const handleLogin = async () => {
 		// 学号验证
 		if (!checkStuID(studentId)) {
 			setStudentIdError(true);
@@ -42,21 +41,48 @@ export default function Index() {
 			return;
 		}
 
-		console.log("登录", { university, studentId, password });
-		login(studentId, password);
-			Taro.switchTab({
-					url: '/pages/index/index'
+		try {
+			Taro.showLoading({ title: "登录中..." });
+
+			// 调用登录接口
+			const res = await login(studentId, password);
+
+			// 保存登录状态和用户信息
+			Taro.setStorageSync("is_loggedin_xxt", true);
+			Taro.setStorageSync("userInfo", {
+				raw_username: studentId,
+				username: studentId,
+				nickname: `用户${studentId.slice(-4)}`,
+			});
+
+			Taro.hideLoading();
+			Taro.showToast({
+				title: "登录成功",
+				icon: "success",
+				duration: 1500,
+			});
+
+			// 延迟跳转，让用户看到成功提示
+			// 将原来的 switchTab 改为 redirectTo 或重新页面
+			setTimeout(() => {
+				Taro.reLaunch({
+					url: "/pages/user/index",
 				});
+			}, 1500);
+		} catch (error) {
+			Taro.hideLoading();
+			Taro.showToast({
+				title: "登录失败，请检查学号和密码",
+				icon: "error",
+			});
+			console.error("登录失败:", error);
+		}
 	};
 
 	const handleStudentIdInput = (e) => {
 		let value = e.detail.value;
-		// 只保留数字
 		value = value.replace(/\D/g, "");
 		setStudentId(value);
-		// if (checkStuID(value)) {
-
-		// }
 	};
 
 	const handlePasswordInput = (e) => {
@@ -75,7 +101,6 @@ export default function Index() {
 				</View>
 				<HeadStatus text="登录" />
 
-				{/* 顶部选择学校 */}
 				<View className="header">
 					<Picker
 						mode="selector"
@@ -94,19 +119,17 @@ export default function Index() {
 					</Picker>
 				</View>
 
-				{/* 登录表单 */}
 				<View className="form">
 					<View className="input-item">
 						<Text className="input-label">学号</Text>
 						<View className="input-wrapper">
 							<Input
-								className={`"input-field" ${studentIdError ? "input-error" : ""}`}
+								className={`input-field ${studentIdError ? "input-error" : ""}`}
 								placeholder="请输入学号"
 								placeholderClass="placeholder"
 								value={studentId}
 								onInput={handleStudentIdInput}
 								onBlur={() => {
-									//失去焦点时验证
 									if (!checkStuID(studentId)) {
 										setStudentIdError(true);
 									} else {
@@ -146,7 +169,6 @@ export default function Index() {
 						登录
 					</Button>
 
-					{/* 协议同意区域 */}
 					<View
 						className="agreement"
 						onClick={() => setAgreed(!agreed)}

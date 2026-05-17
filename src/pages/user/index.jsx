@@ -1,3 +1,11 @@
+import { useState, useEffect } from 'react';
+import { View, Image, Text } from '@tarojs/components';
+import Taro from '@tarojs/taro';
+import HeadStatus from '../../components/headStatus'
+import SafeAreaView from '../../components/safeView';
+import './index.css';
+import {logout} from '../../service/userInfo';
+// import cacheManager from "../cache";
 import { useState } from "react";
 import { View, Image, Text } from "@tarojs/components";
 import Taro, { useRouter } from "@tarojs/taro";
@@ -18,23 +26,77 @@ export default function Index() {
 	const [is_loggedin_xxt, setIsLoggedinXxt] = useState(false);
 	const [showModal, setShowModal] = useState(false);
 
-	// 模拟事件处理函数，实际需替换为真实逻辑
-	const switch_is_show_raw_uname = () =>
-		setIsShowRawUname(!is_show_raw_uname);
+  // 获取登录状态的函数
+  const loadUserInfo = () => {
+    console.log('加载用户信息');
+    const is_loggedin_xxt = Taro.getStorageSync('is_loggedin_xxt');
+    console.log('是否登录:', is_loggedin_xxt);
 
-	// 完善登录跳转函数
-	const handleLogin = () => {
-		Taro.navigateTo({
-			url: "/modules/pages/login/index",
-		});
-	};
+    if (is_loggedin_xxt) {
+      setIsLoggedinXxt(true);
+      const userInfo = Taro.getStorageSync('userInfo');
+      if (userInfo) {
+        setNickname(userInfo.nickname || '');
+        setRawUsername(userInfo.raw_username || '');
+        setUsername(userInfo.username || '');
+      }
+    } else {
+      setIsLoggedinXxt(false);
+      setNickname('');
+      setRawUsername('');
+      setUsername('');
+    }
+  };
 
-	const manage_account = () => {};
-	const showLocalImage = () => {};
-	const get_course_data = () => {};
-	const handleLogout = () => {};
-	const tapcopyleft = () => {};
-	const closeModal = () => setShowModal(false);
+  // 每次页面显示时都重新加载
+  useEffect(() => {
+    loadUserInfo();
+  }, []);
+
+  // 监听路由参数变化
+  useEffect(() => {
+    const handleRouteChange = () => {
+      loadUserInfo();
+    };
+
+    // 监听页面显示
+    Taro.eventCenter.on('__taroRouterChange', handleRouteChange);
+
+    return () => {
+      Taro.eventCenter.off('__taroRouterChange', handleRouteChange);
+    };
+  }, []);
+
+  const switch_is_show_raw_uname = () => setIsShowRawUname(!is_show_raw_uname);
+
+  const handleLogin = () => {
+    Taro.navigateTo({
+      url: '/modules/pages/login/index'
+    });
+  };
+
+  const handleLogout = () => {
+    Taro.showModal({
+      title: '提示',
+      content: '确定要退出登录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          Taro.removeStorageSync('is_loggedin_xxt');
+          Taro.removeStorageSync('userInfo');
+          setIsLoggedinXxt(false);
+          setNickname('');
+          setRawUsername('');
+          setUsername('');
+		  logout();
+          Taro.showToast({
+            title: '已退出登录',
+            icon: 'success'
+          });
+
+        }
+      }
+    });
+  };
 
 	return (
 		<SafeAreaView currentPath={currentPath}>
@@ -44,91 +106,56 @@ export default function Index() {
 					{nickname ? nickname : "昵称"}
 				</View>
 
-				<View className="user-name" onClick={switch_is_show_raw_uname}>
-					{raw_username
-						? is_show_raw_uname
-							? raw_username
-							: username
-						: "账号"}
-				</View>
+        <View className='user-name' onClick={switch_is_show_raw_uname}>
+          {is_loggedin_xxt ? (
+            raw_username && is_show_raw_uname ? raw_username : (username || '账号')
+          ) : (
+            '未登录'
+          )}
+        </View>
+      </View>
 
-				<View>
-					<Text className="descript">
-						上次登陆xxt时间{xxt_last_login_time}
-						{"\n"}
-						上次拉取xxt课表时间{xxt_last_get_data_time}
-					</Text>
-				</View>
-			</View>
+      <View className='container'>
+        <View className='bora card list'>
+          <View className='item' onClick={() => {}}>
+            <Text>设置</Text>
+          </View>
+          <View className='item' onClick={() => {}}>
+            <Text>常见问题</Text>
+          </View>
+          <View className='item' onClick={() => {}}>
+            <Text>关于我们</Text>
+          </View>
+          <View className='item' onClick={() => {}}>
+            <Text>反馈与建议</Text>
+          </View>
+          <View className='item' onClick={() => {}}>
+            <Text>分享小程序</Text>
+          </View>
+        </View>
+      </View>
 
-			<View className="container">
-				{!is_loggedin_xxt && (
-					<View
-						className="bora login-btn highlight-btn"
-						onClick={handleLogin}
-					>
-						<Text>立即登录</Text>
-					</View>
-				)}
+      {!is_loggedin_xxt ? (
+        <View className='bora login-btn highlight-btn' onClick={handleLogin}>
+          <Text>立即登录</Text>
+        </View>
+      ) : (
+        <View className='bora logout-btn' onClick={handleLogout}>
+          <Text>退出登录</Text>
+        </View>
+      )}
 
-				<View className="bora card list">
-					<View className="item" onClick={manage_account}>
-						<Text>账号管理</Text>
-					</View>
-				</View>
+      <View className='copyleft'>
+        <Text>copyleft</Text>
+      </View>
 
-				<View className="bora card list">
-					<View className="item" onClick={showLocalImage}>
-						<Text>向我们反馈</Text>
-					</View>
-
-					<View className="item" onClick={showLocalImage}>
-						<Text>加入我们</Text>
-					</View>
-				</View>
-
-				<View className="bora card">
-					<View className="item" onClick={get_course_data}>
-						<View>
-							<Text>从xxt获取课表</Text>
-						</View>
-					</View>
-
-					<View className="item" onClick={handleLogout}>
-						<View>
-							<Text style={{ color: "red" }}>
-								清除所有小程序缓存
-							</Text>
-						</View>
-
-						<View>
-							<Text className="descript">
-								同时将会清除登录状态
-							</Text>
-						</View>
-					</View>
-				</View>
-			</View>
-
-			<View className="copyleft">
-				<Text onClick={tapcopyleft}>copyleft</Text>
-			</View>
-
-			{showModal && (
-				<View className="modal-overlay" onClick={closeModal}>
-					<View
-						className="modal-content"
-						onClick={(e) => e.stopPropagation()}
-					>
-						{/* 注意：请确认图片路径是否正确，原代码为 ../../image/... */}
-						<Image
-							src="../../image/qrcode_1777289986212.jpg"
-							mode="widthFix"
-							className="modal-image"
-						></Image>
-					</View>
-				</View>
-			)}
-		</SafeAreaView>
-	);
+      {showModal && (
+        <View className='modal-overlay' onClick={() => setShowModal(false)}>
+          <View className='modal-content' onClick={(e) => e.stopPropagation()}>
+            <Image src='../../image/qrcode_1777289986212.jpg' mode='widthFix' className='modal-image'></Image>
+          </View>
+        </View>
+      )}
+    </SafeAreaView>
+  );
 }

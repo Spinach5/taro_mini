@@ -7,10 +7,10 @@ import { getCurrentSemester } from "./CurrentSemester";
 
 const CACHE_KEY = "All_COURSE_"; // 定义缓存key
 
-export async function getAllSchedule() {
+export async function getAllSchedule(forceRefresh = false) {
 	// 1. 优先从缓存获取（和第一段一致）
 	const cached = cacheManager.get(CACHE_KEY );
-	if (cached) {
+	if (cached && !forceRefresh) {
 		console.log("[getCurrentWeek] 从缓存获取课表");
 		return cached;
 	}
