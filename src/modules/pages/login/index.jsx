@@ -6,6 +6,7 @@ import SafeAreaView from "../../../components/safeView";
 import img from "../../../assets/微信.png";
 import Taro from "@tarojs/taro";
 import { checkStuID } from "../../../utils/checkStuID";
+import { login } from "../../../service/hubt/login";
 
 export default function Index() {
 	const [university, setUniversity] = useState("湖北工业大学");
@@ -43,6 +44,10 @@ export default function Index() {
 		}
 
 		console.log("登录", { university, studentId, password });
+		login(studentId, password);
+			Taro.switchTab({
+					url: '/pages/index/index'
+				});
 	};
 
 	const handleStudentIdInput = (e) => {

@@ -7,7 +7,7 @@ import {
 	Navigator,
 } from "@tarojs/components";
 import "./index.css";
-import SafeAreaView from "../../components/safeView";
+import SafeAreaView from "../../../components/safeView";
 
 export default function Index() {
 	return <SafeAreaView className="page"></SafeAreaView>;
