@@ -6,20 +6,32 @@ import SafeAreaView from '../../components/safeView';
 import './index.css';
 import {logout} from '../../service/userInfo';
 // import cacheManager from "../cache";
+import { useState } from "react";
+import { View, Image, Text } from "@tarojs/components";
+import Taro, { useRouter } from "@tarojs/taro";
+import HeadStatus from "../../components/headStatus";
+import SafeAreaView from "../../components/safeView";
+import "./index.css";
 
 export default function Index() {
-  const [nickname, setNickname] = useState('');
-  const [raw_username, setRawUsername] = useState('');
-  const [username, setUsername] = useState('');
-  const [is_show_raw_uname, setIsShowRawUname] = useState(false);
-  const [is_loggedin_xxt, setIsLoggedinXxt] = useState(false);
+	const router = useRouter();
+	const currentPath = router.path.split('?')[0];
+	// 补充缺失的状态定义，实际项目中请根据业务逻辑完善初始值和 setter
+	const [nickname, setNickname] = useState("");
+	const [raw_username, setRawUsername] = useState("");
+	const [username, setUsername] = useState("");
+	const [is_show_raw_uname, setIsShowRawUname] = useState(false);
+	const [xxt_last_login_time, setXxtLastLoginTime] = useState("");
+	const [xxt_last_get_data_time, setXxtLastGetDataTime] = useState("");
+	const [is_loggedin_xxt, setIsLoggedinXxt] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 
   // 获取登录状态的函数
   const loadUserInfo = () => {
     console.log('加载用户信息');
     const is_loggedin_xxt = Taro.getStorageSync('is_loggedin_xxt');
     console.log('是否登录:', is_loggedin_xxt);
-    
+
     if (is_loggedin_xxt) {
       setIsLoggedinXxt(true);
       const userInfo = Taro.getStorageSync('userInfo');
@@ -46,10 +58,10 @@ export default function Index() {
     const handleRouteChange = () => {
       loadUserInfo();
     };
-    
+
     // 监听页面显示
     Taro.eventCenter.on('__taroRouterChange', handleRouteChange);
-    
+
     return () => {
       Taro.eventCenter.off('__taroRouterChange', handleRouteChange);
     };
@@ -86,14 +98,13 @@ export default function Index() {
     });
   };
 
-  return (
-    <SafeAreaView>
-      <HeadStatus text='我的'></HeadStatus>
-
-      <View className='bora card item user'>
-        <View className='nick-name'>
-          {nickname ? nickname : (is_loggedin_xxt ? '用户' : '昵称')}
-        </View>
+	return (
+		<SafeAreaView currentPath={currentPath}>
+			<HeadStatus text="我的"></HeadStatus>
+			<View className="bora card item user">
+				<View className="nick-name">
+					{nickname ? nickname : "昵称"}
+				</View>
 
         <View className='user-name' onClick={switch_is_show_raw_uname}>
           {is_loggedin_xxt ? (
@@ -133,7 +144,18 @@ export default function Index() {
           <Text>退出登录</Text>
         </View>
       )}
-      
+
+      <View className='copyleft'>
+        <Text>copyleft</Text>
+      </View>
+
+      {showModal && (
+        <View className='modal-overlay' onClick={() => setShowModal(false)}>
+          <View className='modal-content' onClick={(e) => e.stopPropagation()}>
+            <Image src='../../image/qrcode_1777289986212.jpg' mode='widthFix' className='modal-image'></Image>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
