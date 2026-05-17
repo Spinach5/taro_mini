@@ -137,18 +137,6 @@ export default function Index() {
           <Text>退出登录</Text>
         </View>
       )}
-
-      <View className='copyleft'>
-        <Text>copyleft</Text>
-      </View>
-
-      {showModal && (
-        <View className='modal-overlay' onClick={() => setShowModal(false)}>
-          <View className='modal-content' onClick={(e) => e.stopPropagation()}>
-            <Image src='../../image/qrcode_1777289986212.jpg' mode='widthFix' className='modal-image'></Image>
-          </View>
-        </View>
-      )}
     </SafeAreaView>
   );
 }
