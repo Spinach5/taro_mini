@@ -14,11 +14,11 @@ export default function SaveAreaView({ children, currentPath }) {
 			<View
 				style={{
 					height: "100vh",
-					// overflow: "hidden", // 防止页面本身滚动
+					overflow: "hidden", // 防止页面本身滚动
 					display: "flex",
 					flexDirection: "column",
 					paddingTop: `${safeArea.top}px`,
-					paddingBottom: `${safeArea.bottom}px`,
+					paddingBottom: `85px`,
 					paddingLeft: "8px",
 					paddingRight: "8px",
 					background: `linear-gradient(to bottom, rgb(71,165,253) 0%, rgb(255,255,255) 40%)`,
