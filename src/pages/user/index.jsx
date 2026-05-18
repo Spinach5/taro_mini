@@ -67,7 +67,7 @@ export default function Index() {
     );
   }
 
-  const isLoggedIn = userInfo !== null;
+  const isLoggedIn = userManager.checkLogin();
   const username = userInfo?.realName || "昵称";
   const stuId = userInfo?.stuId || "未登录";
 
