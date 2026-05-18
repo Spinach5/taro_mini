@@ -33,6 +33,7 @@ export default function Index() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [semester, setSemester] = useState(null);
   const [currentWeek, setCurrentWeek] = useState(null);
+  const [actualWeek, setActualWeek] = useState(null);
   const [weekList, setWeekList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timeTable, setTimeTable] = useState([]);
@@ -114,6 +115,7 @@ export default function Index() {
       .then(([week, weeks]) => {
         setWeekList(weeks);
         setCurrentWeek(week);
+        setActualWeek(week);
         const idx = weeks.indexOf(week);
         setCurrentIndex(idx >= 0 ? idx : 0);
       })
@@ -196,6 +198,16 @@ export default function Index() {
     }
   }, [weekList, currentWeek]);
 
+  const handleBackToCurrentWeek = useCallback(() => {
+    if (actualWeek && weekList.length > 0) {
+      const idx = weekList.indexOf(actualWeek);
+      if (idx !== -1) {
+        setCurrentIndex(idx);
+        setCurrentWeek(actualWeek);
+      }
+    }
+  }, [actualWeek, weekList]);
+
   if (isLoggedIn === null) {
     return (
       <SafeAreaView currentPath={currentPath}>
@@ -241,6 +253,7 @@ export default function Index() {
           </View>
         </View>
       </ScrollView>
+      {actualWeek && currentWeek !== actualWeek && (<View className="gobacktoday" onClick={handleBackToCurrentWeek}>返回本周</View>)}
       {modalVisible && currentCourse && (
         <View className="course-info" onClick={closeModal}>
           <View style={{ width: "80%", maxWidth: "500px", backgroundColor: "#fff", borderRadius: "16px", overflow: "hidden", padding: "10px" }} onClick={(e) => e.stopPropagation()}>
