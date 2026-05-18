@@ -10,7 +10,7 @@ class UserManager {
 		this.realName = "帅哥"; // 真实姓名
 		this.stuId = ""; // 学号
 		this.password = ""; // 密码
-		this.grade = 0; // 入学年份
+		this.grade = "0"; // 入学年份
 		this.majority = ""; // 专业
 		this.class = ""; // 班级
 		this.college = ""; // 学院
@@ -151,6 +151,10 @@ class UserManager {
 		return this.university;
 	}
 
+	getGrade() {
+		return this.grade;
+	}
+
 	// 获取学号和密码
 	getAccount() {
 		return { stuId: this.stuId, password: this.password };
@@ -168,3 +172,4 @@ export const getUserInfo = () => userManager.getUserInfoSync();
 export const setUserField = (key, value) => userManager.setField(key, value);
 export const setUserFields = (fields) => userManager.setFields(fields);
 export const isLoggedIn = () => userManager.checkLogin();
+export const getGrade = () => userManager.getGrade();

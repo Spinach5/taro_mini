@@ -53,7 +53,7 @@ export async function getCurrentWeek() {
       throw new Error("获取当前周数失败：响应数据中无 xlzc 字段");
     }
 
-    // 3. 存入缓存（永不过期，和 getCurrentSemester 一致）
+    // 3. 存入缓存（永不过期，和 getSemeseterList 一致）
     cacheManager.set(CACHE_KEY, currentWeek);
     console.log("[getCurrentWeek] 已缓存当前周数:", currentWeek);
 

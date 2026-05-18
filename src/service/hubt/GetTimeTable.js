@@ -1,13 +1,12 @@
 //https://jwxt.hbut.edu.cn/admin/api/getZclistByXnxq?xnxq=2025-2026-2&role=&userId=&xqid=1
 //获取时间作息数组
 import { getSortedClassTimes } from "../../utils/hbut/timeHelper";
-import { getCurrentSemester } from "./CurrentSemester";
 import cacheManager from "../../utils/cache";
 import { hbutRequest } from "../../utils/request";
 
 const CACHE_KEY = "timetable";
 
-export async function getTimeTable() {
+export async function getTimeTable(semester) {
 	// 1. 优先从缓存获取
 	const cached = cacheManager.get(CACHE_KEY);
 	if (cached) {
@@ -23,7 +22,6 @@ export async function getTimeTable() {
 		},
 		withCredentials: true,
 	};
-	const semester = await getCurrentSemester();
 	const response = await hbutRequest.get(
 		"admin/api/getZclistByXnxq?xnxq=" + semester,
 		loginConfig,

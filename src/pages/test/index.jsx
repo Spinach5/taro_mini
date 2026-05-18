@@ -8,7 +8,7 @@ import { getExtroInfo } from "../../service/hubt/ExtroInfo";
 import { getDailySchedule } from "../../service/hubt/DailySchedule";
 import { getAllWeek } from "../../service/hubt/GetAllWeek";
 import { getXhid } from "../../service/hubt/GetXhid";
-import { getCurrentSemester } from "../../service/hubt/CurrentSemester";
+import { getSemeseterList } from "../../service/hubt/CurrentSemester";
 import { getAllSchedule } from "../../service/hubt/AllSchedule";
 import { getExamInfo } from "../../service/hubt/ExamInfo";
 import { getScores } from "../../service/hubt/Scores";
@@ -59,7 +59,7 @@ export default function Index() {
 			<Button
 				type="primary"
 				style={{ margin: "0px" }}
-				onClick={async () => console.log(await getCurrentSemester())}
+				onClick={async () => console.log(await getSemeseterList())}
 			>
 				获取当前学期
 			</Button>

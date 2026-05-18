@@ -1,19 +1,24 @@
 // components/CourseHeader.jsx
-import { View, Image, Text, ScrollView } from "@tarojs/components";
+import { View, Text, ScrollView } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import Btn from "./Btn";
 import { getAllWeek } from "../service/hubt/GetAllWeek";
 
 export default function CourseHeader({
+	currentSemester,
 	currentWeek,
 	onWeekChange,
 	className = "",
+	onRefresh,
+	onSelectSemester,
+	onAddCourse,
 }) {
 	const [weekList, setWeekList] = useState([]);
 	const [showPicker, setShowPicker] = useState(false);
+	const [showFunctionMenu, setShowFunctionMenu] = useState(false);
 
 	useEffect(() => {
-		getAllWeek().then((list) => setWeekList(list || []));
+		getAllWeek(currentSemester).then((list) => setWeekList(list || []));
 	}, []);
 
 	const handleSelectWeek = (week) => {
@@ -22,6 +27,20 @@ export default function CourseHeader({
 	};
 
 	const closePicker = () => setShowPicker(false);
+	const closeFunctionMenu = () => setShowFunctionMenu(false);
+
+	const functionList = [
+		{ func: "刷新课表", icon: "fa fa-refresh" },
+		{ func: "选择学期", icon: "fa fa-calendar" },
+		{ func: "添加课程", icon: "fa fa-plus" },
+	];
+
+	const handleFunctionClick = (funcName) => {
+		if (funcName === "刷新课表") onRefresh?.();
+		else if (funcName === "选择学期") onSelectSemester?.();
+		else if (funcName === "添加课程") onAddCourse?.();
+		closeFunctionMenu();
+	};
 
 	return (
 		<>
@@ -36,7 +55,7 @@ export default function CourseHeader({
 					alignItems: "center",
 				}}
 			>
-				<Btn>
+				<Btn onClick={() => setShowFunctionMenu(true)}>
 					<View className="fa fa-list-ul" />
 				</Btn>
 				<Btn onClick={() => setShowPicker(true)}>
@@ -44,6 +63,64 @@ export default function CourseHeader({
 					<View className="fa fa-angle-down" />
 				</Btn>
 			</View>
+
+			{/* 功能菜单 */}
+			{showFunctionMenu && (
+				<View
+					style={{
+						position: "fixed",
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						backgroundColor: "transparent",
+						zIndex: 1000,
+					}}
+					onClick={closeFunctionMenu}
+				>
+					<View
+						style={{
+							position: "absolute",
+							top: "60px",
+							left: "16px",
+							backgroundColor: "#fff",
+							borderRadius: "12px",
+							boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+							padding: "8px 0",
+							minWidth: "140px",
+						}}
+						onClick={(e) => e.stopPropagation()}
+					>
+						{functionList.map((item, index) => (
+							<View
+								key={index}
+								style={{
+									padding: "12px 16px",
+									display: "flex",
+									alignItems: "center",
+									gap: "12px",
+									borderBottom:
+										index < functionList.length - 1
+											? "1px solid #f0f0f0"
+											: "none",
+									cursor: "pointer",
+								}}
+								onClick={() => handleFunctionClick(item.func)}
+							>
+								<View
+									className={item.icon}
+									style={{ fontSize: "20px", width: "24px" }}
+								/>
+								<Text
+									style={{ fontSize: "28px", color: "#333" }}
+								>
+									{item.func}
+								</Text>
+							</View>
+						))}
+					</View>
+				</View>
+			)}
 
 			{/* 周数选择弹窗 */}
 			{showPicker && (
@@ -58,7 +135,7 @@ export default function CourseHeader({
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "center",
-						zIndex: 1000,
+						zIndex: 1001,
 					}}
 					onClick={closePicker}
 				>
@@ -72,7 +149,6 @@ export default function CourseHeader({
 						}}
 						onClick={(e) => e.stopPropagation()}
 					>
-						{/* 标题 */}
 						<View
 							style={{
 								textAlign: "center",
@@ -84,15 +160,11 @@ export default function CourseHeader({
 						>
 							选择周数
 						</View>
-
-						{/* 可滚动区域，隐藏滚动条 */}
 						<ScrollView
 							scrollY
 							enhanced
 							showScrollbar={false}
-							style={{
-								maxHeight: "400px",
-							}}
+							style={{ maxHeight: "400px" }}
 						>
 							<View style={{ padding: "16px" }}>
 								<View

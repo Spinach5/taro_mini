@@ -41,3 +41,33 @@
   color: white;
   font-size: 20px;
 }
+.picker-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1002;
+}
+.picker-container {
+  background-color: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  width: 80%;
+}
+.course-info {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1003;
+}

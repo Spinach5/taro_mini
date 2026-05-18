@@ -1,12 +1,14 @@
 // 获取排课周次（所有周次信息）
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
+import { extractZc } from "../../utils/hbut/weekHelper";
 
-const CACHE_KEY = "AllWeekData";  // 定义缓存key
+const CACHE_KEY = "AllWeekData_";  // 定义缓存key
 
-export async function getAllWeek() {
+export async function getAllWeek(semester) {
   // 1. 优先从缓存获取
-  const cached = cacheManager.get(CACHE_KEY);
+  console.log("传入的"+semester)
+  const cached = cacheManager.get(CACHE_KEY + semester);
   if (cached) {
     console.log("[getAllWeek] 从缓存获取排课周次");
     return cached;
@@ -23,7 +25,7 @@ export async function getAllWeek() {
 
   try {
     const response = await hbutRequest.get(
-      "/admin/getCurrentPkZc",
+      `/admin/api/getZclistByXnxq?xnxq=${semester}`,
       loginConfig,
     );
 
@@ -45,7 +47,7 @@ export async function getAllWeek() {
       throw new Error("获取排课周次失败：接口返回 ret 不为 0");
     }
 
-    const weekData = response.data.data;
+    const weekData = extractZc(response.data.data.zclist);
 
     // 验证数据有效性（验证是否为数组且不为空）
     if (!weekData || !Array.isArray(weekData) || weekData.length === 0) {
@@ -54,7 +56,7 @@ export async function getAllWeek() {
     }
 
     // 3. 存入缓存（永不过期）
-    cacheManager.set(CACHE_KEY, weekData);
+    cacheManager.set(CACHE_KEY + semester, weekData);
     console.log("[getAllWeek] 已缓存排课周次");
 
     return weekData;
