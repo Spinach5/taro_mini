@@ -45,7 +45,8 @@ export default defineAppConfig({
       root: 'modules',
       pages: [
         'pages/login/index', // 分包页面
-		'pages/copyright/index'
+		'pages/copyright/index',
+		'pages/club/index'
       ],
     }
   ],

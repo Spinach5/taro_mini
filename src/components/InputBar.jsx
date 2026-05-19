@@ -1,14 +1,14 @@
 import { Input } from "@tarojs/components"
-import './SearchBar.css'
+import './InputBar.css'
 
-export default function SearchBar({
+export default function InputBar({
   className = '',
   placeholder,
   onConfirm = ()=>{}
 }) {
   return (
     <Input
-      className={`SearchBar ${className}`}
+      className={`input-field ${className}`}
       type='text' placeholder={placeholder} focus
       onConfirm={onConfirm}
     >
