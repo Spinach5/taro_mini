@@ -4,7 +4,6 @@ export default defineAppConfig({
 		'pages/index/index',
 		"pages/course/index",
 		"pages/user/index",
-		"pages/test/index",
 	],
 
 	window: {
@@ -30,10 +29,6 @@ export default defineAppConfig({
 				text: "课程",
 			},
 			{
-				pagePath: "pages/test/index",
-				text: "测试",
-			},
-			{
 				pagePath: "pages/user/index",
 				text: "我的",
 			},
@@ -45,7 +40,6 @@ export default defineAppConfig({
       root: 'modules',
       pages: [
         'pages/login/index', // 分包页面
-		'pages/copyright/index'
       ],
     }
   ],
