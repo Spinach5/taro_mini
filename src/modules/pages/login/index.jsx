@@ -157,7 +157,7 @@ export default function Index() {
 								className="password-toggle"
 								onClick={() => setShowPassword(!showPassword)}
 							>
-								{showPassword ? "👁️" : "👁️‍🗨️"}
+								{showPassword ? <View className="fa fa-eye" style={{color:"#1a2c3e"}} /> : <View className="fa fa-eye-slash" style={{color:"#1a2c3e"}}/>}
 							</Text>
 						</View>
 					</View>
