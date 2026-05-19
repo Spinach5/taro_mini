@@ -15,6 +15,7 @@ import { getScores } from "../../service/hubt/Scores";
 import { getTimeTable } from "../../service/hubt/GetTimeTable";
 import { getStuInfo } from "../../service/hubt/StuInfo";
 import { cleanH5Cookies } from "../../utils/cleanH5Cookies";
+import SearchBar from "../../components/SearchBar"
 
 export default function Index() {
 	const router = useRouter();
@@ -156,6 +157,7 @@ export default function Index() {
 				class="fa fa-arrow-left"
 				style="font-size:48px; color:#F00"
 			></Text>
+			<SearchBar placeholder={"er"}></SearchBar>
 		</SafeAreaView>
 	);
 }
