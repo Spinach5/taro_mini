@@ -19,7 +19,7 @@
 .header {
   /* text-align: center; */
   margin-bottom: 60px;
-  width: 300px;  
+  width: 300px;
 }
 
 
@@ -231,16 +231,6 @@
   gap: 12px;
 }
 
-/* .wechat-icon {
-  width: 88px;
-  height: 88px;
-  background: #07c160;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(7, 193, 96, 0.2);
-} */
 
 .wechat-img {
   width: 50px;   /* 根据实际需要调整尺寸 */
@@ -254,14 +244,6 @@
 }
 
 
-/* 底部链接 */
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  margin-bottom: 10px;
-  margin-top: 250rpx;  /* 添加这一行，增加上边距 */
-}
 
 
 
@@ -270,14 +252,3 @@
   font-size: 28px;
 }
 
-/* 版权信息 */
-.copyright {
-  text-align: center;
-  padding-bottom: 30px;
-}
-
-.copyright-text {
-  font-size: 22px;
-  color: #8a99b0;
-  line-height: 1.5;
-}

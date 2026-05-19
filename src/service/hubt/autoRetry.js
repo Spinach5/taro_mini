@@ -29,7 +29,7 @@ export async function AutoRetry(requestFn, options = {}) {
       return response;
     } catch (error) {
       // 如果错误中包含重定向信息，也可以尝试重登
-      if (error.message?.includes('redirect') && retryCount < maxRetry) {
+      if (error.message?.('redirect') && retryCount < maxRetry) {
         console.log('捕获到重定向错误，尝试重新登录...', error);
         await auth();
         retryCount++;

@@ -61,7 +61,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 										proxyRes.headers.location =
 											"/hbut" + location;
 									} else if (
-										location.includes("jwxt.hbut.edu.cn")
+										location.indexOf("jwxt.hbut.edu.cn")
 									) {
 										const relative = location.replace(
 											/https?:\/\/[^/]+/,

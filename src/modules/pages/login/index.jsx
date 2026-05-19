@@ -64,7 +64,7 @@ export default function Index() {
 				Taro.reLaunch({
 					url: "/pages/user/index",
 				});
-			}, 1500);
+			}, 150);
 		} catch (error) {
 			Taro.hideLoading();
 			Taro.showToast({
@@ -86,9 +86,6 @@ export default function Index() {
 		value = value.replace(/\s/g, "");
 		setPassword(value);
 	};
-	{
-		/* <View class="fa fa-arrow-left" style="font-size:48px; color:#F00"></View> */
-	}
 	return (
 		<SafeAreaView>
 			<View className="login-container">
