@@ -157,7 +157,7 @@ export default function Index() {
 				class="arrow-left"
 				style="font-size:48px; color:#F00"
 			></Text>
-			<SearchBar placeholder={"er"}></SearchBar>
+			<SearchBar placeholder="er"></SearchBar>
 		</SafeAreaView>
 	);
 }

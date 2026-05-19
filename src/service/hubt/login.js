@@ -7,7 +7,7 @@ import { getStuInfo } from "./StuInfo";
 
 export async function login(stuId, password) {
 	//清除缓存
-	console.log(stuId, password)
+	console.log(stuId, password);
 	userManager.logout();
 
 	if (!checkStuID(stuId)) {
@@ -24,18 +24,21 @@ export async function login(stuId, password) {
 		});
 		return false;
 	}
-	userManager.setField("stuId", stuId);//设置学号
-	userManager.setField("password", password);//设置密码
+	userManager.setField("stuId", stuId); //设置学号
+	userManager.setField("password", password); //设置密码
 
 	const res = await auth();
 
 	if (!res.success) {
 		console.log("登录失败");
-		Taro.showToast({
-			title: res.message,
-			icon: "none",
-		});
-		return false;
+		setTimeout(() => {
+			// Taro.showToast({
+			// 	title: res.message,
+			// 	icon: "error",
+			// 	duration: 5000,
+			// });
+			return false;
+		}, 10);
 	}
 	//这里获取用户信息
 
