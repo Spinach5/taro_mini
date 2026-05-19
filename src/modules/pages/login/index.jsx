@@ -94,10 +94,6 @@ export default function Index() {
 					color="#ffffff"
 					onClick={() => Taro.switchTab({ url: "/pages/user/index" })}
 				/>
-				{/* <View
-					className="fa fa-arrow-left back-btn"
-					onClick={() => Taro.switchTab({ url: "/pages/user/index" })}
-				></View> */}
 				<HeadStatus text="登录" />
 
 				<View className="header">
@@ -160,15 +156,9 @@ export default function Index() {
 								onClick={() => setShowPassword(!showPassword)}
 							>
 								{showPassword ? (
-									<View
-										className="fa fa-eye"
-										style={{ color: "#1a2c3e" }}
-									/>
+									<AtIcon value="volume-plus" color="#1a2c3e" />
 								) : (
-									<View
-										className="fa fa-eye-slash"
-										style={{ color: "#1a2c3e" }}
-									/>
+									<AtIcon value="volume-off" color="#1a2c3e" />
 								)}
 							</Text>
 						</View>

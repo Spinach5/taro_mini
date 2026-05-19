@@ -1,6 +1,5 @@
 import { useLaunch } from "@tarojs/taro";
 import "./app.css";
-import "./static/css/font-awesome.min.css"
 import 'taro-ui/dist/style/index.scss'
 
 function App({ children }) {
