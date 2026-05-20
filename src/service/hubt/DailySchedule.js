@@ -36,19 +36,19 @@ export async function getDailySchedule(time) {
     // 检查 HTTP 状态码
     if (response.status !== 200) {
       console.log("[getDailySchedule] 网络请求失败, status:", response.status);
-      throw new Error("获取作息数据失败：网络请求失败");
+      console.warn("获取作息数据失败：网络请求失败");
     }
 
     // 检查登录失效
     if (response.status === 300) {
       console.log("[getDailySchedule] 登录失效，请重新登录");
-      throw new Error("获取作息数据失败：登录失效，请重新登录");
+      console.warn("获取作息数据失败：登录失效，请重新登录");
     }
 
     // 检查业务返回码
     if (response.data?.ret !== 0) {
       console.log("[getDailySchedule] 接口返回异常:", response.data);
-      throw new Error("获取作息数据失败：接口返回 ret 不为 0");
+      console.warn("获取作息数据失败：接口返回 ret 不为 0");
     }
 
     const bzList = response.data.data?.bzList;
@@ -56,7 +56,7 @@ export async function getDailySchedule(time) {
     // 验证数据有效性
     if (!bzList || !Array.isArray(bzList)) {
       console.log("[getDailySchedule] 响应数据中无有效的 bzList 字段");
-      throw new Error("获取作息数据失败：响应数据中无有效的 bzList 字段");
+      console.warn("获取作息数据失败：响应数据中无有效的 bzList 字段");
     }
 
     // 3. 存入缓存（永不过期）
@@ -70,6 +70,6 @@ export async function getDailySchedule(time) {
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error("获取作息数据失败：" + error);
+    console.warn("获取作息数据失败：" + error);
   }
 }

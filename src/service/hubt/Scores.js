@@ -40,19 +40,19 @@ export async function getScores(forceRefresh = false) {
 		// 检查 HTTP 状态码
 		if (response.status !== 200) {
 			console.log("[getScores] 网络请求失败, status:", response.status);
-			throw new Error("获取成绩数据失败：网络请求失败");
+			console.warn("获取成绩数据失败：网络请求失败");
 		}
 
 		// 检查登录失效
 		if (response.status === 300) {
 			console.log("[getScores] 登录失效，请重新登录");
-			throw new Error("获取成绩数据失败：登录失效，请重新登录");
+			console.warn("获取成绩数据失败：登录失效，请重新登录");
 		}
 
 		// 检查业务返回码
 		if (response.data?.ret !== 0) {
 			console.log("[getScores] 接口返回异常:", response.data);
-			throw new Error("获取成绩数据失败：接口返回 ret 不为 0");
+			console.warn("获取成绩数据失败：接口返回 ret 不为 0");
 		}
 
 		const scoresData = response.data.data;
@@ -60,14 +60,14 @@ export async function getScores(forceRefresh = false) {
 		// 验证数据有效性
 		if (!scoresData) {
 			console.log("[getScores] 响应数据中无 data 字段");
-			throw new Error("获取成绩数据失败：响应数据中无成绩数据");
+			console.warn("获取成绩数据失败：响应数据中无成绩数据");
 		}
 
 		// 可选：进一步验证 scoresData 的结构是否符合预期
 		// 例如成绩通常应该是数组或包含特定字段的对象
 		if (typeof scoresData !== "object") {
 			console.log("[getScores] 响应数据格式异常");
-			throw new Error("获取成绩数据失败：响应数据格式异常");
+			console.warn("获取成绩数据失败：响应数据格式异常");
 		}
 
 		const extractData = {
@@ -88,6 +88,6 @@ export async function getScores(forceRefresh = false) {
 		if (error instanceof Error) {
 			throw error;
 		}
-		throw new Error("获取成绩数据失败：" + error);
+		console.warn("获取成绩数据失败：" + error);
 	}
 }

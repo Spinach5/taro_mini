@@ -37,19 +37,19 @@ export async function getStuInfo() {
 		const response = await AutoRetry(fetchStuInfo, { maxRetry: 1 });
 		if (response.status !== 200) {
 			console.log("[getStuInfo] 网络请求失败, status:", response.status);
-			throw new Error("获取个人信息失败:网络请求失败");
+			console.warn("获取个人信息失败:网络请求失败");
 		}
 
 		// 检查登录失效
 		if (response.status === 300) {
 			console.log("[getStuInfo] 登录失效，请重新登录");
-			throw new Error("获取个人信息失败：登录失效，请重新登录");
+			console.warn("获取个人信息失败：登录失效，请重新登录");
 		}
 
 		// 检查业务返回码
 		if (response.data?.ret !== 0) {
 			console.log("[getStuInfo] 接口返回异常:", response.data);
-			throw new Error("获取个人信息失败：接口返回 ret 不为 0");
+			console.warn("获取个人信息失败：接口返回 ret 不为 0");
 		}
 
 		const stuInfo = response.data.data;
@@ -57,13 +57,13 @@ export async function getStuInfo() {
 		// 验证数据有效性
 		if (!stuInfo) {
 			console.log("[getStuInfo] 响应数据中无 data 字段");
-			throw new Error("获取个人信息失败：响应数据中无个人信息");
+			console.warn("获取个人信息失败：响应数据中无个人信息");
 		}
 
 		// 可选：进一步验证 scoresData 的结构是否符合预期
 		if (typeof stuInfo !== "object") {
 			console.log("[getStuInfo] 响应数据格式异常");
-			throw new Error("获取成绩数据失败：响应数据格式异常");
+			console.warn("获取成绩数据失败：响应数据格式异常");
 		}
 
 		const cleanInfo = {
@@ -84,6 +84,6 @@ export async function getStuInfo() {
 		if (error instanceof Error) {
 			throw error;
 		}
-		throw new Error("获取个人信息失败：" + error);
+		console.warn("获取个人信息失败：" + error);
 	}
 }

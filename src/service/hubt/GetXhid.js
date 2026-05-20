@@ -32,20 +32,20 @@ export async function getXhid() {
 	const response = await AutoRetry(fetchXhid, { maxRetry: 1 });
 	if (response.status !== 200) {
 		console.log("[getXhid] 网络请求失败");
-		throw new Error("获取 xhid 失败：网络请求失败");
+		console.warn("获取 xhid 失败：网络请求失败");
 	}
 	if (response.status === 300) {
 		console.log("[getXhid] 登录失效，请重新登录");
-		throw new Error("获取 xhid 失败：登录失效，请重新登录");
+		console.warn("获取 xhid 失败：登录失效，请重新登录");
 	}
 	if (response.data.ret !== 0) {
 		console.log("[getCurrentWeek] 接口返回异常:", response.data);
-		throw new Error("获取xhid失败：接口返回 ret 不为 0");
+		console.warn("获取xhid失败：接口返回 ret 不为 0");
 	}
 	const xhid = response.data.data.id;
 
 	if (!xhid) {
-		throw new Error("获取 xhid 失败：响应数据中无 id 字段");
+		console.warn("获取 xhid 失败：响应数据中无 id 字段");
 	}
 
 	// 3. 存入缓存（永不过期）

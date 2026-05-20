@@ -34,18 +34,18 @@ export async function getTimeTable(semester) {
 		const response = await AutoRetry(fetchTimeTable, { maxRetry: 1 });
 		if (response.status !== 200) {
 			console.log("[getXhid] 网络请求失败");
-			throw new Error("获取时间表失败：网络请求失败");
+			console.warn("获取时间表失败：网络请求失败");
 		}
 		if (response.status === 300) {
 			console.log("[getXhid] 登录失效，请重新登录");
-			throw new Error("获取时间表失败：登录失效，请重新登录");
+			console.warn("获取时间表失败：登录失效，请重新登录");
 		}
 		if (response.data.ret !== 0) {
 			console.log("[getCurrentWeek] 接口返回异常:", response.data);
-			throw new Error("获取时间表失败：接口返回 ret 不为 0");
+			console.warn("获取时间表失败：接口返回 ret 不为 0");
 		}
 		if (!response.data.data.jcsjszList) {
-			throw new Error("获取 时间表 失败：响应数据中无 jcsjszList 字段");
+			console.warn("获取 时间表 失败：响应数据中无 jcsjszList 字段");
 		}
 
 		// 清洗时间表
@@ -61,6 +61,6 @@ export async function getTimeTable(semester) {
 		if (error instanceof Error) {
 			throw error;
 		}
-		throw new Error("获取排课周次失败：" + error);
+		console.warn("获取排课周次失败：" + error);
 	}
 }

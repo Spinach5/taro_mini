@@ -36,19 +36,19 @@ export async function getExamInfo() {
 		// 检查 HTTP 状态码
 		if (response.status !== 200) {
 			console.log("[getExamInfo] 网络请求失败, status:", response.status);
-			throw new Error("获取考试信息失败：网络请求失败");
+			console.warn("获取考试信息失败：网络请求失败");
 		}
 
 		// 检查登录失效
 		if (response.status === 300) {
 			console.log("[getExamInfo] 登录失效，请重新登录");
-			throw new Error("获取考试信息失败：登录失效，请重新登录");
+			console.warn("获取考试信息失败：登录失效，请重新登录");
 		}
 
 		// 检查业务返回码
 		if (response.data?.ret !== 0) {
 			console.log("[getExamInfo] 接口返回异常:", response.data);
-			throw new Error("获取考试信息失败：接口返回 ret 不为 0");
+			console.warn("获取考试信息失败：接口返回 ret 不为 0");
 		}
 
 		const examResults = response.data?.results;
@@ -56,7 +56,7 @@ export async function getExamInfo() {
 		// 验证数据有效性（验证是否为数组）
 		if (!examResults || !Array.isArray(examResults)) {
 			console.log("[getExamInfo] 响应数据中无有效的 results 字段");
-			throw new Error(
+			console.warn(
 				"获取考试信息失败：响应数据中无有效的 results 字段",
 			);
 		}
@@ -71,6 +71,6 @@ export async function getExamInfo() {
 		if (error instanceof Error) {
 			throw error;
 		}
-		throw new Error("获取考试信息失败：" + error);
+		console.warn("获取考试信息失败：" + error);
 	}
 }

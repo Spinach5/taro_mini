@@ -34,17 +34,17 @@ export async function getSemeseterList() {
 		const response = await AutoRetry(fetchCurrentSemester, { maxRetry: 1 });
 
 		if (response.status !== 200) {
-			throw new Error(`网络请求失败，状态码: ${response.status}`);
+			console.warn(`网络请求失败，状态码: ${response.status}`);
 		}
 		if (response.data.ret !== 0) {
-			throw new Error(`接口返回异常: ret=${response.data.ret}`);
+			console.warn(`接口返回异常: ret=${response.data.ret}`);
 		}
 
 		const CurrentSemesterData = response.data.data;
 		const OriginYear = getGrade();
 		if (OriginYear === "0") {
 			console.log("[getSemeseterList] 未获取到年级信息，请先登录");
-			throw new Error("获取当前学期失败：未获取到年级信息，请先登录");
+			console.warn("获取当前学期失败：未获取到年级信息，请先登录");
 		}
 		const SemesterList = getSemesterList(OriginYear, CurrentSemesterData);
 

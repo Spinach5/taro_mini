@@ -37,10 +37,10 @@ export async function getAllSchedule(forceRefresh = false, semester) {
     const response = await AutoRetry(fetchSchedule, { maxRetry: 1 });
 
     if (response.status !== 200) {
-      throw new Error(`网络请求失败，状态码: ${response.status}`);
+      console.warn(`网络请求失败，状态码: ${response.status}`);
     }
     if (response.data.ret !== 0) {
-      throw new Error(`接口返回异常: ret=${response.data.ret}`);
+      console.warn(`接口返回异常: ret=${response.data.ret}`);
     }
 
     const courseData = extractCourseData(response.data.data);

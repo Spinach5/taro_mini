@@ -37,19 +37,19 @@ export async function getCurrentWeek() {
 				"[getCurrentWeek] 网络请求失败, status:",
 				response.status,
 			);
-			throw new Error("获取当前周数失败：网络请求失败");
+			console.warn("获取当前周数失败：网络请求失败");
 		}
 
 		// 检查登录失效
 		if (response.status === 300) {
 			console.log("[getCurrentWeek] 登录失效，请重新登录");
-			throw new Error("获取当前周数失败：登录失效，请重新登录");
+			console.warn("获取当前周数失败：登录失效，请重新登录");
 		}
 
 		// 检查业务返回码
 		if (response.data?.ret !== 0) {
 			console.log("[getCurrentWeek] 接口返回异常:", response.data);
-			throw new Error("获取当前周数失败：接口返回 ret 不为 0");
+			console.warn("获取当前周数失败：接口返回 ret 不为 0");
 		}
 
 		const currentWeek = response.data.data?.xlzc;
@@ -57,7 +57,7 @@ export async function getCurrentWeek() {
 		// 验证数据有效性（类似 getXhid 中检查 id 是否存在）
 		if (currentWeek === undefined || currentWeek === null) {
 			console.log("[getCurrentWeek] 响应数据中无 xlzc 字段");
-			throw new Error("获取当前周数失败：响应数据中无 xlzc 字段");
+			console.warn("获取当前周数失败：响应数据中无 xlzc 字段");
 		}
 
 		// 3. 存入缓存（永不过期，和 getSemeseterList 一致）
@@ -70,6 +70,6 @@ export async function getCurrentWeek() {
 		if (error instanceof Error) {
 			throw error;
 		}
-		throw new Error("获取当前周数失败：" + error);
+		console.warn("获取当前周数失败：" + error);
 	}
 }

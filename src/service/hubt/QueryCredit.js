@@ -37,18 +37,18 @@ export async function getCredits() {
 		// 检查 HTTP 状态码
 		if (response.status !== 200) {
 			console.log("[getCredits] 网络请求失败, status:", response.status);
-			throw new Error("获取成绩数据失败：网络请求失败");
+			console.warn("获取成绩数据失败：网络请求失败");
 		}
 
 		// 检查登录失效
 		if (response.status === 300) {
 			console.log("[getCredits] 登录失效，请重新登录");
-			throw new Error("获取成绩数据失败：登录失效，请重新登录");
+			console.warn("获取成绩数据失败：登录失效，请重新登录");
 		}
 
 		if (typeof response.data !== "string") {
 			console.log("[getCredits] 响应数据格式异常");
-			throw new Error("获取成绩数据失败：响应数据格式异常");
+			console.warn("获取成绩数据失败：响应数据格式异常");
 		}
 
 		const scoresData = extractRanks(response.data);
@@ -56,7 +56,7 @@ export async function getCredits() {
 		// 验证数据有效性
 		if (!scoresData) {
 			console.log("[getCredits] 响应数据中无 data 字段");
-			throw new Error("获取成绩数据失败：响应数据中无成绩数据");
+			console.warn("获取成绩数据失败：响应数据中无成绩数据");
 		}
 
 		// 3. 存入缓存（永不过期）
@@ -69,6 +69,6 @@ export async function getCredits() {
 		if (error instanceof Error) {
 			throw error;
 		}
-		throw new Error("获取成绩数据失败：" + error);
+		console.warn("获取成绩数据失败：" + error);
 	}
 }

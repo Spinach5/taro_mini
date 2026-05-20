@@ -41,19 +41,19 @@ export async function getExtroInfo() {
 				"[getExtroInfo] 网络请求失败, status:",
 				response.status,
 			);
-			throw new Error("获取实践信息失败：网络请求失败");
+			console.warn("获取实践信息失败：网络请求失败");
 		}
 
 		// 检查登录失效
 		if (response.status === 300) {
 			console.log("[getExtroInfo] 登录失效，请重新登录");
-			throw new Error("获取实践信息失败：登录失效，请重新登录");
+			console.warn("获取实践信息失败：登录失效，请重新登录");
 		}
 
 		// 检查业务返回码
 		if (response.data?.ret !== 0) {
 			console.log("[getExtroInfo] 接口返回异常:", response.data);
-			throw new Error("获取实践信息失败：接口返回 ret 不为 0");
+			console.warn("获取实践信息失败：接口返回 ret 不为 0");
 		}
 
 		const sjkData = response.data.data?.sjk;
@@ -61,7 +61,7 @@ export async function getExtroInfo() {
 		// 验证数据有效性（验证是否为数组）
 		if (!sjkData || !Array.isArray(sjkData)) {
 			console.log("[getExtroInfo] 响应数据中无有效的 sjk 字段");
-			throw new Error("获取实践信息失败：响应数据中无有效的 sjk 字段");
+			console.warn("获取实践信息失败：响应数据中无有效的 sjk 字段");
 		}
 
 		// 3. 存入缓存（永不过期）
@@ -74,6 +74,6 @@ export async function getExtroInfo() {
 		if (error instanceof Error) {
 			throw error;
 		}
-		throw new Error("获取实践信息失败：" + error);
+		console.warn("获取实践信息失败：" + error);
 	}
 }
