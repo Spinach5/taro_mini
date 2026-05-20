@@ -20,10 +20,8 @@ export default function Index() {
         setClubs(clubData.club)
         setClubCategory(clubData.clubcategory)
     })
-    useEffect(() => {
-        console.log(clubs)  // 当 clubs 更新时会打印最新值
-    }, [clubs])
 
+    // 卡片原型
     const card = (club) => {
         return (<View key={club.id} className="club-card">
             <View>{club.name}</View>
@@ -34,6 +32,10 @@ export default function Index() {
             <View className="content-row">
                 <View className="label">活动：</View>
                 <View className="value">{club.activities}</View>
+            </View>
+            <View className="content-row">
+                <View className="label">联系方式：</View>
+                <View className="value">{"暂未取得联系方式null"}</View>
             </View>
         </View>)
     }
