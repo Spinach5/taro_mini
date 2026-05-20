@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 export default defineAppConfig({
-	lazyCodeLoading: "requiredComponents",// 按需加载
+	lazyCodeLoading: "requiredComponents", // 按需加载
 	pages: ["pages/index/index", "pages/course/index", "pages/user/index"],
 
 	window: {
@@ -32,13 +32,13 @@ export default defineAppConfig({
 		],
 	},
 	subPackages: [
-    {
-      root: 'modules',
-      pages: [
-        'pages/login/index', // 分包页面
-		'pages/club/index'
-      ],
-    }
-  ],
-
+		{
+			root: "modules",
+			pages: [
+				"pages/login/index", // 分包页面
+				"pages/club/index",
+				"pages/muyu/index",
+			],
+		},
+	],
 });
