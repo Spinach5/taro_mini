@@ -20,7 +20,7 @@ const gridItems = [
 	{ url: "/modules/pages/club/index", icon: "close-circle", text: "社团" },
 	{ url: "", icon: "close-circle", text: "美食" },
 	{ url: "", icon: "close-circle", text: "行政事务" },
-	{ url: "", icon: "close-circle", text: "书籍资料" },
+	{ url: "/modules/pages/muyu/index", icon: "close-circle", text: "电子木鱼" },
 	{ url: "", icon: "close-circle", text: "日常用品" },
 	{ url: "", icon: "close-circle", text: "地图" },
 	{ url: "", icon: "close-circle", text: "二手书" },

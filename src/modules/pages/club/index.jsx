@@ -3,7 +3,7 @@ import Taro from '@tarojs/taro'
 import "./index.css";
 import SafeAreaView from "../../../components/safeView";
 import HeadStatus from "../../../components/headStatus";
-import InputBar from "../../../components/InputBar"
+import InputBar from "../../../components/InputBar";
 import CategoryFilter from "../../../components/CategoryFilter";
 import { useState, useEffect } from "react";
 import { useLoad } from "@tarojs/taro";
