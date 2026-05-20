@@ -32,11 +32,13 @@ export default defineAppConfig({
 		],
 	},
 	subPackages: [
-		{
-			root: "modules",
-			pages: [
-				"pages/login/index", // 分包页面
-			],
-		},
-	],
+    {
+      root: 'modules',
+      pages: [
+        'pages/login/index', // 分包页面
+		'pages/club/index'
+      ],
+    }
+  ],
+
 });

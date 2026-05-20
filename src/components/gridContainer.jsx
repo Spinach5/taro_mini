@@ -17,7 +17,7 @@ const IconClass = {
 // 功能入口配置数据
 const gridItems = [
 	{ url: "", icon: "close-circle", text: "学生会" },
-	{ url: "", icon: "close-circle", text: "社团" },
+	{ url: "/modules/pages/club/index", icon: "close-circle", text: "社团" },
 	{ url: "", icon: "close-circle", text: "美食" },
 	{ url: "", icon: "close-circle", text: "行政事务" },
 	{ url: "", icon: "close-circle", text: "书籍资料" },

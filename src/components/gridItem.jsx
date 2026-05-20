@@ -4,31 +4,27 @@ import "./gridItem.css";
 import { AtIcon } from "taro-ui";
 
 export default function GridItem({
-	url,
-	icon,
-	text = "无",
-	className = "",
-	onClick = () => {
-		Taro.showToast({
-			title: "功能正在开发中",
-			icon: "none",
-			duration: 1500,
-		});
-	},
-	navigate = true,
-	navigateType = "navigateTo",
+  url,
+  icon,
+  text='无',
+  className = '',
+  onClick=()=>{},
+  navigate = true,
+  navigateType = 'navigateTo'
 }) {
-	const handleClick = async () => {
-		if (onClick) {
-			onClick();
-			return;
-		}
 
-		if (!navigate) return;
-		if (!url) {
-			console.warn("url is required for navigate");
-			return;
-		}
+const handleClick = async () => {
+  // if (onClick) {
+  //   onClick()
+  //   return
+  // }
+
+  if (!navigate) return
+  if (!url) {
+    console.warn('url is required for navigate')
+    Taro.showToast({title: '功能正在开发中', icon: 'none', duration: 1500})
+    return
+  }
 
 		try {
 			switch (navigateType) {
