@@ -4,8 +4,7 @@ import SafeAreaView from "../../components/safeView";
 import HeadStatus from "../../components/headStatus";
 import IndexSwiper from "../../components/IndexSwiper";
 import GridContainer from "../../components/gridContainer";
-import { useLoad, useLaunch, useDidShow, useDidHide, useRouter} from "@tarojs/taro";
-import { getStuInfo } from "../../service/hubt/StuInfo";
+import { useLoad,  useDidShow, useDidHide, useRouter} from "@tarojs/taro";
 
 export default function Index() {
 	const router = useRouter();
@@ -15,12 +14,10 @@ export default function Index() {
 
 	// 页面显示时执行（每次切换到前台都会执行）
 	useDidShow(() => {
-		console.log("页面已显示");
 	});
 
 	// 页面隐藏时执行（切换到后台）
 	useDidHide(() => {
-		console.log("页面已隐藏");
 	});
 	return (
 		<SafeAreaView currentPath={currentPath} >
@@ -33,6 +30,8 @@ export default function Index() {
 			<View className="bora card list">
 				<View className="item">最终可能展示公告或活动</View>
 			</View>
+			{/* 设置旋转动画 */}
+
 		</SafeAreaView>
 	);
 }

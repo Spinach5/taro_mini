@@ -1,7 +1,7 @@
 //统一导出学校的模块
 export { getAllSchedule } from "./AllSchedule";
 export { auth } from "./auth";
-export { getCurrentSemester } from "./CurrentSemester";
+export { getSemeseterList } from "./CurrentSemester";
 export { getCurrentWeek } from "./CurrentWeek";
 export { getDailySchedule } from "./DailySchedule";
 export { getExamInfo } from "./ExamInfo";

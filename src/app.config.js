@@ -1,61 +1,44 @@
 /* eslint-disable no-undef */
 export default defineAppConfig({
-	pages: [
-		'pages/index/index',
-		"pages/course/index",
-		"pages/user/index",
-		"pages/test/index",
-	],
+	lazyCodeLoading: "requiredComponents", // 按需加载
+	pages: ["pages/index/index", "pages/course/index", "pages/user/index"],
 
 	window: {
-		backgroundTextStyle: 'light',
-		navigationBarBackgroundColor: '#fff',
-		navigationBarTitleText: 'WeChat',
-		navigationBarTextStyle: 'black',
-		navigationStyle: 'custom'
+		backgroundTextStyle: "light",
+		navigationBarBackgroundColor: "#fff",
+		navigationBarTitleText: "WeChat",
+		navigationBarTextStyle: "black",
+		navigationStyle: "custom",
 	},
 	tabBar: {
-		custom:true,
-		color: '#666666',
-		selectedColor: '#007bff',
-		backgroundColor: '#ffffff',
-		borderStyle: 'white',
+		custom: true,
+		color: "#666666",
+		selectedColor: "#007bff",
+		backgroundColor: "#ffffff",
+		borderStyle: "white",
 		list: [
 			{
 				pagePath: "pages/index/index",
 				text: "首页",
-				iconPath: "./assets/首页.png",
-				selectedIconPath: "./assets/首页1.png",
 			},
 			{
 				pagePath: "pages/course/index",
 				text: "课程",
-				iconPath: "./assets/课表信息.png",
-				selectedIconPath: "./assets/课表信息1.png",
-			},
-			{
-				pagePath: "pages/test/index",
-				text: "测试",
-				iconPath: "./assets/课表信息.png",
-				selectedIconPath: "./assets/课表信息1.png",
 			},
 			{
 				pagePath: "pages/user/index",
 				text: "我的",
-				iconPath: "./assets/我的.png",
-				selectedIconPath: "./assets/我的1.png",
 			},
-
-		]
+		],
 	},
 	subPackages: [
-    {
-      root: 'modules',
-      pages: [
-        'pages/login/index', // 分包页面
-		'pages/copyright/index'
-      ],
-    }
-  ],
-
+		{
+			root: "modules",
+			pages: [
+				"pages/login/index", // 分包页面
+				"pages/club/index",
+				"pages/muyu/index",
+			],
+		},
+	],
 });

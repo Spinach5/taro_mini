@@ -11,7 +11,7 @@ export function extractCourseData(courseList) {
   for (const item of courseList) {
     // 生成唯一键：课程名 + 周次串 + 星期几
     // 如果同一门课同一周次但在不同教室/教师，可考虑加入更多字段区分
-    const key = `${item.kcmc}|${item.zcstr}|${item.xingqi}`;
+    const key = `${item.kcmc}|${item.zcstr}|${item.xingqi}|${item.djs}`;
 
     if (!map.has(key)) {
       // 首次遇到：创建清洗后的对象
@@ -26,7 +26,8 @@ export function extractCourseData(courseList) {
         xf: item.xf,
         zongxs: item.zongxs,
         xingqi: item.xingqi,
-        djc: [item.djc]              // 节次初始化为数组
+        djc: [item.djc],              // 节次初始化为数组
+		djs:item.djs
       });
     } else {
       // 同一天、同一课程的另一个节次，压入 djc 数组

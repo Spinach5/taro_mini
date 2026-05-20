@@ -1,145 +1,117 @@
 // components/CourseHeader.jsx
-import { View, Image, Text, ScrollView } from "@tarojs/components";
+import { View, Text, Picker } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import Btn from "./Btn";
-import { getAllWeek } from "../service/hubt/GetAllWeek";
+import { AtIcon } from "taro-ui";
+import WeekSelectorModal from "./WeekSelectorModal";
+import AddCourseModal from "./AddCourseModal";
+import SemesterPicker from "./SemesterSelector";
+import "./courseHeader.css";
 
 export default function CourseHeader({
+	currentSemester,
 	currentWeek,
 	onWeekChange,
-	className = "",
+	onRefresh,
+	onAddCourseConfirm, // 添加课程确认回调，接收 schedule 对象，返回 Promise
+	semesterList = [], // 新增：学期列表
+	onSemesterChange, // 新增：学期切换回调
 }) {
-	const [weekList, setWeekList] = useState([]);
-	const [showPicker, setShowPicker] = useState(false);
+	const [showWeekPicker, setShowWeekPicker] = useState(false);
+	const [showFunctionMenu, setShowFunctionMenu] = useState(false);
+	const [showAddModal, setShowAddModal] = useState(false);
 
+	// 获取学期列表（用于选择学期）
 	useEffect(() => {
-		getAllWeek().then((list) => setWeekList(list || []));
+		if (!currentSemester) return;
+		// 假设父组件已经传入学期列表或自己获取，这里为了简洁，在点击选择学期时动态获取
 	}, []);
 
 	const handleSelectWeek = (week) => {
-		setShowPicker(false);
+		setShowWeekPicker(false);
 		onWeekChange?.(week);
 	};
 
-	const closePicker = () => setShowPicker(false);
+	const handleFunctionClick = (funcName) => {
+		if (funcName === "刷新课表") onRefresh?.();
+		// 移除原有的“选择学期”分支，因为现在由 SemesterPicker 直接处理
+		else if (funcName === "添加课程") setShowAddModal(true);
+		setShowFunctionMenu(false);
+	};
+
+	const handleAddCourse = async (schedule) => {
+		if (onAddCourseConfirm) {
+			await onAddCourseConfirm(schedule);
+		}
+	};
 
 	return (
 		<>
-			<View
-				className={className}
-				style={{
-					padding: "4px",
-					marginBottom: "16px",
-					height: "40px",
-					display: "flex",
-					gap: "18px",
-					alignItems: "center",
-				}}
-			>
-				<Btn>
-					<View className="fa fa-list-ul" />
+			<View className="header-content">
+				<Btn onClick={() => setShowFunctionMenu(true)}>
+					<AtIcon value="bullet-list" size={20} />
 				</Btn>
-				<Btn onClick={() => setShowPicker(true)}>
+				<SemesterPicker
+					semesterList={semesterList}
+					currentSemester={currentSemester}
+					onChange={onSemesterChange}
+				>
+					<Btn>
+						<Text>{currentSemester ?? "选择学期"}</Text>
+						<AtIcon value="chevron-down" size={20} />
+					</Btn>
+				</SemesterPicker>
+				<Btn onClick={() => setShowWeekPicker(true)}>
 					<Text>第{currentWeek ?? "?"}周</Text>
-					<View className="fa fa-angle-down" />
+					<AtIcon value="chevron-down" size={20} />
 				</Btn>
 			</View>
-
-			{/* 周数选择弹窗 */}
-			{showPicker && (
+			{/* 功能菜单 */}
+			{showFunctionMenu && (
 				<View
-					style={{
-						position: "fixed",
-						top: 0,
-						left: 0,
-						right: 0,
-						bottom: 0,
-						backgroundColor: "rgba(0,0,0,0.5)",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						zIndex: 1000,
-					}}
-					onClick={closePicker}
+					className="menu-mask"
+					onClick={() => setShowFunctionMenu(false)}
 				>
 					<View
-						style={{
-							width: "80%",
-							maxWidth: "500px",
-							backgroundColor: "#fff",
-							borderRadius: "16px",
-							overflow: "hidden",
-						}}
+						className="menu-popup"
 						onClick={(e) => e.stopPropagation()}
 					>
-						{/* 标题 */}
-						<View
-							style={{
-								textAlign: "center",
-								padding: "16px",
-								fontSize: "30px",
-								fontWeight: "bold",
-								color: "#000",
-							}}
-						>
-							选择周数
-						</View>
-
-						{/* 可滚动区域，隐藏滚动条 */}
-						<ScrollView
-							scrollY
-							enhanced
-							showScrollbar={false}
-							style={{
-								maxHeight: "400px",
-							}}
-						>
-							<View style={{ padding: "16px" }}>
-								<View
-									style={{
-										display: "grid",
-										gridTemplateColumns: "repeat(6, 1fr)",
-										gap: "12px",
-									}}
-								>
-									{weekList.map((week) => {
-										const isSelected = currentWeek === week;
-										return (
-											<View
-												key={week}
-												onClick={() =>
-													handleSelectWeek(week)
-												}
-												style={{
-													aspectRatio: "1 / 1",
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-													borderRadius: "8px",
-													backgroundColor: isSelected
-														? "#fff"
-														: "#47a5fd",
-													border: isSelected
-														? "2px solid #47a5fd"
-														: "none",
-													color: isSelected
-														? "#47a5fd"
-														: "#fff",
-													fontSize: "20px",
-													fontWeight: "bold",
-													cursor: "pointer",
-												}}
-											>
-												{week}
-											</View>
-										);
-									})}
-								</View>
+						{[
+							{ func: "刷新课表", icon: "repeat-play" },
+							{ func: "添加课程", icon: "add" },
+						].map((item, index) => (
+							<View
+								key={index}
+								className="menu-item"
+								onClick={() => handleFunctionClick(item.func)}
+							>
+								<AtIcon
+									value={item.icon}
+									size={20}
+									style={{ width: "24px" }}
+								/>
+								<Text className="menu-text">{item.func}</Text>
 							</View>
-						</ScrollView>
+						))}
 					</View>
 				</View>
 			)}
+
+			{/* 周数选择弹窗 */}
+			<WeekSelectorModal
+				visible={showWeekPicker}
+				semester={currentSemester}
+				onSelect={handleSelectWeek}
+				onClose={() => setShowWeekPicker(false)}
+			/>
+
+			{/* 添加课程弹窗 */}
+			<AddCourseModal
+				visible={showAddModal}
+				onClose={() => setShowAddModal(false)}
+				onConfirm={handleAddCourse}
+				semester={currentSemester}
+			/>
 		</>
 	);
 }

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { View, Text, Input, Button, Picker, Image } from "@tarojs/components";
+import { View, Text, Input, Button, Picker } from "@tarojs/components";
 import "./index.css";
 import HeadStatus from "../../../components/headStatus";
 import SafeAreaView from "../../../components/safeView";
 import Taro from "@tarojs/taro";
 import { checkStuID } from "../../../utils/checkStuID";
-import { login } from "../../../service/hubt/login";
+import { login } from "../../../service/login";
+import { AtIcon } from "taro-ui";
 
 export default function Index() {
 	const [university, setUniversity] = useState("湖北工业大学");
@@ -15,7 +16,7 @@ export default function Index() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [studentIdError, setStudentIdError] = useState(false);
 
-	const universityList = ["湖北工业大学", "其他大学"];
+	const universityList = ["湖北工业大学"];
 
 	const handleLogin = async () => {
 		// 学号验证
@@ -45,17 +46,12 @@ export default function Index() {
 			Taro.showLoading({ title: "登录中..." });
 
 			// 调用登录接口
-			const res = await login(studentId, password);
-
-			// 保存登录状态和用户信息
-			Taro.setStorageSync("is_loggedin_xxt", true);
-			Taro.setStorageSync("userInfo", {
-				raw_username: studentId,
-				username: studentId,
-				nickname: `用户${studentId.slice(-4)}`,
-			});
-
+			console.log("login", studentId, password);
+			const res = await login(studentId, password, university);
 			Taro.hideLoading();
+			if (!res) {
+				return;
+			}
 			Taro.showToast({
 				title: "登录成功",
 				icon: "success",
@@ -68,7 +64,7 @@ export default function Index() {
 				Taro.reLaunch({
 					url: "/pages/user/index",
 				});
-			}, 1500);
+			}, 150);
 		} catch (error) {
 			Taro.hideLoading();
 			Taro.showToast({
@@ -90,15 +86,14 @@ export default function Index() {
 		value = value.replace(/\s/g, "");
 		setPassword(value);
 	};
-{/* <View class="fa fa-arrow-left" style="font-size:48px; color:#F00"></View> */}
 	return (
 		<SafeAreaView>
 			<View className="login-container">
-				<View
-					className="fa fa-arrow-left back-btn"
+				<AtIcon
+					value="arrow-left"
+					color="#ffffff"
 					onClick={() => Taro.switchTab({ url: "/pages/user/index" })}
-				>
-				</View>
+				/>
 				<HeadStatus text="登录" />
 
 				<View className="header">
@@ -160,7 +155,11 @@ export default function Index() {
 								className="password-toggle"
 								onClick={() => setShowPassword(!showPassword)}
 							>
-								{showPassword ? "👁️" : "👁️‍🗨️"}
+								{showPassword ? (
+									<AtIcon value="volume-plus" color="#1a2c3e" />
+								) : (
+									<AtIcon value="volume-off" color="#1a2c3e" />
+								)}
 							</Text>
 						</View>
 					</View>

@@ -1,0 +1,11 @@
+.input-field {
+  height: auto;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  padding: 0 10px;
+  font-size: 28px;
+  color: #1a2c3e;
+  transition: all 0.3s;
+  background: #f5f7fa;
+}
+
