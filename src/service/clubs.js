@@ -1,6 +1,7 @@
 // 获取所有社团
 import cacheManager from "../utils/cache";
-import { opendiffRequest } from "../utils/request"
+import { opendiffRequest } from "../utils/request";
+import runtimeLogger from "../utils/runtimeLogger";
 
 const CACHE_KEY_CLUBS = "All_CLUBS";
 const CACHE_KEY_CLUBCATEGORY = "ALL_CLUBCATEGORY"
@@ -36,7 +37,7 @@ export async function getAllClub(forceRefresh = false) {
         console.log(`[getAllClub] 已缓存社团数据`);
         return response;
     } catch (error) {
-        console.error("[getAllClub] 获取失败:", error);
+        runtimeLogger.error("Club", "获取社团列表失败", error);
         throw error;
     }
 }

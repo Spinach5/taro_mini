@@ -1,8 +1,8 @@
 import { View, Input, Picker, ScrollView, Text } from "@tarojs/components";
 import { useState, useEffect } from "react";
 import Taro from "@tarojs/taro";
-import { getTimeTable } from "../service/hubt/GetTimeTable";
-import { getAllWeek } from "../service/hubt/GetAllWeek";
+import { getTimeTable } from "../service/hbut/GetTimeTable";
+import { getAllWeek } from "../service/hbut/GetAllWeek";
 import "./AddCourseModal.css";
 
 export default function AddCourseModal({

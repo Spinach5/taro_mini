@@ -2,6 +2,7 @@
 import Taro from '@tarojs/taro'
 import { API_BASE } from '../config/api'
 import CookiesManager from './cookies'
+import runtimeLogger from './runtimeLogger'
 
 /**
  * 拼接完整 URL
@@ -90,7 +91,12 @@ function createRequest(baseURL, cookiesPrefix = '') {
     baseURL,
     async request(config) {
       const { url, method = 'GET', data, headers = {} } = config
-      return requestCore(url, method, data, headers, baseURL, cookieManager)
+      try {
+        return await requestCore(url, method, data, headers, baseURL, cookieManager)
+      } catch (error) {
+        runtimeLogger.error('Request', `${method} ${url} 失败`, error)
+        throw error
+      }
     },
     get(url, config = {}) {
       return this.request({ ...config, url, method: 'GET' })

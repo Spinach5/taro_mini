@@ -7,21 +7,22 @@ import {
 	Text,
 } from "@tarojs/components";
 import Taro, { useRouter, useDidShow } from "@tarojs/taro";
-import SafeAreaView from "../../components/safeView";
-import CourseHeader from "../../components/courseHeader";
-import WeekHeader from "../../components/courseWeek";
-import TimeColumn from "../../components/courseTimeColumn";
-import CourseGrid from "../../components/courseGrid";
+import SafeAreaView from "../../components/SafeAreaView";
+import CourseHeader from "../../components/CourseHeader";
+import WeekHeader from "../../components/WeekHeader";
+import TimeColumn from "../../components/TimeColumn";
+import CourseGrid from "../../components/CourseGrid";
 import Loading from "../../components/Loading";
-import CourseInfoModal from "../../components/courseInfoModal"; // 新增导入
-import { getCurrentWeek } from "../../service/hubt/CurrentWeek";
-import { getAllWeek } from "../../service/hubt/GetAllWeek";
-import { getAllSchedule } from "../../service/hubt/AllSchedule";
-import { getTimeTable } from "../../service/hubt/GetTimeTable";
+import CourseInfoModal from "../../components/CourseInfoModal";
+import { getCurrentWeek } from "../../service/hbut/CurrentWeek";
+import { getAllWeek } from "../../service/hbut/GetAllWeek";
+import { getAllSchedule } from "../../service/hbut/AllSchedule";
+import { getTimeTable } from "../../service/hbut/GetTimeTable";
 import { getColorFromName } from "../../utils/getHashCode";
-import { getSemeseterList } from "../../service/hubt/CurrentSemester";
+import { getSemesterList } from "../../service/hbut/CurrentSemester";
 import { addSchedule } from "../../service/AddSchedule";
 import userManager from "../../service/userInfo";
+import runtimeLogger from "../../utils/runtimeLogger";
 import "./index.css";
 
 export default function Index() {
@@ -92,7 +93,7 @@ export default function Index() {
 			setCourses(scheduleData || []);
 			setTimeTable(timeData || []);
 		} catch (err) {
-			console.error("刷新课表失败", err);
+			runtimeLogger.error("Course", "刷新课表失败", err);
 			Taro.showToast({ title: "刷新失败", icon: "none" });
 		} finally {
 			setLoading(false);
@@ -107,8 +108,9 @@ export default function Index() {
 				Taro.showToast({ title: "添加成功", icon: "success" });
 				refreshCourseData(); // 添加后刷新课表
 			} catch (err) {
+				runtimeLogger.error("Course", "添加课程失败", err);
 				Taro.showToast({ title: "添加失败", icon: "none" });
-				throw err; // 让 AddCourseModal 感知失败
+				throw err;
 			}
 		},
 		[refreshCourseData],
@@ -129,7 +131,7 @@ export default function Index() {
 				if (!loggedIn) resetCourseData();
 			}
 		} catch (error) {
-			console.error("获取登录状态失败", error);
+			runtimeLogger.error("Course", "获取登录状态失败", error);
 			if (isLoggedIn === true) resetCourseData();
 			setIsLoggedIn(false);
 		}
@@ -146,7 +148,7 @@ export default function Index() {
 	// 获取学期列表
 	useEffect(() => {
 		if (!isLoggedIn) return;
-		getSemeseterList()
+		getSemesterList()
 			.then((list) => {
 				setSemesterList(list);
 				if (list && list.length) {

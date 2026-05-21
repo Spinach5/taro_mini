@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { View, Text } from "@tarojs/components";
 import Taro, { useDidShow, useRouter } from "@tarojs/taro";
-import HeadStatus from "../../components/headStatus";
-import SafeAreaView from "../../components/safeView";
-import UserCard from "../../components/userCard";
+import HeadStatus from "../../components/HeadStatus";
+import SafeAreaView from "../../components/SafeAreaView";
+import UserCard from "../../components/UserCard";
 import userManager from "../../service/userInfo";
+import runtimeLogger from "../../utils/runtimeLogger";
 import "./index.css";
 
 export default function Index() {
@@ -19,7 +20,7 @@ export default function Index() {
       const info = userManager.getUserInfoSync();
       setUserInfo(info); // info 为 null 表示未登录
     } catch (error) {
-      console.error("获取用户信息失败", error);
+      runtimeLogger.error("User", "获取用户信息失败", error);
       setUserInfo(null);
     } finally {
       setLoading(false);
@@ -92,8 +93,13 @@ export default function Index() {
           <View className="item" onClick={() => {}}>
             <Text>设置</Text>
           </View>
-          <View className="item" onClick={() => {}}>
-            <Text>常见问题</Text>
+          <View
+            className="item"
+            onClick={() =>
+              Taro.navigateTo({ url: "/modules/pages/runtimeLog/index" })
+            }
+          >
+            <Text>运行日志</Text>
           </View>
           <View className="item" onClick={() => {}}>
             <Text>关于我们</Text>

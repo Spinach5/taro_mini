@@ -1,9 +1,8 @@
 import { View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import "./index.css";
-import SafeAreaView from "../../../components/safeView";
-import HeadStatus from "../../../components/headStatus";
-import InputBar from "../../../components/InputBar";
+import SafeAreaView from "../../../components/SafeAreaView";
+import HeadStatus from "../../../components/HeadStatus";
 import { AtIcon } from "taro-ui";
 
 export default function Index() {

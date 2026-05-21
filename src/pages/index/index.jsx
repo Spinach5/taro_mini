@@ -1,9 +1,9 @@
 import { View } from "@tarojs/components";
 import "./index.css";
-import SafeAreaView from "../../components/safeView";
-import HeadStatus from "../../components/headStatus";
+import SafeAreaView from "../../components/SafeAreaView";
+import HeadStatus from "../../components/HeadStatus";
 import IndexSwiper from "../../components/IndexSwiper";
-import GridContainer from "../../components/gridContainer";
+import GridContainer from "../../components/GridContainer";
 import { useLoad,  useDidShow, useDidHide, useRouter} from "@tarojs/taro";
 
 export default function Index() {

@@ -1,8 +1,8 @@
 import { View, ScrollView } from "@tarojs/components";
 import { useState, useEffect } from "react";
-import { getCurrentWeek } from "../service/hubt/CurrentWeek";
-import { getAllWeek } from "../service/hubt/GetAllWeek";
-import { getSemeseterList } from "../service/hubt/CurrentSemester";
+import { getCurrentWeek } from "../service/hbut/CurrentWeek";
+import { getAllWeek } from "../service/hbut/GetAllWeek";
+import { getSemesterList } from "../service/hbut/CurrentSemester";
 import "./WeekSelectorModal.css";
 
 export default function WeekSelectorModal({
@@ -17,7 +17,7 @@ export default function WeekSelectorModal({
 
   useEffect(() => {
     if (!visible || !semester) return;
-    Promise.all([getCurrentWeek(), getAllWeek(semester), getSemeseterList()])
+    Promise.all([getCurrentWeek(), getAllWeek(semester), getSemesterList()])
       .then(([week, weeks, semesters]) => {
         setCurrentWeek(week);
         setWeekList(weeks);

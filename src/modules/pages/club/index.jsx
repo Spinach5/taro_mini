@@ -1,8 +1,8 @@
 import { View, ScrollView } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import "./index.css";
-import SafeAreaView from "../../../components/safeView";
-import HeadStatus from "../../../components/headStatus";
+import SafeAreaView from "../../../components/SafeAreaView";
+import HeadStatus from "../../../components/HeadStatus";
 import InputBar from "../../../components/InputBar";
 import CategoryFilter from "../../../components/CategoryFilter";
 import Loading from "../../../components/Loading";

@@ -1,11 +1,11 @@
 import { useLaunch } from "@tarojs/taro";
 import "./app.css";
-import 'taro-ui/lib/style/index.scss'
+import "taro-ui/lib/style/index.scss";
+import runtimeLogger from "./utils/runtimeLogger";
 
 function App({ children }) {
 	useLaunch(async () => {
-		console.log("App launched.");
-
+		runtimeLogger.info("App", `应用启动 (${process.env.TARO_ENV || "unknown"})`);
 	});
 
 	return children;

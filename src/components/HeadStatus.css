@@ -1,0 +1,11 @@
+.head-status {
+	display: flex;
+	flex-direction: row;
+	margin-bottom: 10px;
+}
+
+.head-status-text {
+	color: #fff;
+	font-weight: bold;
+	font-size: 40px;
+}

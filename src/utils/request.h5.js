@@ -3,6 +3,7 @@ import axios from "axios";
 import TaroAdapter from "taro-axios-adapter";
 import CookiesManager from "./cookies"; // 导入 CookiesManager 类
 import { API_BASE } from "../config/api";
+import runtimeLogger from "./runtimeLogger";
 
 /**
  * 创建带有 Cookie 自动管理的请求实例
@@ -32,7 +33,10 @@ const createRequest = (baseURL, cookiesPrefix = "") => {
 			}
 			return config;
 		},
-		(error) => Promise.reject(error),
+		(error) => {
+			runtimeLogger.error("Request", "请求发送失败", error);
+			return Promise.reject(error);
+		},
 	);
 
 	// 响应拦截器：提取并保存 Set-Cookie
@@ -53,7 +57,16 @@ const createRequest = (baseURL, cookiesPrefix = "") => {
 
 			return response; //保留整个 response
 		},
-		(error) => Promise.reject(error),
+		(error) => {
+			const url = error?.config?.url || error?.config?.baseURL || "unknown";
+			const status = error?.response?.status;
+			runtimeLogger.error(
+				"Request",
+				`响应异常 ${status || ""} ${url}`.trim(),
+				error?.message || error,
+			);
+			return Promise.reject(error);
+		},
 	);
 
 	return instance;
