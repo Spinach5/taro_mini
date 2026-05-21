@@ -38,7 +38,6 @@ export default defineAppConfig({
 				"pages/login/index", // 分包页面
 				"pages/club/index",
 				"pages/muyu/index",
-				"pages/affair/index"
 			],
 		},
 	],
