@@ -1,82 +1,109 @@
-import {
-	View,
-	Swiper,
-	SwiperItem,
-	Image,
-	Text,
-	Navigator,
-	ScrollView,
-} from "@tarojs/components";
+import { View, ScrollView } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import "./index.css";
 import SafeAreaView from "../../../components/safeView";
 import HeadStatus from "../../../components/headStatus";
 import InputBar from "../../../components/InputBar";
 import CategoryFilter from "../../../components/CategoryFilter";
+import Loading from "../../../components/Loading";
 import { useState, useEffect } from "react";
-import { opendiffRequest } from "../../../utils/request";
+import { AtIcon } from "taro-ui";
+import { getAllClub } from "../../../service/clubs";
 
 export default function Index() {
 	const [clubs, setClubs] = useState([]);
 	const [clubcategory, setClubCategory] = useState([]);
+	const [currentcategory, setCurrentCategory] = useState(-1);
+	const [searchWhat, setSearchWhat] = useState("");
+	const [clubsDataReady, setClubsDataReady] = useState(false);
 	useLoad(async () => {
-		const club_res = await opendiffRequest.get("/opendiff/clubs");
-		const club_categories_res = await opendiffRequest.get(
-			"/opendiff/clubcategory",
-		);
-		setClubs(club_res.data);
-		setClubCategory(club_categories_res.data);
+		const clubData = await getAllClub();
+		setClubs(clubData.club);
+		setClubCategory(clubData.clubcategory);
+		setClubsDataReady(true);
 	});
-	useEffect(() => {
-		console.log(clubs); // 当 clubs 更新时会打印最新值
-	}, [clubs]);
+
+	if (!clubsDataReady) {
+		return (
+			<SafeAreaView>
+				<Loading text="加载社团数据中..." />
+			</SafeAreaView>
+		);
+	}
+
+	// 卡片原型
+	const card = (club) => {
+		return (
+			<View key={club.id} className="club-card">
+				<View>{club.name}</View>
+				<View className="content-row">
+					<View className="label">简介：</View>
+					<View className="value">{club.introduction}</View>
+				</View>
+				<View className="content-row">
+					<View className="label">活动：</View>
+					<View className="value">{club.activities}</View>
+				</View>
+				<View className="content-row">
+					<View className="label">联系方式：</View>
+					<View className="value">{"暂未取得联系方式null"}</View>
+				</View>
+			</View>
+		);
+	};
 	return (
 		<SafeAreaView>
 			{/* 返回按钮 */}
-			<View
-				className="fa fa-arrow-left back-btn"
+			<AtIcon
+				value="arrow-left"
+				color="#ffffff"
 				onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-			></View>
+			/>
 			{/* 标题 */}
 			<HeadStatus text="社团" />
-			{/* 搜索组件 */}
-			<InputBar placeholder="搜索社团"></InputBar>
-			{/* 分类选择器 */}
-			<CategoryFilter
-				allText="全部"
-				categories={[{ id: 1, name: "text" }]}
-				onChange={(category) => {
-					console.log(category);
-				}}
-			/>
+
+			<View className="header">
+				{/* 搜索组件 */}
+				<InputBar
+					placeholder="搜索社团"
+					onInput={(input) => {
+						setSearchWhat(input);
+					}}
+				></InputBar>
+				{/* 分类选择器 */}
+				<CategoryFilter
+					allText="全部"
+					categories={clubcategory}
+					onChange={(category) => {
+						setCurrentCategory(category);
+					}}
+				/>
+			</View>
+
 			{/* 卡片 */}
-			{/* <ScrollView scrollY
-				className="outer-scroll"
+			<ScrollView
+				scrollY
 				showScrollbar={false}
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					gap: "10px",
+				}}
 				enhanced
-				bounces={false}>
-            {clubs.length > 0 ? (clubs.map(club => (
-                <View key={club.id}>社团名{club.name}</View>
-            ))) : (<View>暂无社团数据</View>)}
-        </ScrollView> */}
-			<View>
+				bounces={false}
+			>
 				{clubs.length > 0 ? (
-					clubs.map((club) => (
-						<View key={club.id}>社团名{club.name}</View>
-					))
+					clubs.map(
+						(club) =>
+							(currentcategory == -1 ||
+								currentcategory == club.category) &&
+							club.name.includes(searchWhat) &&
+							card(club),
+					)
 				) : (
 					<View>暂无社团数据</View>
 				)}
-				{/* <View class="item-name">{{item.name}}</View>
-            <View class="content-row">
-                <View class="label">社团简介:</View>
-                <View class="value">{{item.introduction}}</View>
-            </View>
-            <View class="content-row">
-                <View class="label">社团活动:</View>
-                <View class="value">{{item.activities}}</View>
-            </View> */}
-			</View>
+			</ScrollView>
 		</SafeAreaView>
 	);
 }
