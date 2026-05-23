@@ -28,13 +28,14 @@ export default function StaticListPage({
 
 	return (
 		<SafeAreaView>
+			<View className="uniform-page-header">
 			<AtIcon
 				value="arrow-left"
 				color="#ffffff"
 				onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
 			/>
 			<HeadStatus text={title} />
-
+			</View>
 			{searchPlaceholder && (
 				<View className="static-list-header">
 					<InputBar

@@ -6,7 +6,7 @@ import {
 	ScrollView,
 	Text,
 } from "@tarojs/components";
-import Taro, { useRouter, useDidShow } from "@tarojs/taro";
+import Taro, { useRouter, useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import SafeAreaView from "../../components/SafeAreaView";
 import CourseHeader from "../../components/CourseHeader";
 import WeekHeader from "../../components/WeekHeader";
@@ -82,12 +82,12 @@ export default function Index() {
 	}, []);
 
 	// 刷新课表
-	const refreshCourseData = useCallback(async () => {
+	const refreshCourseData = useCallback(async (forceRefresh = false) => {
 		if (!isLoggedIn || !currentSemester) return;
 		setLoading(true);
 		try {
 			const [scheduleData, timeData] = await Promise.all([
-				getAllSchedule(false, currentSemester),
+				getAllSchedule(forceRefresh, currentSemester),
 				getTimeTable(currentSemester),
 			]);
 			setCourses(scheduleData || []);
@@ -313,6 +313,12 @@ export default function Index() {
 		},
 		[weekList, currentWeek],
 	);
+
+	usePullDownRefresh(() => {
+		refreshCourseData(true).finally(() => {
+			Taro.stopPullDownRefresh();
+		});
+	});
 
 	// 登录状态为空，加载中
 	if (isLoggedIn === null) {

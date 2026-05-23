@@ -9,14 +9,16 @@ export default function Index() {
 	return (
 		<SafeAreaView className="safearea">
 			{/* 返回按钮 */}
-			<AtIcon
-				value="arrow-left"
-				color="#ffffff"
-				onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-			/>
-			{/* 标题 */}
-			<HeadStatus text="行政" />
-
+			<View className="uniform-page-header">
+				<AtIcon
+					value="arrow-left"
+					color="#ffffff"
+					onClick={() =>
+						Taro.switchTab({ url: "/pages/index/index" })
+					}
+				/>
+				<HeadStatus text="行政" />
+			</View>
 			<View className="header">
 				{/* 搜索组件 */}
 				{/* <InputBar placeholder={"搜索"} onInput={(input) => {

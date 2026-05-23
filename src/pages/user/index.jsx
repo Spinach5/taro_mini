@@ -1,24 +1,50 @@
 import { useState, useEffect } from "react";
-import { View, Text } from "@tarojs/components";
-import Taro, { useDidShow, useRouter } from "@tarojs/taro";
+import { View, Text, Image } from "@tarojs/components";
+import Taro, { useDidShow, useRouter, usePullDownRefresh } from "@tarojs/taro";
 import HeadStatus from "../../components/HeadStatus";
 import SafeAreaView from "../../components/SafeAreaView";
 import UserCard from "../../components/UserCard";
 import userManager from "../../service/userInfo";
 import runtimeLogger from "../../utils/runtimeLogger";
+import { AtIcon } from "taro-ui";
 import "./index.css";
+
+const menuItems = [
+  { text: "设置", icon: "settings", onClick: () => {} },
+  {
+    text: "运行日志",
+    icon: "bookmark",
+    onClick: () => Taro.navigateTo({ url: "/modules/pages/runtimeLog/index" }),
+  },
+  {
+    text: "项目仓库",
+    icon: "download",
+    onClick: () => Taro.navigateTo({ url: "/modules/pages/repo/index" }),
+  },
+  { text: "反馈与建议", icon: "message", onClick: () => {} },
+  { text: "分享小程序", icon: "share", onClick: () => {} },
+];
 
 export default function Index() {
   const router = useRouter();
   const currentPath = router.path.split("?")[0];
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [avatar, setAvatar] = useState("");
 
-  // 加载用户信息（登录状态从 userManager 获取）
+  const loadAvatar = () => {
+    try {
+      const cached = Taro.getStorageSync("user_avatar");
+      if (cached) setAvatar(cached);
+    } catch (e) {
+      // ignore
+    }
+  };
+
   const loadUserInfo = () => {
     try {
       const info = userManager.getUserInfoSync();
-      setUserInfo(info); // info 为 null 表示未登录
+      setUserInfo(info);
     } catch (error) {
       runtimeLogger.error("User", "获取用户信息失败", error);
       setUserInfo(null);
@@ -27,19 +53,35 @@ export default function Index() {
     }
   };
 
-  // 页面首次加载和每次显示时重新获取用户信息
   useEffect(() => {
     loadUserInfo();
+    loadAvatar();
   }, []);
 
   useDidShow(() => {
-    // 从其他页面返回时刷新登录状态
     loadUserInfo();
+    loadAvatar();
+  });
+
+  usePullDownRefresh(() => {
+    loadUserInfo();
+    Taro.stopPullDownRefresh();
   });
 
   const handleLogin = () => {
-    Taro.navigateTo({
-      url: "/modules/pages/login/index",
+    Taro.navigateTo({ url: "/modules/pages/login/index" });
+  };
+
+  const handleChooseAvatar = () => {
+    Taro.chooseImage({
+      count: 1,
+      sizeType: ["compressed"],
+      sourceType: ["album", "camera"],
+      success: (res) => {
+        const path = res.tempFilePaths[0];
+        setAvatar(path);
+        Taro.setStorageSync("user_avatar", path);
+      },
     });
   };
 
@@ -50,11 +92,8 @@ export default function Index() {
       success: (res) => {
         if (res.confirm) {
           userManager.logout();
-          setUserInfo(null); // 清空本地状态
-          Taro.showToast({
-            title: "已退出登录",
-            icon: "success",
-          });
+          setUserInfo(null);
+          Taro.showToast({ title: "已退出登录", icon: "success" });
         }
       },
     });
@@ -78,47 +117,49 @@ export default function Index() {
   return (
     <SafeAreaView currentPath={currentPath}>
       <HeadStatus text="我的" />
-      <View className="bora card item user">
-        <View className="nick-name">{username}</View>
-        <View className="user-name">学号:{stuId}</View>
-		<View className="detailCard">
-		<UserCard text={university} />
-		<UserCard text={college} />
-		<UserCard text={Uclass} />
-		</View>
+      <View className="user-header-card">
+        <View className="user-avatar-circle" onClick={handleChooseAvatar}>
+          {avatar ? (
+            <Image className="user-avatar-img" src={avatar} mode="aspectFill" />
+          ) : (
+            <Text className="user-avatar-text">{username.charAt(0)}</Text>
+          )}
+        </View>
+        <View className="user-base-info">
+          <Text className="user-nick-name">{username}</Text>
+          <Text className="user-stu-id">{stuId}</Text>
+        </View>
+        <View className="user-tags">
+          <UserCard text={university} />
+          <UserCard text={college} />
+          <UserCard text={Uclass} />
+        </View>
       </View>
 
-      <View className="container">
-        <View className="bora card list">
-          <View className="item" onClick={() => {}}>
-            <Text>设置</Text>
-          </View>
+      <View className="user-menu-section">
+        {menuItems.map((item) => (
           <View
-            className="item"
-            onClick={() =>
-              Taro.navigateTo({ url: "/modules/pages/runtimeLog/index" })
-            }
+            key={item.text}
+            className="user-menu-item"
+            onClick={item.onClick}
           >
-            <Text>运行日志</Text>
+            <View className="user-menu-left">
+              <View className="user-menu-icon-wrap">
+                <AtIcon value={item.icon} size="18" color="#47a5fd" />
+              </View>
+              <Text className="user-menu-text">{item.text}</Text>
+            </View>
+            <AtIcon value="chevron-right" size="14" color="#c0c0c0" />
           </View>
-          <View className="item" onClick={() => {}}>
-            <Text>关于我们</Text>
-          </View>
-          <View className="item" onClick={() => {}}>
-            <Text>反馈与建议</Text>
-          </View>
-          <View className="item" onClick={() => {}}>
-            <Text>分享小程序</Text>
-          </View>
-        </View>
+        ))}
       </View>
 
       {!isLoggedIn ? (
-        <View className="bora login-btn highlight-btn" onClick={handleLogin}>
+        <View className="user-login-btn" onClick={handleLogin}>
           <Text>立即登录</Text>
         </View>
       ) : (
-        <View className="bora logout-btn" onClick={handleLogout}>
+        <View className="user-logout-btn" onClick={handleLogout}>
           <Text>退出登录</Text>
         </View>
       )}

@@ -12,7 +12,7 @@ export default function Index() {
 
 	return (
 		<SafeAreaView>
-			<View className="muyu-page-header">
+			<View className="uniform-page-header">
 				<AtIcon
 					value="arrow-left"
 					color="#ffffff"

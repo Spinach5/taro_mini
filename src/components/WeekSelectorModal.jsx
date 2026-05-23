@@ -41,7 +41,7 @@ export default function WeekSelectorModal({
           showScrollbar={false}
           style={{ maxHeight: "400px" }}
         >
-            <View className="week-grid">
+            <View className="week-grid-modal">
               {weekList.map((week) => {
                 const isSelected =
                   currentWeek === week && isCurrentSemester;

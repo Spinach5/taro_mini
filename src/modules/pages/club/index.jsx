@@ -1,12 +1,12 @@
 import { View, ScrollView } from "@tarojs/components";
-import Taro, { useLoad } from "@tarojs/taro";
+import Taro, { useLoad, usePullDownRefresh } from "@tarojs/taro";
 import "./index.css";
 import SafeAreaView from "../../../components/SafeAreaView";
 import HeadStatus from "../../../components/HeadStatus";
 import InputBar from "../../../components/InputBar";
 import CategoryFilter from "../../../components/CategoryFilter";
 import Loading from "../../../components/Loading";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { AtIcon } from "taro-ui";
 import { getAllClub } from "../../../service/clubs";
 
@@ -16,15 +16,23 @@ export default function Index() {
 	const [currentcategory, setCurrentCategory] = useState(-1);
 	const [searchWhat, setSearchWhat] = useState("");
 	const [clubsDataReady, setClubsDataReady] = useState(false);
-	useLoad(async () => {
-		const clubData = await getAllClub();
+
+	const fetchClubs = useCallback(async (forceRefresh = false) => {
+		const clubData = await getAllClub(forceRefresh);
 		setClubs(clubData.club);
 		setClubCategory(clubData.clubcategory);
 		setClubsDataReady(true);
+	}, []);
+
+	useLoad(() => {
+		fetchClubs();
 	});
-	// useEffect(() => {
-	// 	console.log(clubs); // 当 clubs 更新时会打印最新值
-	// }, [clubs]);
+
+	usePullDownRefresh(() => {
+		fetchClubs(true).finally(() => {
+			Taro.stopPullDownRefresh();
+		});
+	});
 
 	const card = (club) => {
 		return (

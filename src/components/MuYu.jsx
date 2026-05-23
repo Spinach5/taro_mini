@@ -2,7 +2,7 @@ import { View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import SelectAudioModal from "./SelectAudioModal";
-import { Muyu, MuyuStick } from "../assets/MuyuIcon";
+import { Muyu, MuyuStick } from "../assets/muyu";
 import "./MuYu.css";
 import { AtIcon } from "taro-ui";
 import {
@@ -184,8 +184,8 @@ export default function MuYu({ merit = 0, onMerit }) {
 				<View className={`muyu-container ${isHitting ? "hitting" : ""}`} onClick={handleClick}>
 					<View className="muyu-glow" />
 					<View className="muyu-ripple" />
-					<MuyuStick className="muyu-stick" color="#5c4a32" />
-					<Muyu className="muyu-img" color="#8B6914" />
+					<MuyuStick className="muyu-stick" />
+					<Muyu className="muyu-img" />
 					<View className="muyu-float-layer">
 						{floatTexts.map((f) => (
 							<Text

@@ -1,7 +1,7 @@
-.week-grid {
+.week-grid-modal {
 	padding: 40px;
 	display: grid;
-	grid-template-columns: repeat(6, 60px); /* 固定每列 60px */
+	grid-template-columns: repeat(8, 60px); /* 固定每列 60px */
 	gap: 8px;
 	justify-content: center; /* 水平居中 */
 }

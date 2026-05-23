@@ -45,6 +45,7 @@ export default defineAppConfig({
 				"pages/map/index",
 				"pages/book/index",
 				"pages/runtimeLog/index",
+				"pages/repo/index",
 			],
 		},
 	],

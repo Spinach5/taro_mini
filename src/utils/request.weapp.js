@@ -117,4 +117,5 @@ function createRequest(baseURL, cookiesPrefix = '') {
 // 为 hbut 后端创建实例，使用 'hbut' 前缀
 export const hbutRequest = createRequest(API_BASE.hbut, 'hbut')
 export const opendiffRequest = createRequest(API_BASE.opendiff, 'opendiff')
+export const giteeRequest = createRequest(API_BASE.gitee, "gitee")
 export default createRequest('')
