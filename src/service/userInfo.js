@@ -2,6 +2,7 @@
 import Taro from "@tarojs/taro";
 import cacheManager from "../utils/cache";
 import { cleanH5Cookies } from "../utils/cleanH5Cookies";
+import { hbutCookies, opendiffCookies, giteeCookies } from "../utils/request";
 
 class UserManager {
 	constructor() {
@@ -131,7 +132,12 @@ class UserManager {
 		this.class = "";
 		this._syncCache = null;
 
-		// 清除缓存
+		// 清除内存中的 Cookie 状态（防止注销后请求仍携带旧会话）
+		hbutCookies.clear();
+		opendiffCookies.clear();
+		giteeCookies.clear();
+
+		// 清除持久化缓存
 		cacheManager.remove(this.cacheKey);
 		cacheManager.clear();
 		Taro.clearStorage();
