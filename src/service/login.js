@@ -32,9 +32,9 @@ export async function login(stuId, password, university) {
 	userManager.setField("password", password); // 不建议存储明文密码
 
 	// 执行登录（auth 应根据 university 调用不同接口）
+	const school = getSchool();
 	let authRes;
 	try {
-		const school = getSchool();
 		authRes = await school.auth();
 	} catch (err) {
 		runtimeLogger.error("Login", "登录请求异常", err);
