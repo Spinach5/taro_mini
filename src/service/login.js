@@ -5,7 +5,7 @@ import userManager from "./userInfo";
 import { getSchool } from "./router";
 import runtimeLogger from "../utils/runtimeLogger";
 
-const SUPPORTED_UNIVERSITIES = ["湖北工业大学", "武汉科技大学"];
+const SUPPORTED_UNIVERSITIES = ["湖北工业大学", ""];
 
 export async function login(stuId, password, university) {
 	// 清除旧缓存

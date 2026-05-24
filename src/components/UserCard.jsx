@@ -5,7 +5,7 @@ export default function UserCard({ text }) {
     <View
       style={{
         backgroundColor: "#47a5fd",
-		fontSize: "18px",
+		fontSize: "28rpx",
         borderRadius: "16px",
         color: "white",
         display: "inline-flex",

@@ -5,7 +5,7 @@ import userManager from './userInfo';
 
 const SCHOOL_MAP = {
   '湖北工业大学': hbut,
-  '武汉科技大学': wust,
+  '': wust,
 };
 
 export function getSchool() {
