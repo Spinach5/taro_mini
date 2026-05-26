@@ -22,7 +22,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 			options: {},
 		},
 		framework: "react",
-		compiler: process.env.TARO_ENV === 'rn' ? 'webpack5' : 'vite',
+		compiler: process.env.TARO_ENV === "rn" ? "webpack5" : "vite",
 		mini: {
 			optimizeMainPackage: {
 				enable: true,
@@ -44,7 +44,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 		h5: {
 			publicPath: "/",
 			staticDirectory: "static",
-			esnextModules: ['taro-ui'],
+			esnextModules: ["taro-ui"],
 			// 添加代理配置
 			devServer: {
 				port: 10086,
@@ -61,9 +61,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 									if (location.startsWith("/")) {
 										proxyRes.headers.location =
 											"/gitee" + location;
-									} else if (
-										location.indexOf("gitee.com")
-									) {
+									} else if (location.indexOf("gitee.com")) {
 										const relative = location.replace(
 											/https?:\/\/[^/]+/,
 											"",
@@ -161,11 +159,20 @@ export default defineConfig(async (merge, { command, mode }) => {
 			},
 		},
 		rn: {
-			appName: "taro_mini",
-			postcss: {
-				cssModules: {
-					enable: false,
-				},
+			output: {
+				iosSourceMapUrl: "", // sourcemap 文件url
+				iosSourcemapOutput: "../taro-native-shell/ios/main.map", // sourcemap 文件输出路径
+				iosSourcemapSourcesRoot: "", // 将 sourcemap 资源路径转为相对路径时的根目录
+				androidSourceMapUrl: "",
+				androidSourcemapOutput:
+					"../taro-native-shell/android/app/src/main/assets/index.android.map",
+				androidSourcemapSourcesRoot: "",
+				ios: "../taro-native-shell/ios/main.jsbundle",
+				iosAssetsDest: "../taro-native-shell/ios",
+				android:
+					"../taro-native-shell/android/app/src/main/assets/index.android.bundle",
+				androidAssetsDest:
+					"../taro-native-shell/android/app/src/main/res",
 			},
 		},
 	};

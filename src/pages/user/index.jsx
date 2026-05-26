@@ -10,7 +10,7 @@ import { AtIcon } from "taro-ui";
 import "./index.css";
 
 const menuItems = [
-  { text: "设置", icon: "settings", onClick: () => {} },
+  { text: "设置", icon: "settings", onClick: () => Taro.navigateTo({ url: "/modules/pages/settings/index" }) },
   {
     text: "运行日志",
     icon: "bookmark",

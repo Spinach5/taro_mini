@@ -11,6 +11,14 @@
 }
 page {
 	height: 100%;
+	--bg-primary: #ffffff;
+	--bg-secondary: #f5f6fa;
+	--bg-card: #ffffff;
+	--text-primary: #333333;
+	--text-secondary: #999999;
+	--border-color: #f0f0f0;
+	--nav-bg: #ffffff;
+	--nav-text: #000000;
 }
 
 ::-webkit-scrollbar {
@@ -20,7 +28,61 @@ page {
 	color: transparent;
 }
 :root {
-	--row-height: 150px; /* 全局行高 */
+	--row-height: 150px;
+}
+
+/* ========== 黑夜模式覆写 ========== */
+.is-dark {
+	--bg-primary: #1a1a2e;
+	--bg-secondary: #16213e;
+	--bg-card: #222244;
+	--text-primary: #e0e0e0;
+	--text-secondary: #888888;
+	--border-color: #2a2a4a;
+	--nav-bg: #1a1a2e;
+	--nav-text: #ffffff;
+}
+
+/* H5 端 body 级别补充（覆盖 page 选择器映射的 body） */
+body[data-theme="dark"] {
+	--bg-primary: #1a1a2e;
+	--bg-secondary: #16213e;
+	--bg-card: #222244;
+	--text-primary: #e0e0e0;
+	--text-secondary: #888888;
+	--border-color: #2a2a4a;
+	--nav-bg: #1a1a2e;
+	--nav-text: #ffffff;
+	background-color: #1a1a2e;
+}
+
+/* 黑夜模式下 SafeAreaView 内卡片/文字自适应 */
+.is-dark .user-header-card,
+.is-dark .user-menu-section,
+.is-dark .settings-group,
+.is-dark .repo-info-card,
+.is-dark .contributors-section {
+	background-color: var(--bg-card, #222244);
+}
+
+.is-dark .user-menu-item,
+.is-dark .settings-row,
+.is-dark .contributor-row {
+	border-bottom-color: var(--border-color, #2a2a4a);
+}
+
+.is-dark .user-nick-name,
+.is-dark .settings-label,
+.is-dark .section-title {
+	color: var(--text-primary, #e0e0e0);
+}
+
+.is-dark .user-stu-id,
+.is-dark .settings-desc,
+.is-dark .repo-url-label,
+.is-dark .loading-text,
+.is-dark .empty-text {
+	color: var(--text-secondary, #888888);
 }
 .modal-mask {
 	position: fixed;
@@ -43,9 +105,39 @@ page {
 .modal-title {
 	text-align: center;
 	padding: 16px;
-	font-size: 50px;
+	font-size: 36px;
 	font-weight: bold;
 	color: #000;
+}
+.modal-body {
+	padding: 16px 24px 32px;
+	max-height: 60vh;
+	overflow-y: auto;
+	font-size: 26px;
+	color: #333;
+	line-height: 1.8;
+}
+.modal-body .bold {
+	font-weight: bold;
+	color: #1a2c3e;
+}
+.modal-body .section {
+	margin-bottom: 20px;
+}
+.modal-body .section-title {
+	font-size: 28px;
+	font-weight: bold;
+	color: #1a2c3e;
+	margin-bottom: 8px;
+}
+.modal-close {
+	text-align: center;
+	padding: 16px;
+	border-top: 1px solid #eee;
+}
+.modal-close-text {
+	font-size: 30px;
+	color: #2d8cff;
 }
 .uniform-page-header{
 	display: flex;
