@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [h5, weapp, swan, alipay, tt, qq, jd]   # 需要构建的平台
+        platform: [h5, weapp, swan, alipay, tt, qq, jd]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,14 +28,14 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps --no-audit                 # 更快更严格的安装
+        run: npm install --legacy-peer-deps --no-audit
 
       - name: Set version
         id: version
         run: |
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref_type }}" == "tag" ]]; then
             VERSION="${{ github.ref_name }}"
-          elif [[ "${{ github.event.inputs.version }}" != "" ]]; then
+          elif [[ -n "${{ github.event.inputs.version }}" ]]; then
             VERSION="${{ github.event.inputs.version }}"
           else
             VERSION="manual-$(date +'%Y%m%d-%H%M%S')"
@@ -44,15 +44,15 @@ jobs:
           echo "Version set to ${VERSION}"
 
       - name: Build for ${{ matrix.platform }}
+        env:
+          NODE_ENV: production
         run: npm run build:${{ matrix.platform }}
 
       - name: Compress build output
         run: |
-          cd dist/${{ matrix.platform }}
+          pushd dist/${{ matrix.platform }}
           zip -r "../../${{ matrix.platform }}-${{ env.VERSION }}.zip" .
-          cd -
-        # 假设 Taro 默认输出目录为 dist/平台名
-        # 可根据实际配置调整路径（如 h5 输出到 dist/h5，weapp 输出到 dist/weapp）
+          popd
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -78,6 +78,7 @@ jobs:
           name: Release ${{ github.ref_name }}
           body: |
             ## Taro 多端构建 ${{ github.ref_name }}
+
             包含以下平台：
             - H5
             - 微信小程序
