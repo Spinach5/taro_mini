@@ -12,7 +12,7 @@
 }
 
 .feedback-label {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 600;
   color: #1a1a1a;
   display: block;
@@ -20,7 +20,7 @@
 }
 
 .feedback-label-hint {
-  font-size: 13px;
+  font-size: 21px;
   font-weight: 400;
   color: #e74c3c;
   margin-left: 4px;
@@ -39,7 +39,7 @@
   padding: 0 12px;
   background: #f7f8fa;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 22px;
   color: #333;
 }
 
@@ -55,7 +55,7 @@
 }
 
 .token-save-btn-text {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: 500;
   color: #ffffff;
 }
@@ -79,7 +79,7 @@
 }
 
 .token-saved-text {
-  font-size: 14px;
+  font-size: 22px;
   color: #16a34a;
 }
 
@@ -90,12 +90,12 @@
 }
 
 .token-change-btn-text {
-  font-size: 13px;
+  font-size: 21px;
   color: #2563eb;
 }
 
 .token-tip {
-  font-size: 12px;
+  font-size: 20px;
   color: #aaa;
   line-height: 1.5;
   display: block;
@@ -108,7 +108,7 @@
   padding: 12px;
   background: #f7f8fa;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 22px;
   color: #333;
   line-height: 1.6;
   box-sizing: border-box;
@@ -116,7 +116,7 @@
 
 .feedback-char-count {
   text-align: right;
-  font-size: 12px;
+  font-size: 20px;
   color: #bbb;
   margin-top: 8px;
 }
@@ -127,7 +127,7 @@
   padding: 12px;
   background: #f7f8fa;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 22px;
   color: #333;
   box-sizing: border-box;
 }
@@ -144,7 +144,7 @@
 }
 
 .feedback-tips-text {
-  font-size: 13px;
+  font-size: 21px;
   color: #999;
   line-height: 1.5;
 }
@@ -164,7 +164,7 @@
 }
 
 .feedback-submit-text {
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 600;
   color: #ffffff;
 }

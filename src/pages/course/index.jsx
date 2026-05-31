@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
 	View,
 	Swiper,
@@ -39,6 +39,8 @@ export default function Index() {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [currentCourse, setCurrentCourse] = useState(null);
 	const [weeksDataReady, setWeeksDataReady] = useState(false);
+	const [isTimeout, setIsTimeout] = useState(false);
+	const timeoutRef = useRef(null);
 
 	// 学期选择器显示控制
 
@@ -310,6 +312,28 @@ export default function Index() {
 		[weekList, currentWeek],
 	);
 
+	// 课表加载超时控制
+	useEffect(() => {
+		if (loading) {
+			setIsTimeout(false);
+			timeoutRef.current = setTimeout(() => {
+				setIsTimeout(true);
+				setLoading(false);
+			}, 15000);
+		} else {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current);
+				timeoutRef.current = null;
+			}
+		}
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current);
+				timeoutRef.current = null;
+			}
+		};
+	}, [loading]);
+
 	usePullDownRefresh(() => {
 		refreshCourseData(true).finally(() => {
 			Taro.stopPullDownRefresh();
@@ -331,6 +355,17 @@ export default function Index() {
 			<SafeAreaView currentPath={currentPath}>
 				<View className="notLoginView">
 					<Text className="notLoginText">请先登录!</Text>
+				</View>
+			</SafeAreaView>
+		);
+	}
+
+	// 加载超时
+	if (isTimeout) {
+		return (
+			<SafeAreaView currentPath={currentPath}>
+				<View className="notLoginView">
+					<Text className="notLoginText">加载超时!</Text>
 				</View>
 			</SafeAreaView>
 		);

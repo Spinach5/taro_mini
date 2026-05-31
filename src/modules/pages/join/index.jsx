@@ -1,4 +1,4 @@
-import { View, Text } from "@tarojs/components";
+import { View, Text, Image} from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import HeadStatus from "../../../components/HeadStatus";
 import SafeAreaView from "../../../components/SafeAreaView";
@@ -27,7 +27,7 @@ export default function Index() {
       <View className="join-content">
         <View className="join-hero">
           <View className="join-illustration">
-            <Text className="join-illustration-icon">🚀</Text>
+            <Image className="join-illustration-icon" src="https://foruda.gitee.com/avatar/1777480666913616794/16193480_damn_2_1777480666.png"></Image>
           </View>
           <Text className="join-tagline">好家伙</Text>
           <Text className="join-subtitle">
@@ -45,19 +45,25 @@ export default function Index() {
         <View className="join-card">
           <Text className="join-section-title">参与方式</Text>
           <View className="join-way-item">
-            <View className="join-way-dot" />
+            <View className="join-way-dot">
+              <Text className="join-way-num">1</Text>
+            </View>
             <Text className="join-way-text">
               访问项目仓库，提交 Issue 或 Pull Request
             </Text>
           </View>
           <View className="join-way-item">
-            <View className="join-way-dot" />
+            <View className="join-way-dot">
+              <Text className="join-way-num">2</Text>
+            </View>
             <Text className="join-way-text">
               加入开发群组，参与需求讨论与功能设计
             </Text>
           </View>
           <View className="join-way-item">
-            <View className="join-way-dot" />
+            <View className="join-way-dot">
+              <Text className="join-way-num">3</Text>
+            </View>
             <Text className="join-way-text">
               帮助测试新功能，提交反馈与建议
             </Text>
