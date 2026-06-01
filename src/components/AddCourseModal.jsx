@@ -29,7 +29,7 @@ export default function AddCourseModal({
     if (visible && semester) {
       Promise.all([getAllWeek(semester), getTimeTable(semester)])
         .then(([weeks, timeTable]) => {
-          setWeekList(weeks);
+          setWeekList(weeks.map(item => item.zc));
           setJcOptions(timeTable.map((item) => Number(item.jc)));
         })
         .catch((err) => {

@@ -1,67 +1,51 @@
 import { View, Text } from "@tarojs/components";
 import { useEffect, useState } from "react";
 import "./WeekHeader.css";
-import { getCurrentWeek } from "../service";
 
 /**
- * 根据周一的日期，生成一周的日期数组
- * @param {Date} mondayDate 周一日期
- * @returns {Array<{ date: number, month: number, weekStr: string, fullDate: Date }>}
+ * 解析 "MM.DD-MM.DD" 格式的日期范围，生成一周 7 天的日期数组
+ * @param {string} rqfw - 如 "03.02-03.08"
+ * @returns {{ date: number, month: number, weekStr: string }}
  */
-const getWeekDatesFromMonday = (mondayDate) => {
-	const weekDays = [];
+const parseWeekDates = (rqfw) => {
 	const weekStrMap = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
-	for (let i = 0; i < 7; i++) {
-		const day = new Date(mondayDate);
-		day.setDate(mondayDate.getDate() + i);
-		weekDays.push({
-			date: day.getDate(),
-			month: day.getMonth() + 1,
+	const [startStr] = rqfw.split("-"); // "03.02"
+	const [monthStr, dayStr] = startStr.split(".");
+	const startMonth = parseInt(monthStr, 10);
+	const startDay = parseInt(dayStr, 10);
+	const startDate = new Date(new Date().getFullYear(), startMonth - 1, startDay);
+
+	return Array.from({ length: 7 }, (_, i) => {
+		const d = new Date(startDate);
+		d.setDate(startDate.getDate() + i);
+		return {
+			date: d.getDate(),
+			month: d.getMonth() + 1,
 			weekStr: weekStrMap[i],
-			fullDate: day,
-		});
-	}
-	return weekDays;
+		};
+	});
 };
 
-export default function WeekHeader({ currentWeek}) {
+export default function WeekHeader({ currentWeek, weekDataList = [] }) {
 	const [currentMonth, setCurrentMonth] = useState(0);
 	const [weekDates, setWeekDates] = useState([]);
-	const [todayDate, setTodayDate] = useState(null);
-	const [actualWeek, setActualWeek] = useState(null);
+	const [todayDate] = useState(new Date());
 
 	useEffect(() => {
-		getCurrentWeek().then((week) => setActualWeek(week));
-		setTodayDate(new Date());
-	}, []);
+		if (!currentWeek || !weekDataList.length) return;
+		const weekInfo = weekDataList.find((w) => Number(w.zc) === Number(currentWeek));
+		if (!weekInfo?.rqfw) return;
+		const dates = parseWeekDates(weekInfo.rqfw);
+		setWeekDates(dates);
+		setCurrentMonth(dates[0]?.month || 0);
+	}, [currentWeek, weekDataList]);
 
-	useEffect(() => {
-		if (actualWeek === null || currentWeek === undefined) return;
-		const today = new Date();
-		const dayOfWeek = today.getDay();
-		const daysToMonday = (dayOfWeek + 6) % 7;
-		const actualMonday = new Date(today);
-		actualMonday.setDate(today.getDate() - daysToMonday);
-		const diff = currentWeek - actualWeek;
-		const targetMonday = new Date(actualMonday);
-		targetMonday.setDate(actualMonday.getDate() + diff * 7);
-		const weekData = getWeekDatesFromMonday(targetMonday);
-		setWeekDates(weekData);
-		setCurrentMonth(targetMonday.getMonth() + 1);
-	}, [currentWeek, actualWeek]);
-
-	const isToday = (dateItem) => {
-		if (!todayDate) return false;
-		return (
-			dateItem.date === todayDate.getDate() &&
-			dateItem.month === todayDate.getMonth() + 1 &&
-			dateItem.fullDate.getFullYear() === todayDate.getFullYear()
-		);
-	};
+	const isToday = (dateItem) =>
+		dateItem.date === todayDate.getDate() &&
+		dateItem.month === todayDate.getMonth() + 1;
 
 	return (
 		<View className="week-header">
-			{/* 使用 Grid 布局，列宽定义与 CourseTable 完全一致 */}
 			<View
 				className="week-grid"
 				style={{

@@ -1,11 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import {
-	View,
-	Swiper,
-	SwiperItem,
-	ScrollView,
-	Text,
-} from "@tarojs/components";
+import { View, Swiper, SwiperItem, ScrollView, Text } from "@tarojs/components";
 import Taro, { useRouter, useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import SafeAreaView from "../../components/SafeAreaView";
 import CourseHeader from "../../components/CourseHeader";
@@ -14,7 +8,13 @@ import TimeColumn from "../../components/TimeColumn";
 import CourseGrid from "../../components/CourseGrid";
 import Loading from "../../components/Loading";
 import CourseInfoModal from "../../components/CourseInfoModal";
-import { getCurrentWeek, getAllWeek, getAllSchedule, getTimeTable, getSemesterList } from "../../service";
+import {
+	getCurrentWeek,
+	getAllWeek,
+	getAllSchedule,
+	getTimeTable,
+	getSemesterList,
+} from "../../service";
 import { getColorFromName } from "../../utils/getHashCode";
 import { addSchedule } from "../../service/AddSchedule";
 import userManager from "../../service/userInfo";
@@ -31,6 +31,7 @@ export default function Index() {
 	const [currentWeek, setCurrentWeek] = useState(null);
 	const [actualWeek, setActualWeek] = useState(null);
 	const [weekList, setWeekList] = useState([]);
+	const [weekDataList, setWeekDataList] = useState([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [timeTable, setTimeTable] = useState([]);
 	const [courses, setCourses] = useState([]);
@@ -75,34 +76,42 @@ export default function Index() {
 		setCourses([]);
 		setLoading(true);
 		setWeeksData({});
+		setWeekDataList([]);
 		setModalVisible(false);
 		setCurrentCourse(null);
 	}, []);
 
 	// 刷新课表
-	const refreshCourseData = useCallback(async (forceRefresh = false) => {
-		if (!isLoggedIn || !currentSemester) {
-			Taro.showToast({ title: "请先登录", icon: "none" });
-			return;
-		}
-		setLoading(true);
-		try {
-			const [scheduleData, timeData] = await Promise.all([
-				getAllSchedule(forceRefresh, currentSemester),
-				getTimeTable(currentSemester),
-			]);
-			setCourses(scheduleData || []);
-			setTimeTable(timeData || []);
-			if (forceRefresh) {
-				Taro.showToast({ title: "刷新成功", icon: "success", duration: 1000 });
+	const refreshCourseData = useCallback(
+		async (forceRefresh = false) => {
+			if (!isLoggedIn || !currentSemester) {
+				Taro.showToast({ title: "请先登录", icon: "none" });
+				return;
 			}
-		} catch (err) {
-			runtimeLogger.error("Course", "刷新课表失败", err);
-			Taro.showToast({ title: "刷新失败", icon: "none" });
-		} finally {
-			setLoading(false);
-		}
-	}, [isLoggedIn, currentSemester]);
+			setLoading(true);
+			try {
+				const [scheduleData, timeData] = await Promise.all([
+					getAllSchedule(forceRefresh, currentSemester),
+					getTimeTable(currentSemester),
+				]);
+				setCourses(scheduleData || []);
+				setTimeTable(timeData || []);
+				if (forceRefresh) {
+					Taro.showToast({
+						title: "刷新成功",
+						icon: "success",
+						duration: 1000,
+					});
+				}
+			} catch (err) {
+				runtimeLogger.error("Course", "刷新课表失败", err);
+				Taro.showToast({ title: "刷新失败", icon: "none" });
+			} finally {
+				setLoading(false);
+			}
+		},
+		[isLoggedIn, currentSemester],
+	);
 
 	// 添加课程回调（传递给 CourseHeader）
 	const handleAddCourseConfirm = useCallback(
@@ -182,10 +191,12 @@ export default function Index() {
 		if (!isLoggedIn || !currentSemester) return;
 		Promise.all([getCurrentWeek(), getAllWeek(currentSemester)])
 			.then(([week, weeks]) => {
-				const weeksNum = weeks.map((w) => parseInt(w, 10));
+				// 从对象数组中提取 zc 数字
+				const weeksNum = weeks.map((w) => parseInt(w.zc, 10));
+				setWeekDataList(weeks);
 				const weekNum = parseInt(week, 10);
 				let validWeek = weekNum;
-				if (!weeksNum.indexOf(weekNum)) {
+				if (!weeksNum.includes(weekNum)) {
 					validWeek = weeksNum[0] || 1;
 				}
 				setWeekList(weeksNum);
@@ -414,8 +425,7 @@ export default function Index() {
 				onSemesterChange={handleSemesterChange} // 新增
 			/>
 
-
-			<WeekHeader currentWeek={currentWeek} />
+			<WeekHeader currentWeek={currentWeek} weekDataList={weekDataList} />
 			<ScrollView
 				scrollY
 				className="outer-scroll"

@@ -3,13 +3,13 @@ import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { AutoRetry } from "./autoRetry";
 
-const CACHE_KEY = "CurrentWeek "; // 定义缓存key
+const CACHE_KEY = "CurrentWeek";
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 export async function getCurrentWeek() {
-	// 1. 优先从缓存获取
 	const cached = cacheManager.get(CACHE_KEY);
 	if (cached) {
-		console.log("[getCurrentWeek] 从缓存获取当前周数");
+		console.log("[getCurrentWeek] 从缓存获取当前周数:", cached);
 		return cached;
 	}
 	const fetchCurrentWeek = async () => {
@@ -60,8 +60,7 @@ export async function getCurrentWeek() {
 			console.warn("获取当前周数失败：响应数据中无 xlzc 字段");
 		}
 
-		// 3. 存入缓存（永不过期，和 getSemesterList 一致）
-		cacheManager.set(CACHE_KEY, currentWeek);
+		cacheManager.set(CACHE_KEY, currentWeek, WEEK_MS);
 		console.log("[getCurrentWeek] 已缓存当前周数:", currentWeek);
 
 		return currentWeek;

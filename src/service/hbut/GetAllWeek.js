@@ -10,9 +10,13 @@ export async function getAllWeek(semester) {
 	// 1. 优先从缓存获取
 	console.log("传入的" + semester);
 	const cached = cacheManager.get(CACHE_KEY + semester);
-	if (cached) {
+	if (cached && cached.length && cached[0]?.rqfw) {
 		console.log("[getAllWeek] 从缓存获取排课周次");
 		return cached;
+	}
+	if (cached) {
+		cacheManager.remove(CACHE_KEY + semester);
+		console.log("[getAllWeek] 缓存格式已过期，已清除");
 	}
 
 	const fetchAllWeek = async () => {
@@ -52,7 +56,7 @@ export async function getAllWeek(semester) {
 			console.warn("获取排课周次失败：接口返回 ret 不为 0");
 		}
 
-		const weekData = extractZc(response.data.data.zclist);
+		const weekData = extractZc(response.data);
 
 		// 验证数据有效性（验证是否为数组且不为空）
 		if (!weekData || !Array.isArray(weekData) || weekData.length === 0) {

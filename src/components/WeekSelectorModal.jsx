@@ -18,7 +18,7 @@ export default function WeekSelectorModal({
     Promise.all([getCurrentWeek(), getAllWeek(semester), getSemesterList()])
       .then(([week, weeks, semesters]) => {
         setCurrentWeek(week);
-        setWeekList(weeks);
+        setWeekList(weeks.map(item => item.zc));
         const latestSemester = semesters[semesters.length - 1];
         setIsCurrentSemester(semester === latestSemester);
       })
