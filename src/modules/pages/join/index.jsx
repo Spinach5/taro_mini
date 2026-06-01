@@ -30,9 +30,6 @@ export default function Index() {
             <Image className="join-illustration-icon" src="https://foruda.gitee.com/avatar/1777480666913616794/16193480_damn_2_1777480666.png"></Image>
           </View>
           <Text className="join-tagline">好家伙</Text>
-          <Text className="join-subtitle">
-            我们是一群热爱技术的同学，致力于打造更好的校园服务平台
-          </Text>
         </View>
 
         <View className="join-card">
@@ -40,6 +37,26 @@ export default function Index() {
           <Text className="join-desc">
             本项目为学生提供课表查询、成绩查询、考试安排、校园地图、日常工具等一站式服务。项目完全开源，欢迎各位同学参与贡献，一起让校园生活更加便利。
           </Text>
+        </View>
+
+        <View className="join-card">
+          <Text className="join-section-title">技术栈</Text>
+          <View className="tech-grid">
+            {[
+              { icon: "streaming", label: "Taro 4.2" },
+              { icon: "file-code", label: "React 18 + JavaScript" },
+              { icon: "lightning-bolt", label: "Vite / Webpack5" },
+              { icon: "file-generic", label: "SCSS / SASS" },
+              { icon: "grid", label: "taro-ui · taro-icons" },
+              { icon: "link", label: "axios + taro-axios-adapter" },
+              { icon: "lock", label: "jsencrypt" },
+            ].map((tech) => (
+              <View className="tech-item" key={tech.label}>
+                <AtIcon value={tech.icon} size="16" color="#2563eb" />
+                <Text className="tech-label">{tech.label}</Text>
+              </View>
+            ))}
+          </View>
         </View>
 
         <View className="join-card">
@@ -77,6 +94,14 @@ export default function Index() {
             <Text className="join-email">{CONTACT_EMAIL}</Text>
             <Text className="join-email-hint">点击复制</Text>
           </View>
+        </View>
+
+        <View className="join-card">
+          <Text className="join-section-title">开源许可</Text>
+          <Text className="license-text">
+            MIT License © 2026 好家伙{"\n"}
+            允许自由使用、修改、分发本项目的代码，无需额外授权。
+          </Text>
         </View>
       </View>
     </SafeAreaView>
