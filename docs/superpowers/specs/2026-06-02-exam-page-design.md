@@ -44,6 +44,7 @@ SafeAreaView
 
 ## 组件复用
 
+- `Loading` — 已有组件（`src/components/Loading.jsx`），全屏加载指示器
 - `SemesterSelector` — 已有组件，Picker 模式选择学期
 - `SafeAreaView` — 页面容器
 - `HeadStatus` — 页面标题
@@ -56,6 +57,6 @@ SafeAreaView
 
 ## 状态处理
 
-- **加载中**: 显示加载指示器
-- **空数据**: 显示空状态提示
+- **加载中**: 使用 `Loading` 组件（`src/components/Loading.jsx`）
+- **空数据**: 显示"暂无考试信息"空状态
 - **错误**: Toast 提示错误信息
