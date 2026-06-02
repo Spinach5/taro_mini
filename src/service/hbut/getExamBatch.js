@@ -1,7 +1,7 @@
 // 获取考试批次（所有周次信息）
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
-import { extractZc } from "../../utils/hbut/weekHelper";
+import { extractExamBatch } from "../../utils/hbut/examBatchHelper"
 import { AutoRetry } from "./autoRetry";
 
 const CACHE_KEY = "AllWeekData_"; // 定义缓存key
@@ -55,7 +55,7 @@ export async function getExamBatch(semester) {
 			console.warn("获取考试批次失败：接口返回 ret 不为 0");
 		}
 
-		const weekData = extractZc(response.data);
+		const weekData = extractExamBatch(response.data);
 
 		// 验证数据有效性（验证是否为数组且不为空）
 		if (!weekData || !Array.isArray(weekData) || weekData.length === 0) {

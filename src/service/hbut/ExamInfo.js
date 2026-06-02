@@ -3,18 +3,18 @@
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { AutoRetry } from "./autoRetry";
-import { extractExamInfo } from "../../utils/hbut/examHelper"
+import { extractExamInfo } from "../../utils/hbut/examHelper";
 
-const CACHE_KEY = "ExamInfoData"; // 定义缓存key
+const CACHE_KEY = "ExamInfoData_"; // 定义缓存key
 
-export async function getExamInfo() {
+export async function getExamInfo(semester, forceRefresh = false) {
 	// 1. 优先从缓存获取
-	const cached = cacheManager.get(CACHE_KEY);
-	if (cached) {
+	console.log("传入的" + semester);
+	const cached = cacheManager.get(CACHE_KEY + semester);
+	if (cached && !forceRefresh) {
 		console.log("[getExamInfo] 从缓存获取考试信息");
 		return cached;
 	}
-
 	const fetchExamInfo = async () => {
 		const loginConfig = {
 			headers: {
@@ -26,7 +26,7 @@ export async function getExamInfo() {
 			withCredentials: true,
 		};
 		const response = await hbutRequest.get(
-			"/admin/xsd/kwglXsdKscx/ajaxXsksList",
+			"admin/xsd/kwglXsdKscx/ajaxXsksList?xnxq=" + semester,
 			loginConfig,
 		);
 		return response;
@@ -52,10 +52,10 @@ export async function getExamInfo() {
 			console.warn("获取考试信息失败：接口返回 ret 不为 0");
 		}
 
-		const examResults = extractExamInfo(response.data)
+		const examResults = extractExamInfo(response.data);
 
 		// 3. 存入缓存（永不过期）
-		cacheManager.set(CACHE_KEY, examResults);
+		cacheManager.set(CACHE_KEY + semester, examResults);
 		console.log("[getExamInfo] 已缓存考试信息");
 
 		return examResults;
