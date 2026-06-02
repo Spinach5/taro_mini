@@ -3,6 +3,7 @@
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { AutoRetry } from "./autoRetry";
+import { extractExamInfo } from "../../utils/hbut/examHelper"
 
 const CACHE_KEY = "ExamInfoData"; // 定义缓存key
 
@@ -51,15 +52,7 @@ export async function getExamInfo() {
 			console.warn("获取考试信息失败：接口返回 ret 不为 0");
 		}
 
-		const examResults = response.data?.results;
-
-		// 验证数据有效性（验证是否为数组）
-		if (!examResults || !Array.isArray(examResults)) {
-			console.log("[getExamInfo] 响应数据中无有效的 results 字段");
-			console.warn(
-				"获取考试信息失败：响应数据中无有效的 results 字段",
-			);
-		}
+		const examResults = extractExamInfo(response.data)
 
 		// 3. 存入缓存（永不过期）
 		cacheManager.set(CACHE_KEY, examResults);

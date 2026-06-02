@@ -8,7 +8,7 @@ const gridItems = [
 	{ url: "/modules/pages/food/index", icon: "food-variant", text: "美食" },
 	{ url: "/modules/pages/affair/index", icon: "office-building", text: "行政事务" },
 	{ url: "/modules/pages/muyu/index", icon: "music-circle", text: "电子木鱼" },
-	{ url: "/modules/pages/daily/index", icon: "clipboard-text-outline", text: "考试" },
+	{ url: "/modules/pages/exam/index", icon: "clipboard-text-outline", text: "考试" },
 	{ url: "/modules/pages/map/index", icon: "map", text: "地图" },
 	{ url: "/modules/pages/book/index", icon: "book-open-page-variant", text: "书籍" },
 ];

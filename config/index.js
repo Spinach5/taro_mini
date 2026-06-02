@@ -22,7 +22,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 			options: {},
 		},
 		framework: "react",
-		compiler: process.env.TARO_ENV === "rn" ? "webpack5" : {
+		compiler: {
 			type: "vite",
 			vitePlugins: [{
 				name: "fix-taro-icons-jsx",
@@ -33,6 +33,13 @@ export default defineConfig(async (merge, { command, mode }) => {
 						},
 					},
 				}),
+				async transform(code, id) {
+					if (id.includes("node_modules/taro-icons") && id.endsWith(".js")) {
+						const esbuild = await import("esbuild");
+						const result = await esbuild.transform(code, { loader: "jsx" });
+						return { code: result.code, map: result.map };
+					}
+				},
 			}],
 		},
 		mini: {
@@ -56,7 +63,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 		h5: {
 			publicPath: "/",
 			staticDirectory: "static",
-			esnextModules: ["taro-ui"],
+			esnextModules: ["taro-ui", "taro-icons"],
 			// 添加代理配置
 			devServer: {
 				port: 10086,

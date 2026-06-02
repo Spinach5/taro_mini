@@ -173,7 +173,7 @@ export default function Index() {
 							<View className="user-menu-icon-wrap">
 								<MaterialCommunityIcons
 									name={item.icon}
-									size="40"
+									size="30"
 									color="#47a5fd"
 								/>
 							</View>
