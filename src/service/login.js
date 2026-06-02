@@ -1,11 +1,11 @@
 // login.js
-import { auth } from "./hubt/auth";
 import Taro from "@tarojs/taro";
 import { checkStuID } from "../utils/checkStuID";
 import userManager from "./userInfo";
-import { getStuInfo } from "./hubt/StuInfo";
+import { getSchool } from "./router";
+import runtimeLogger from "../utils/runtimeLogger";
 
-const SUPPORTED_UNIVERSITIES = ["湖北工业大学", "武汉科技大学"];
+const SUPPORTED_UNIVERSITIES = ["湖北工业大学", ""];
 
 export async function login(stuId, password, university) {
 	// 清除旧缓存
@@ -32,17 +32,19 @@ export async function login(stuId, password, university) {
 	userManager.setField("password", password); // 不建议存储明文密码
 
 	// 执行登录（auth 应根据 university 调用不同接口）
+	const school = getSchool();
 	let authRes;
 	try {
-		authRes = await auth();
+		authRes = await school.auth();
 	} catch (err) {
-		console.error("登录请求异常:", err);
+		runtimeLogger.error("Login", "登录请求异常", err);
 		await Taro.showToast({ title: "网络错误", icon: "none" });
 		return false;
 	}
 
 	if (!authRes?.success) {
 		const msg = authRes?.message || "登录失败，请检查账号密码";
+		runtimeLogger.warn("Login", msg);
 		await Taro.showToast({ title: msg, icon: "error", duration: 3000 });
 		return false;
 	}
@@ -50,9 +52,9 @@ export async function login(stuId, password, university) {
 	// 获取用户详细信息
 	let stuInfo;
 	try {
-		stuInfo = await getStuInfo();
+		stuInfo = await school.getStuInfo();
 	} catch (err) {
-		console.error("获取用户信息失败:", err);
+		runtimeLogger.error("Login", "获取用户信息失败", err);
 		await Taro.showToast({ title: "获取用户信息失败", icon: "none" });
 		return false;
 	}
@@ -64,6 +66,7 @@ export async function login(stuId, password, university) {
 
 	userManager.setFields(stuInfo);
 	userManager.setField("isLoggedIn", true);
+	runtimeLogger.info("Login", `登录成功: ${stuInfo.stuId || stuId}`);
 	await Taro.showToast({ title: "登录成功", icon: "success" });
 	return true;
 }

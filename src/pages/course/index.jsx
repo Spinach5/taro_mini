@@ -1,27 +1,24 @@
-import { useState, useEffect, useCallback } from "react";
-import {
-	View,
-	Swiper,
-	SwiperItem,
-	ScrollView,
-	Text,
-} from "@tarojs/components";
-import Taro, { useRouter, useDidShow } from "@tarojs/taro";
-import SafeAreaView from "../../components/safeView";
-import CourseHeader from "../../components/courseHeader";
-import WeekHeader from "../../components/courseWeek";
-import TimeColumn from "../../components/courseTimeColumn";
-import CourseGrid from "../../components/courseGrid";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { View, Swiper, SwiperItem, ScrollView, Text } from "@tarojs/components";
+import Taro, { useRouter, useDidShow, usePullDownRefresh } from "@tarojs/taro";
+import SafeAreaView from "../../components/SafeAreaView";
+import CourseHeader from "../../components/CourseHeader";
+import WeekHeader from "../../components/WeekHeader";
+import TimeColumn from "../../components/TimeColumn";
+import CourseGrid from "../../components/CourseGrid";
 import Loading from "../../components/Loading";
-import CourseInfoModal from "../../components/courseInfoModal"; // 新增导入
-import { getCurrentWeek } from "../../service/hubt/CurrentWeek";
-import { getAllWeek } from "../../service/hubt/GetAllWeek";
-import { getAllSchedule } from "../../service/hubt/AllSchedule";
-import { getTimeTable } from "../../service/hubt/GetTimeTable";
+import CourseInfoModal from "../../components/CourseInfoModal";
+import {
+	getCurrentWeek,
+	getAllWeek,
+	getAllSchedule,
+	getTimeTable,
+	getSemesterList,
+} from "../../service";
 import { getColorFromName } from "../../utils/getHashCode";
-import { getSemeseterList } from "../../service/hubt/CurrentSemester";
 import { addSchedule } from "../../service/AddSchedule";
 import userManager from "../../service/userInfo";
+import runtimeLogger from "../../utils/runtimeLogger";
 import "./index.css";
 
 export default function Index() {
@@ -34,6 +31,7 @@ export default function Index() {
 	const [currentWeek, setCurrentWeek] = useState(null);
 	const [actualWeek, setActualWeek] = useState(null);
 	const [weekList, setWeekList] = useState([]);
+	const [weekDataList, setWeekDataList] = useState([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [timeTable, setTimeTable] = useState([]);
 	const [courses, setCourses] = useState([]);
@@ -42,6 +40,8 @@ export default function Index() {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [currentCourse, setCurrentCourse] = useState(null);
 	const [weeksDataReady, setWeeksDataReady] = useState(false);
+	const [isTimeout, setIsTimeout] = useState(false);
+	const timeoutRef = useRef(null);
 
 	// 学期选择器显示控制
 
@@ -76,28 +76,42 @@ export default function Index() {
 		setCourses([]);
 		setLoading(true);
 		setWeeksData({});
+		setWeekDataList([]);
 		setModalVisible(false);
 		setCurrentCourse(null);
 	}, []);
 
 	// 刷新课表
-	const refreshCourseData = useCallback(async () => {
-		if (!isLoggedIn || !currentSemester) return;
-		setLoading(true);
-		try {
-			const [scheduleData, timeData] = await Promise.all([
-				getAllSchedule(false, currentSemester),
-				getTimeTable(currentSemester),
-			]);
-			setCourses(scheduleData || []);
-			setTimeTable(timeData || []);
-		} catch (err) {
-			console.error("刷新课表失败", err);
-			Taro.showToast({ title: "刷新失败", icon: "none" });
-		} finally {
-			setLoading(false);
-		}
-	}, [isLoggedIn, currentSemester]);
+	const refreshCourseData = useCallback(
+		async (forceRefresh = false) => {
+			if (!isLoggedIn || !currentSemester) {
+				Taro.showToast({ title: "请先登录", icon: "none" });
+				return;
+			}
+			setLoading(true);
+			try {
+				const [scheduleData, timeData] = await Promise.all([
+					getAllSchedule(forceRefresh, currentSemester),
+					getTimeTable(currentSemester),
+				]);
+				setCourses(scheduleData || []);
+				setTimeTable(timeData || []);
+				if (forceRefresh) {
+					Taro.showToast({
+						title: "刷新成功",
+						icon: "success",
+						duration: 1000,
+					});
+				}
+			} catch (err) {
+				runtimeLogger.error("Course", "刷新课表失败", err);
+				Taro.showToast({ title: "刷新失败", icon: "none" });
+			} finally {
+				setLoading(false);
+			}
+		},
+		[isLoggedIn, currentSemester],
+	);
 
 	// 添加课程回调（传递给 CourseHeader）
 	const handleAddCourseConfirm = useCallback(
@@ -107,8 +121,9 @@ export default function Index() {
 				Taro.showToast({ title: "添加成功", icon: "success" });
 				refreshCourseData(); // 添加后刷新课表
 			} catch (err) {
+				runtimeLogger.error("Course", "添加课程失败", err);
 				Taro.showToast({ title: "添加失败", icon: "none" });
-				throw err; // 让 AddCourseModal 感知失败
+				throw err;
 			}
 		},
 		[refreshCourseData],
@@ -129,7 +144,7 @@ export default function Index() {
 				if (!loggedIn) resetCourseData();
 			}
 		} catch (error) {
-			console.error("获取登录状态失败", error);
+			runtimeLogger.error("Course", "获取登录状态失败", error);
 			if (isLoggedIn === true) resetCourseData();
 			setIsLoggedIn(false);
 		}
@@ -146,7 +161,7 @@ export default function Index() {
 	// 获取学期列表
 	useEffect(() => {
 		if (!isLoggedIn) return;
-		getSemeseterList()
+		getSemesterList()
 			.then((list) => {
 				setSemesterList(list);
 				if (list && list.length) {
@@ -176,10 +191,12 @@ export default function Index() {
 		if (!isLoggedIn || !currentSemester) return;
 		Promise.all([getCurrentWeek(), getAllWeek(currentSemester)])
 			.then(([week, weeks]) => {
-				const weeksNum = weeks.map((w) => parseInt(w, 10));
+				// 从对象数组中提取 zc 数字
+				const weeksNum = weeks.map((w) => parseInt(w.zc, 10));
+				setWeekDataList(weeks);
 				const weekNum = parseInt(week, 10);
 				let validWeek = weekNum;
-				if (!weeksNum.indexOf(weekNum)) {
+				if (!weeksNum.includes(weekNum)) {
 					validWeek = weeksNum[0] || 1;
 				}
 				setWeekList(weeksNum);
@@ -312,6 +329,34 @@ export default function Index() {
 		[weekList, currentWeek],
 	);
 
+	// 课表加载超时控制
+	useEffect(() => {
+		if (loading) {
+			setIsTimeout(false);
+			timeoutRef.current = setTimeout(() => {
+				setIsTimeout(true);
+				setLoading(false);
+			}, 15000);
+		} else {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current);
+				timeoutRef.current = null;
+			}
+		}
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current);
+				timeoutRef.current = null;
+			}
+		};
+	}, [loading]);
+
+	usePullDownRefresh(() => {
+		refreshCourseData(true).finally(() => {
+			Taro.stopPullDownRefresh();
+		});
+	});
+
 	// 登录状态为空，加载中
 	if (isLoggedIn === null) {
 		return (
@@ -327,6 +372,17 @@ export default function Index() {
 			<SafeAreaView currentPath={currentPath}>
 				<View className="notLoginView">
 					<Text className="notLoginText">请先登录!</Text>
+				</View>
+			</SafeAreaView>
+		);
+	}
+
+	// 加载超时
+	if (isTimeout) {
+		return (
+			<SafeAreaView currentPath={currentPath}>
+				<View className="notLoginView">
+					<Text className="notLoginText">加载超时!</Text>
 				</View>
 			</SafeAreaView>
 		);
@@ -363,14 +419,13 @@ export default function Index() {
 				currentSemester={currentSemester}
 				currentWeek={currentWeek}
 				onWeekChange={handleWeekChange}
-				onRefresh={refreshCourseData}
+				onRefresh={() => refreshCourseData(true)}
 				onAddCourseConfirm={handleAddCourseConfirm}
 				semesterList={semesterList} // 新增
 				onSemesterChange={handleSemesterChange} // 新增
 			/>
 
-
-			<WeekHeader currentWeek={currentWeek} />
+			<WeekHeader currentWeek={currentWeek} weekDataList={weekDataList} />
 			<ScrollView
 				scrollY
 				className="outer-scroll"

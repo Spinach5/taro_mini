@@ -22,7 +22,26 @@ export default defineConfig(async (merge, { command, mode }) => {
 			options: {},
 		},
 		framework: "react",
-		compiler: "vite",
+		compiler: {
+			type: "vite",
+			vitePlugins: [{
+				name: "fix-taro-icons-jsx",
+				config: () => ({
+					optimizeDeps: {
+						esbuildOptions: {
+							loader: { ".js": "jsx" },
+						},
+					},
+				}),
+				async transform(code, id) {
+					if (id.includes("node_modules/taro-icons") && id.endsWith(".js")) {
+						const esbuild = await import("esbuild");
+						const result = await esbuild.transform(code, { loader: "jsx" });
+						return { code: result.code, map: result.map };
+					}
+				},
+			}],
+		},
 		mini: {
 			optimizeMainPackage: {
 				enable: true,
@@ -44,11 +63,39 @@ export default defineConfig(async (merge, { command, mode }) => {
 		h5: {
 			publicPath: "/",
 			staticDirectory: "static",
-			esnextModules: ['taro-ui'],
+			esnextModules: ["taro-ui", "taro-icons"],
 			// 添加代理配置
 			devServer: {
 				port: 10086,
 				proxy: {
+					"/gitee": {
+						target: "https://gitee.com",
+						changeOrigin: true,
+						rewrite: (path) => path.replace(/^\/gitee/, ""),
+						configure: (proxy, options) => {
+							proxy.on("proxyRes", (proxyRes, req, res) => {
+								console.log("proxyRes触发");
+								if (proxyRes.headers.location) {
+									let location = proxyRes.headers.location;
+									if (location.startsWith("/")) {
+										proxyRes.headers.location =
+											"/gitee" + location;
+									} else if (location.indexOf("gitee.com")) {
+										const relative = location.replace(
+											/https?:\/\/[^/]+/,
+											"",
+										);
+										proxyRes.headers.location =
+											"/gitee" + relative;
+									}
+									console.log(
+										"修改后的 location:",
+										proxyRes.headers.location,
+									);
+								}
+							});
+						},
+					},
 					"/opendiff": {
 						target: "https://api.zxionf.top",
 						changeOrigin: true,
@@ -127,14 +174,6 @@ export default defineConfig(async (merge, { command, mode }) => {
 						namingPattern: "module",
 						generateScopedName: "[name]__[local]___[hash:base64:5]",
 					},
-				},
-			},
-		},
-		rn: {
-			appName: "taroDemo",
-			postcss: {
-				cssModules: {
-					enable: false,
 				},
 			},
 		},

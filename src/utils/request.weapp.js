@@ -2,6 +2,7 @@
 import Taro from '@tarojs/taro'
 import { API_BASE } from '../config/api'
 import CookiesManager from './cookies'
+import runtimeLogger from './runtimeLogger'
 
 /**
  * 拼接完整 URL
@@ -81,16 +82,20 @@ async function requestCore(url, method, data, headers, baseURL, cookieManager, r
 /**
  * 创建请求实例
  * @param {string} baseURL 基础URL
- * @param {string} cookiesPrefix Cookie管理器前缀（用于区分不同后端）
+ * @param {CookiesManager} cookieManager Cookie管理器实例
  */
-function createRequest(baseURL, cookiesPrefix = '') {
-  const cookieManager = new CookiesManager(cookiesPrefix)
+function createRequest(baseURL, cookieManager) {
 
   const instance = {
     baseURL,
     async request(config) {
       const { url, method = 'GET', data, headers = {} } = config
-      return requestCore(url, method, data, headers, baseURL, cookieManager)
+      try {
+        return await requestCore(url, method, data, headers, baseURL, cookieManager)
+      } catch (error) {
+        runtimeLogger.error('Request', `${method} ${url} 失败`, error)
+        throw error
+      }
     },
     get(url, config = {}) {
       return this.request({ ...config, url, method: 'GET' })
@@ -108,7 +113,14 @@ function createRequest(baseURL, cookiesPrefix = '') {
   return instance
 }
 
+// 为不同后端创建独立的 Cookie 管理器实例（模块级，可供外部清除）
+export const hbutCookies = new CookiesManager('hbut')
+export const opendiffCookies = new CookiesManager('opendiff')
+export const giteeCookies = new CookiesManager('gitee')
+const defaultCookies = new CookiesManager('')
+
 // 为 hbut 后端创建实例，使用 'hbut' 前缀
-export const hbutRequest = createRequest(API_BASE.hbut, 'hbut')
-export const opendiffRequest = createRequest(API_BASE.opendiff, 'opendiff')
-export default createRequest('')
+export const hbutRequest = createRequest(API_BASE.hbut, hbutCookies)
+export const opendiffRequest = createRequest(API_BASE.opendiff, opendiffCookies)
+export const giteeRequest = createRequest(API_BASE.gitee, giteeCookies)
+export default createRequest('', defaultCookies)

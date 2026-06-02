@@ -1,21 +1,16 @@
 /**
- * 提取排课周数（排除第0周）
- * @param {Array} list - zclist 数组，每个对象包含 zc 字段
- * @returns {number[]} 去重并排序后的周数数组，不含0
+ * 提取排课周次及其日期范围（排除第0周）
+ * @param {Object} rawData - 原始接口返回的 JSON 对象
+ * @returns {Array<{zc: number, rqfw: string}>} 周次与日期范围的数组
  */
-export function extractZc(list) {
-  if (!Array.isArray(list)) {
-    throw new TypeError('extractZc 要求参数为数组，例如 zclist');
-  }
+export function extractZc(rawData) {
+  const zclist = rawData?.data?.zclist;
+  if (!Array.isArray(zclist)) return [];
 
-  const zcSet = new Set();
-  for (const item of list) {
-    const zcNum = Number(item.zc);
-    // 排除无效数字和数字0
-    if (!Number.isNaN(zcNum) && zcNum !== 0) {
-      zcSet.add(zcNum);
-    }
-  }
-
-  return Array.from(zcSet).sort((a, b) => a - b);
+  return zclist
+    .filter(item => Number(item.zc) !== 0)
+    .map(item => ({
+      zc: Number(item.zc),
+      rqfw: item.rqfw
+    }));
 }

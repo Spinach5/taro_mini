@@ -1,0 +1,229 @@
+.repo-page-content {
+  padding: 16px;
+  min-height: 100vh;
+}
+
+/* 项目信息卡片 */
+.repo-info-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.repo-name {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a1a;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.repo-url-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.repo-url-label {
+  font-size: 22px;
+  color: #666;
+}
+
+.repo-url {
+  font-size: 21px;
+  color: #2563eb;
+  word-break: break-all;
+  text-decoration: underline;
+}
+
+.repo-contributors-count {
+  font-size: 22px;
+  color: #888;
+  display: block;
+}
+
+/* 贡献度排行 */
+.contributors-section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: block;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 加载 & 空状态 */
+.loading-wrap,
+.empty-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.loading-text,
+.empty-text {
+  font-size: 22px;
+  color: #999;
+}
+
+/* 贡献者列表 */
+.contributors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* 单行贡献者 */
+.contributor-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contributor-rank {
+  width: 22px;
+  font-size: 21px;
+  font-weight: 600;
+  color: #999;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.contributor-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contributor-avatar-text {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.contributor-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.contributor-name-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.contributor-name-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.contributor-name {
+  font-size: 22px;
+  font-weight: 500;
+  color: #333;
+}
+
+.contributor-email {
+  font-size: 19px;
+  color: #999;
+  margin-top: 1px;
+}
+
+.contributor-commits {
+  font-size: 20px;
+  color: #888;
+  flex-shrink: 0;
+}
+
+/* 条形图 */
+.bar-track {
+  width: 100%;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+/* 开源项目 */
+.repos-section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-top: 16px;
+}
+
+.repos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.repo-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.repo-item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #f0f5ff;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.repo-item-icon-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.repo-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.repo-item-name {
+  font-size: 22px;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.repo-item-url {
+  font-size: 20px;
+  color: #2563eb;
+  word-break: break-all;
+  text-decoration: underline;
+}

@@ -1,14 +1,14 @@
 import { View, ScrollView } from "@tarojs/components";
-import Taro, { useLoad } from "@tarojs/taro";
+import Taro, { useLoad, usePullDownRefresh } from "@tarojs/taro";
 import "./index.css";
-import SafeAreaView from "../../../components/safeView";
-import HeadStatus from "../../../components/headStatus";
+import SafeAreaView from "../../../components/SafeAreaView";
+import HeadStatus from "../../../components/HeadStatus";
 import InputBar from "../../../components/InputBar";
 import CategoryFilter from "../../../components/CategoryFilter";
 import Loading from "../../../components/Loading";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { AtIcon } from "taro-ui";
-import { getAllClub } from "../../../service/clubs";
+import { getAllClub } from "../../../service";
 
 export default function Index() {
 	const [clubs, setClubs] = useState([]);
@@ -16,22 +16,24 @@ export default function Index() {
 	const [currentcategory, setCurrentCategory] = useState(-1);
 	const [searchWhat, setSearchWhat] = useState("");
 	const [clubsDataReady, setClubsDataReady] = useState(false);
-	useLoad(async () => {
-		const clubData = await getAllClub();
+
+	const fetchClubs = useCallback(async (forceRefresh = false) => {
+		const clubData = await getAllClub(forceRefresh);
 		setClubs(clubData.club);
 		setClubCategory(clubData.clubcategory);
 		setClubsDataReady(true);
+	}, []);
+
+	useLoad(() => {
+		fetchClubs();
 	});
 
-	if (!clubsDataReady) {
-		return (
-			<SafeAreaView>
-				<Loading text="加载社团数据中..." />
-			</SafeAreaView>
-		);
-	}
+	usePullDownRefresh(() => {
+		fetchClubs(true).finally(() => {
+			Taro.stopPullDownRefresh();
+		});
+	});
 
-	// 卡片原型
 	const card = (club) => {
 		return (
 			<View key={club.id} className="club-card">
@@ -46,21 +48,29 @@ export default function Index() {
 				</View>
 				<View className="content-row">
 					<View className="label">联系方式：</View>
-					<View className="value">{"暂未取得联系方式null"}</View>
+					<View className="value">暂未取得联系方式</View>
 				</View>
 			</View>
 		);
 	};
+	if (!clubsDataReady) {
+				return (
+					<SafeAreaView>
+						<Loading text="加载社团数据中..." />
+					</SafeAreaView>
+				);
+			}
 	return (
+
 		<SafeAreaView>
-			{/* 返回按钮 */}
-			<AtIcon
-				value="arrow-left"
-				color="#ffffff"
-				onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-			/>
-			{/* 标题 */}
-			<HeadStatus text="社团" />
+			<View className="uniform-page-header">
+							<AtIcon
+								value="arrow-left"
+								color="#ffffff"
+								onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
+							/>
+							<HeadStatus text="社团" />
+						</View>
 
 			<View className="header">
 				{/* 搜索组件 */}

@@ -1,8 +1,6 @@
 import { View, ScrollView } from "@tarojs/components";
 import { useState, useEffect } from "react";
-import { getCurrentWeek } from "../service/hubt/CurrentWeek";
-import { getAllWeek } from "../service/hubt/GetAllWeek";
-import { getSemeseterList } from "../service/hubt/CurrentSemester";
+import { getCurrentWeek, getAllWeek, getSemesterList } from "../service";
 import "./WeekSelectorModal.css";
 
 export default function WeekSelectorModal({
@@ -17,10 +15,10 @@ export default function WeekSelectorModal({
 
   useEffect(() => {
     if (!visible || !semester) return;
-    Promise.all([getCurrentWeek(), getAllWeek(semester), getSemeseterList()])
+    Promise.all([getCurrentWeek(), getAllWeek(semester), getSemesterList()])
       .then(([week, weeks, semesters]) => {
         setCurrentWeek(week);
-        setWeekList(weeks);
+        setWeekList(weeks.map(item => item.zc));
         const latestSemester = semesters[semesters.length - 1];
         setIsCurrentSemester(semester === latestSemester);
       })
@@ -41,7 +39,7 @@ export default function WeekSelectorModal({
           showScrollbar={false}
           style={{ maxHeight: "400px" }}
         >
-            <View className="week-grid">
+            <View className="week-grid-modal">
               {weekList.map((week) => {
                 const isSelected =
                   currentWeek === week && isCurrentSemester;

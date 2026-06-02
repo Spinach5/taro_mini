@@ -1,61 +1,54 @@
-import { View, Text } from "@tarojs/components";
+import { View, Text, ScrollView } from "@tarojs/components";
+import { IMPORT_ROW_KEY } from "../service/muyuAudio";
+import "./SelectAudioModal.css";
 
 export default function SelectAudioModal({
-  audioList,      // 对象：{ key1: audioUrl, key2: audioUrl }
-  currentAudioKey,
-  onSelect,
-  onClose,
+	items = [],
+	currentAudioKey,
+	onSelect,
+	onClose,
+	onImportLocal,
+	onLongPressItem,
 }) {
-  const audioKeys = Object.keys(audioList);
+	return (
+		<View className="audio-modal-mask" onClick={onClose}>
+			<View
+				className="audio-modal-container"
+				onClick={(e) => e.stopPropagation()}
+			>
+				<View className="audio-modal-title">选择音频</View>
+				<ScrollView scrollY className="audio-modal-list">
+					{items.map((item) => {
+						if (item.key === IMPORT_ROW_KEY) {
+							return (
+								<View
+									key={item.key}
+									className="audio-item audio-item-import"
+									onClick={onImportLocal}
+								>
+									<Text className="audio-item-icon">+</Text>
+									<Text>本地导入</Text>
+								</View>
+							);
+						}
 
-  return (
-    <View className="modal-mask" onClick={onClose}>
-      <View
-        className="modal-container"
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          width: "80%",
-          maxWidth: "500px",
-          backgroundColor: "#fff",
-          borderRadius: "16px",
-          overflow: "hidden",
-          padding: "20px",
-        }}
-      >
-        <View
-          className="modal-title"
-          style={{
-            textAlign: "center",
-            paddingBottom: "16px",
-            fontSize: "24px",
-            fontWeight: "bold",
-            color: "#000",
-          }}
-        >
-          选择音频
-        </View>
-        {audioKeys.map((key) => (
-          <View
-            key={key}
-            className="audio-item"
-            onClick={() => onSelect(key)}
-            style={{
-              padding: "12px 16px",
-              marginBottom: "8px",
-              borderRadius: "8px",
-              border: currentAudioKey === key ? "2px solid #47a5fd" : "1px solid #eee",
-              backgroundColor: "#f5f5f5",
-              textAlign: "center",
-              fontSize: "18px",
-              fontWeight: currentAudioKey === key ? "bold" : "normal",
-              color: currentAudioKey === key ? "#47a5fd" : "#333",
-              cursor: "pointer",
-            }}
-          >
-            {key === "muyu" ? "木鱼声" : key === "moo" ? "牛叫声" : key}
-          </View>
-        ))}
-      </View>
-    </View>
-  );
+						const isActive = currentAudioKey === item.key;
+						return (
+							<View
+								key={item.key}
+								className={`audio-item ${isActive ? "audio-item-active" : ""} ${item.isCustom ? "audio-item-custom" : ""}`}
+								onClick={() => onSelect(item.key)}
+								onLongPress={() => item.isCustom && onLongPressItem?.(item.key)}
+							>
+								<Text className="audio-item-label">{item.label}</Text>
+								{item.isCustom && (
+									<Text className="audio-item-hint">长按可删除</Text>
+								)}
+							</View>
+						);
+					})}
+				</ScrollView>
+			</View>
+		</View>
+	);
 }

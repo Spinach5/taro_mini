@@ -35,10 +35,20 @@ export default defineAppConfig({
 		{
 			root: "modules",
 			pages: [
-				"pages/login/index", // 分包页面
+				"pages/login/index",
 				"pages/club/index",
 				"pages/muyu/index",
-				"pages/affair/index"
+				"pages/affair/index",
+				"pages/student/index",
+				"pages/food/index",
+				"pages/exam/index",
+				"pages/map/index",
+				"pages/book/index",
+				"pages/runtimeLog/index",
+				"pages/repo/index",
+				"pages/settings/index",
+				"pages/join/index",
+				"pages/feedback/index",
 			],
 		},
 	],

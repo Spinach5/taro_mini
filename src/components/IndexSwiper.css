@@ -1,0 +1,27 @@
+@charset "UTF-8";
+.swiper-box {
+  width: 100%;
+  height: 360rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.slide-image {
+  width: 100%;
+  height: 100%;
+}
+
+.slide-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #47a5fd 0%, #7ec8ff 50%, #b8e0ff 100%);
+}
+
+.slide-placeholder-text {
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 4px;
+}
