@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView } from "@tarojs/components";
-import Taro, { useRouter, useDidShow } from "@tarojs/taro";
+import Taro, { useRouter, useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import SafeAreaView from "../../../components/SafeAreaView";
 import Loading from "../../../components/Loading";
 import SemesterSelector from "../../../components/SemesterSelector";
@@ -85,25 +85,35 @@ export default function Index() {
       });
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    if (!isLoggedIn || !currentSemester) return;
-    setLoading(true);
-    getExamInfo(currentSemester)
-      .then((data) => {
-        setExams(data.exams || []);
-      })
-      .catch((err) => {
-        console.error("获取考试信息失败", err);
-        Taro.showToast({ title: "获取考试信息失败", icon: "none" });
-      })
-      .finally(() => setLoading(false));
-  }, [isLoggedIn, currentSemester]);
-
   const handleSemesterChange = useCallback((selected) => {
     if (selected && selected !== currentSemester) {
       setCurrentSemester(selected);
     }
   }, [currentSemester]);
+
+  const fetchExams = useCallback(async (forceRefresh = false) => {
+    if (!isLoggedIn || !currentSemester) return;
+    setLoading(true);
+    try {
+      const data = await getExamInfo(currentSemester, forceRefresh);
+      setExams(data.exams || []);
+    } catch (err) {
+      console.error("获取考试信息失败", err);
+      Taro.showToast({ title: "获取考试信息失败", icon: "none" });
+    } finally {
+      setLoading(false);
+    }
+  }, [isLoggedIn, currentSemester]);
+
+  useEffect(() => {
+    fetchExams();
+  }, [fetchExams]);
+
+  usePullDownRefresh(() => {
+    fetchExams(true).finally(() => {
+      Taro.stopPullDownRefresh();
+    });
+  });
 
   if (isLoggedIn === null) {
     return (
