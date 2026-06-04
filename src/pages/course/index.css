@@ -85,3 +85,30 @@
 	text-align: center;
 	color: #333;
 }
+
+.remark-divider {
+	height: 1px;
+	background: #e0e0e0;
+	margin: 10px 20px;
+}
+
+.remark-row {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+
+.remark-label {
+	width: 12.5%;
+	flex-shrink: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 28px;
+	font-weight: bold;
+	color: #666;
+}
+
+.remark-content {
+	flex: 1;
+}

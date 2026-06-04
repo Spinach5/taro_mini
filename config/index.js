@@ -37,7 +37,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 					if (id.includes("node_modules/taro-icons") && id.endsWith(".js")) {
 						const esbuild = await import("esbuild");
 						const result = await esbuild.transform(code, { loader: "jsx" });
-						return { code: result.code, map: result.map };
+						return { code: result.code, map: result.map || null };
 					}
 				},
 			}],

@@ -1,13 +1,16 @@
-// 获取实践信息（实验课表）
+//https://jwxt.hbut.edu.cn/admin/api/getZclistByXnxq
+// 获取实践信息
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { AutoRetry } from "./autoRetry";
+import { extractPracticeInfo } from "../../utils/hbut/extroInfoHelper";
+import { getXhid } from "./GetXhid";
 
-const CACHE_KEY = "ExtroInfoData"; // 定义缓存key
+const CACHE_KEY = "ExtroInfoData_"; // 定义缓存key
 
-export async function getExtroInfo() {
+export async function getExtroInfo(semester) {
 	// 1. 优先从缓存获取
-	const cached = cacheManager.get(CACHE_KEY);
+	const cached = cacheManager.get(CACHE_KEY + semester);
 	if (cached) {
 		console.log("[getExtroInfo] 从缓存获取实践信息");
 		return cached;
@@ -22,11 +25,14 @@ export async function getExtroInfo() {
 			},
 			withCredentials: true,
 		};
-
+		const xhid = await getXhid();
 		const params = new URLSearchParams();
 
+		params.append("xnxq", semester);
+		params.append("userId", xhid);
+
 		const response = await hbutRequest.post(
-			"/admin/getXsdSykb",
+			"admin/api/getZclistByXnxq",
 			params,
 			loginConfig,
 		);
@@ -34,7 +40,7 @@ export async function getExtroInfo() {
 	};
 
 	try {
-		const response = await AutoRetry(fetchExtroInfo,{maxRetry:1});
+		const response = await AutoRetry(fetchExtroInfo, { maxRetry: 1 });
 		// 检查 HTTP 状态码
 		if (response.status !== 200) {
 			console.log(
@@ -42,30 +48,28 @@ export async function getExtroInfo() {
 				response.status,
 			);
 			console.warn("获取实践信息失败：网络请求失败");
+			return [];
 		}
 
 		// 检查登录失效
 		if (response.status === 300) {
 			console.log("[getExtroInfo] 登录失效，请重新登录");
 			console.warn("获取实践信息失败：登录失效，请重新登录");
+			return [];
 		}
 
 		// 检查业务返回码
 		if (response.data?.ret !== 0) {
 			console.log("[getExtroInfo] 接口返回异常:", response.data);
 			console.warn("获取实践信息失败：接口返回 ret 不为 0");
+			return [];
 		}
 
-		const sjkData = response.data.data?.sjk;
-
-		// 验证数据有效性（验证是否为数组）
-		if (!sjkData || !Array.isArray(sjkData)) {
-			console.log("[getExtroInfo] 响应数据中无有效的 sjk 字段");
-			console.warn("获取实践信息失败：响应数据中无有效的 sjk 字段");
-		}
+		// 处理业务数据
+		const sjkData = extractPracticeInfo(response.data.data.bpkkc);
 
 		// 3. 存入缓存（永不过期）
-		cacheManager.set(CACHE_KEY, sjkData);
+		cacheManager.set(CACHE_KEY+semester, sjkData);
 		console.log("[getExtroInfo] 已缓存实践信息");
 
 		return sjkData;
