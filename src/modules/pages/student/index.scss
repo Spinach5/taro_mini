@@ -1,0 +1,110 @@
+.score-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.filter-bar {
+  display: flex;
+  flex-direction: row;
+  padding: 16px 24px 12px;
+  gap: 12px;
+}
+
+.filter-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  gap: 4px;
+}
+
+.filter-text {
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.filter-arrow {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.score-list {
+  flex: 1;
+  padding: 10px 24px 20px;
+}
+
+.score-card {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.score-card-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-right: 16px;
+}
+
+.score-course-name {
+  font-size: 34px;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.score-meta {
+  font-size: 24px;
+  color: #999;
+  line-height: 1.6;
+}
+
+.score-value {
+  flex-shrink: 0;
+  font-size: 48px;
+  font-weight: bold;
+  font-style: italic;
+  min-width: 80px;
+  text-align: right;
+}
+
+.empty-view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-text {
+  font-size: 28px;
+  color: #999;
+}
+
+.notLoginView {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notLoginText {
+  font-size: 80px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}

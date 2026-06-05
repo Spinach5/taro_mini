@@ -1,5 +1,8 @@
 /* eslint-disable no-undef */
 export default definePageConfig({
-	navigationBarTitleText: "学生会",
-	navigationStyle: "custom",
+  navigationBarTitleText: "成绩",
+  navigationStyle: "custom",
+  enablePullDownRefresh: true,
+  backgroundColor: "#47a5fd",
+  backgroundTextStyle: "light",
 });
