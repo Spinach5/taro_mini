@@ -63,6 +63,8 @@
 .room-list {
   flex: 1;
   padding: 10px 24px 20px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .room-card {
