@@ -1,0 +1,98 @@
+.empty-room-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.filter-bar {
+  padding: 20px 24px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+}
+
+.filter-label {
+  font-size: 28px;
+  color: #fff;
+}
+
+.filter-value {
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-arrow {
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.room-list {
+  flex: 1;
+  padding: 10px 24px 20px;
+}
+
+.room-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.room-card-left {
+  flex: 1;
+  overflow: hidden;
+}
+
+.room-name {
+  font-size: 36px;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.room-info {
+  font-size: 26px;
+  color: #999;
+  line-height: 1.5;
+}
+
+.room-type-badge {
+  flex-shrink: 0;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 24px;
+  color: #fff;
+  margin-left: 16px;
+}
+
+.empty-view {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-text {
+  font-size: 28px;
+  color: #999;
+}
