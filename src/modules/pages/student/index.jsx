@@ -140,6 +140,14 @@ export default function Index() {
   if (!isLoggedIn) {
     return (
       <SafeAreaView>
+		 <View className="uniform-page-header">
+        <AtIcon
+          value="arrow-left"
+          color="#ffffff"
+          onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
+        />
+        <HeadStatus text="成绩" />
+      </View>
         <View className="notLoginView">
           <Text className="notLoginText">请先登录!</Text>
         </View>
