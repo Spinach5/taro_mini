@@ -95,7 +95,7 @@ function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onCha
 }
 
 function RoomCard({ room, typeName }) {
-  const badgeColor = getColorFromName(typeName || room.jslx || "默认");
+  const typeColor = getColorFromName(typeName || room.jslx || "默认");
 
   return (
     <View className="room-card">
@@ -105,9 +105,9 @@ function RoomCard({ room, typeName }) {
           {room.jxlmc} | {room.maxvolume}座
         </Text>
       </View>
-      <View className="room-type-badge" style={{ backgroundColor: badgeColor }}>
-        <Text>{typeName || room.jslx || "-"}</Text>
-      </View>
+      <Text className="room-type" style={{ color: typeColor }}>
+        {typeName || "-"}
+      </Text>
     </View>
   );
 }

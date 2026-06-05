@@ -45,12 +45,13 @@
 }
 
 .room-card {
+  position: relative;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   background: #fff;
   border-radius: 16px;
-  padding: 24px 28px;
+  padding: 24px 28px 36px;
   margin-bottom: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
@@ -76,13 +77,12 @@
   line-height: 1.5;
 }
 
-.room-type-badge {
-  flex-shrink: 0;
-  padding: 8px 18px;
-  border-radius: 8px;
+.room-type {
+  position: absolute;
+  right: 28px;
+  bottom: 14px;
   font-size: 24px;
-  color: #fff;
-  margin-left: 16px;
+  font-style: italic;
 }
 
 .empty-view {
