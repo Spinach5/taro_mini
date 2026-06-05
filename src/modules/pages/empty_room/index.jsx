@@ -20,7 +20,7 @@ function getTodayWeekday() {
   return day === 0 ? 7 : day;
 }
 
-function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onChange }) {
+function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onChange, onSearch }) {
   const weekdayRange = WEEKDAY_OPTIONS;
 
   return (
@@ -90,6 +90,11 @@ function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onCha
           </View>
         </View>
       </Picker>
+
+      <View className="search-btn" onClick={onSearch}>
+        <Text className="search-icon">🔍</Text>
+        <Text className="search-text">搜索</Text>
+      </View>
     </View>
   );
 }
@@ -124,10 +129,11 @@ export default function Index() {
   const [selectedSection, setSelectedSection] = useState([0, 1]);
 
   const [rooms, setRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [initReady, setInitReady] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [initError, setInitError] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const checkLoginStatus = useCallback(() => {
     try {
@@ -239,16 +245,17 @@ export default function Index() {
     sectionOptions,
   ]);
 
-  useEffect(() => {
-    fetchRooms();
-  }, [fetchRooms]);
-
   const handleFilterChange = useCallback((key, value) => {
     if (key === "building") setSelectedBuilding(value);
     if (key === "week") setSelectedWeek(value);
     if (key === "weekday") setSelectedWeekday(value);
     if (key === "section") setSelectedSection(value);
   }, []);
+
+  const handleSearch = useCallback(() => {
+    setHasSearched(true);
+    fetchRooms();
+  }, [fetchRooms]);
 
   if (isLoggedIn === null) {
     return (
@@ -282,15 +289,24 @@ export default function Index() {
             section: selectedSection,
           }}
           onChange={handleFilterChange}
+          onSearch={handleSearch}
         />
 
         {initError ? (
           <View className="empty-view">
             <Text className="empty-text">初始化失败</Text>
           </View>
-        ) : !initReady || (loading && rooms.length === 0) ? (
+        ) : !initReady ? (
           <View className="empty-view">
             <Loading />
+          </View>
+        ) : loading ? (
+          <View className="empty-view">
+            <Loading />
+          </View>
+        ) : !hasSearched ? (
+          <View className="empty-view">
+            <Text className="empty-text">请选择筛选条件后点击搜索</Text>
           </View>
         ) : rooms.length === 0 ? (
           <View className="empty-view">

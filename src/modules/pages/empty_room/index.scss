@@ -39,6 +39,27 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+.search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 16px 0;
+  background: #1890ff;
+  border-radius: 10px;
+}
+
+.search-icon {
+  font-size: 28px;
+}
+
+.search-text {
+  font-size: 30px;
+  color: #fff;
+  font-weight: 500;
+}
+
 .room-list {
   flex: 1;
   padding: 10px 24px 20px;
