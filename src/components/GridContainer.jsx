@@ -28,7 +28,7 @@ function getStoredFeatures() {
 export default function GridContainer({ className = "" }) {
   const features = getStoredFeatures();
 
-  const visibleItems = TOGGLEABLE.filter((item) => features[item.key] !== false);
+  const visibleItems = TOGGLEABLE.filter((item) => features[item.key] === true);
   const gridItems = [...ALWAYS_VISIBLE, ...visibleItems];
 
   return (

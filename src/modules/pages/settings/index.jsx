@@ -12,11 +12,11 @@ const STORAGE_KEY_FORCE = "settings_force_update";
 const STORAGE_KEY_FEATURES = "settings_feature_toggles";
 
 const DEFAULT_FEATURES = {
-  expand: true,
-  club: true,
-  food: true,
-  book: true,
-  other: true,
+  expand: false,
+  club: false,
+  food: false,
+  book: false,
+  other: false,
 };
 
 function getStoredForceUpdate() {
