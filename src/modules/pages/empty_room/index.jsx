@@ -1,0 +1,262 @@
+import { useState, useEffect, useCallback } from "react";
+import { View, Text, ScrollView, Picker } from "@tarojs/components";
+import Taro from "@tarojs/taro";
+import SafeAreaView from "../../../components/SafeAreaView";
+import Loading from "../../../components/Loading";
+import { getTeachBuilding } from "../../../service/hbut/getTeachBuilding";
+import { getTeachBuildingCategory } from "../../../service/hbut/getTeachBuildingCategory";
+import { getAllWeek } from "../../../service/hbut/GetAllWeek";
+import { getTimeTable } from "../../../service/hbut/GetTimeTable";
+import { getEmptyRoom } from "../../../service/hbut/getEmptyClassRoom";
+import { getCurrentWeek } from "../../../service/hbut/CurrentWeek";
+import { getSemesterList } from "../../../service/hbut/CurrentSemester";
+import { getColorFromName } from "../../../utils/getHashCode";
+import "./index.scss";
+
+const WEEKDAY_OPTIONS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+
+function getTodayWeekday() {
+  const day = new Date().getDay();
+  return day === 0 ? 7 : day;
+}
+
+function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onChange }) {
+  const weekdayRange = WEEKDAY_OPTIONS;
+
+  return (
+    <View className="filter-bar">
+      <Picker
+        mode="selector"
+        range={buildingNames}
+        value={selected.building}
+        onChange={(e) => onChange("building", e.detail.value)}
+      >
+        <View className="filter-item">
+          <Text className="filter-label">教学楼</Text>
+          <View className="filter-value">
+            <Text>{buildingNames[selected.building] || "全部"}</Text>
+            <Text className="filter-arrow">▼</Text>
+          </View>
+        </View>
+      </Picker>
+
+      <Picker
+        mode="selector"
+        range={weekOptions}
+        value={selected.week}
+        onChange={(e) => onChange("week", e.detail.value)}
+      >
+        <View className="filter-item">
+          <Text className="filter-label">周次</Text>
+          <View className="filter-value">
+            <Text>第{weekOptions[selected.week]}周</Text>
+            <Text className="filter-arrow">▼</Text>
+          </View>
+        </View>
+      </Picker>
+
+      <Picker
+        mode="selector"
+        range={weekdayRange}
+        value={selected.weekday}
+        onChange={(e) => onChange("weekday", e.detail.value)}
+      >
+        <View className="filter-item">
+          <Text className="filter-label">星期</Text>
+          <View className="filter-value">
+            <Text>{weekdayRange[selected.weekday]}</Text>
+            <Text className="filter-arrow">▼</Text>
+          </View>
+        </View>
+      </Picker>
+
+      <Picker
+        mode="multiSelector"
+        range={[sectionOptions, sectionOptions]}
+        value={selected.section}
+        onChange={(e) => {
+          let [start, end] = e.detail.value;
+          if (end < start) [start, end] = [end, start];
+          onChange("section", [start, end]);
+        }}
+      >
+        <View className="filter-item">
+          <Text className="filter-label">节次</Text>
+          <View className="filter-value">
+            <Text>
+              第{sectionOptions[selected.section[0]]}-{sectionOptions[selected.section[1]]}节
+            </Text>
+            <Text className="filter-arrow">▼</Text>
+          </View>
+        </View>
+      </Picker>
+    </View>
+  );
+}
+
+function RoomCard({ room, typeName }) {
+  const badgeColor = getColorFromName(typeName || room.jslx || "默认");
+
+  return (
+    <View className="room-card">
+      <View className="room-card-left">
+        <Text className="room-name">{room.jsmc}</Text>
+        <Text className="room-info">
+          {room.jxlmc} | {room.maxvolume}座
+        </Text>
+      </View>
+      <View className="room-type-badge" style={{ backgroundColor: badgeColor }}>
+        <Text>{typeName || room.jslx || "-"}</Text>
+      </View>
+    </View>
+  );
+}
+
+export default function Index() {
+  const [buildingMap, setBuildingMap] = useState({});
+  const [categoryMap, setCategoryMap] = useState({});
+  const [weekOptions, setWeekOptions] = useState([]);
+  const [sectionOptions, setSectionOptions] = useState([]);
+
+  const [selectedBuilding, setSelectedBuilding] = useState(0);
+  const [selectedWeek, setSelectedWeek] = useState(0);
+  const [selectedWeekday, setSelectedWeekday] = useState(() => getTodayWeekday() - 1);
+  const [selectedSection, setSelectedSection] = useState([0, 1]);
+
+  const [rooms, setRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [initReady, setInitReady] = useState(false);
+
+  const buildingList = [
+    { name: "全部", code: "" },
+    ...Object.entries(buildingMap).map(([name, code]) => ({ name, code })),
+  ];
+  const buildingNames = buildingList.map((b) => b.name);
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const semesterList = await getSemesterList();
+        const semester = semesterList[semesterList.length - 1];
+
+        const [buildings, weeks, timetable, categories, currentWeek] =
+          await Promise.all([
+            getTeachBuilding(),
+            getAllWeek(semester),
+            getTimeTable(semester),
+            getTeachBuildingCategory(),
+            getCurrentWeek(),
+          ]);
+
+        setBuildingMap(buildings || {});
+
+        const weekNums = (weeks || []).map((w) => w.zc).sort((a, b) => a - b);
+        setWeekOptions(weekNums);
+
+        const sectionNums = (timetable || []).map((t) => parseInt(t.jc)).filter(Boolean);
+        setSectionOptions(sectionNums);
+
+        setCategoryMap(categories || {});
+
+        const weekIdx = weekNums.indexOf(currentWeek);
+        if (weekIdx !== -1) setSelectedWeek(weekIdx);
+
+        if (sectionNums.length >= 2) {
+          setSelectedSection([0, 1]);
+        }
+
+        setInitReady(true);
+      } catch (err) {
+        console.error("初始化空教室数据失败", err);
+        Taro.showToast({ title: "初始化失败", icon: "none" });
+      }
+    };
+    init();
+  }, []);
+
+  const fetchRooms = useCallback(async () => {
+    if (!initReady) return;
+
+    const building = buildingList[selectedBuilding];
+    const weekNum = weekOptions[selectedWeek];
+    const weekdayNum = selectedWeekday + 1;
+    const startJc = sectionOptions[selectedSection[0]];
+    const endJc = sectionOptions[selectedSection[1]];
+
+    if (building === undefined || weekNum === undefined || !startJc || !endJc) return;
+
+    const range = [];
+    for (let i = startJc; i <= endJc; i++) range.push(i);
+    const sectionStr = range.join(",");
+
+    setLoading(true);
+    try {
+      const data = await getEmptyRoom(building.code, weekNum, weekdayNum, sectionStr);
+      setRooms(data || []);
+    } catch (err) {
+      console.error("查询空教室失败", err);
+      Taro.showToast({ title: "查询失败", icon: "none" });
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    initReady,
+    selectedBuilding,
+    selectedWeek,
+    selectedWeekday,
+    selectedSection,
+    buildingList,
+    weekOptions,
+    sectionOptions,
+  ]);
+
+  useEffect(() => {
+    fetchRooms();
+  }, [fetchRooms]);
+
+  const handleFilterChange = useCallback((key, value) => {
+    if (key === "building") setSelectedBuilding(value);
+    if (key === "week") setSelectedWeek(value);
+    if (key === "weekday") setSelectedWeekday(value);
+    if (key === "section") setSelectedSection(value);
+  }, []);
+
+  return (
+    <SafeAreaView>
+      <View className="empty-room-page">
+        <FilterBar
+          buildingNames={buildingNames}
+          weekOptions={weekOptions}
+          sectionOptions={sectionOptions}
+          selected={{
+            building: selectedBuilding,
+            week: selectedWeek,
+            weekday: selectedWeekday,
+            section: selectedSection,
+          }}
+          onChange={handleFilterChange}
+        />
+
+        {!initReady || (loading && rooms.length === 0) ? (
+          <View className="empty-view">
+            <Loading />
+          </View>
+        ) : rooms.length === 0 ? (
+          <View className="empty-view">
+            <Text className="empty-text">暂无空闲教室</Text>
+          </View>
+        ) : (
+          <ScrollView scrollY className="room-list">
+            {rooms.map((room, index) => (
+              <RoomCard
+                key={index}
+                room={room}
+                typeName={categoryMap[room.jslx]}
+              />
+            ))}
+          </ScrollView>
+        )}
+      </View>
+    </SafeAreaView>
+  );
+}
