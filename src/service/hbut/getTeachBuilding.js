@@ -1,12 +1,13 @@
 import cacheManager from "../../utils/cache";
+import { hbutRequest } from "../../utils/request";
 import runtimeLogger from "../../utils/runtimeLogger";
 import { extractTeachBuilding, extractTeachBuildingCategory } from "../../utils/hbut/extractTeachBuilding";
 
 const CACHE_KEY_BUILDING = "TeachBuilding";
 const CACHE_KEY_CATEGORY = "TeachBuildingCategory";
 
-// H5 模式下 taro-axios-adapter 会丢失响应体，直接用 fetch 绕过
-const API_URL = "/hbut/admin/system/jxzy/jsxx/queryForXsd";
+const IS_H5 = process.env.TARO_ENV === "h5";
+const API_PATH = "/admin/system/jxzy/jsxx/queryForXsd";
 
 // 模块级：去重并发请求
 let _pendingRequest = null;
@@ -16,30 +17,30 @@ function _fetchHtml(forceRefresh) {
   if (_pendingRequest) return _pendingRequest;
 
   _pendingRequest = (async () => {
-    const resp = await fetch(API_URL, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        Referer: "https://jwxt.hbut.edu.cn",
-        Origin: "https://jwxt.hbut.edu.cn",
-      },
-    });
-
-    const text = await resp.text();
-
-    // 检查是否为 JSON 错误响应
-    if (/^\s*[\{\[]/.test(text)) {
-      try {
-        const json = JSON.parse(text);
-        if (json.ret !== undefined && json.ret !== 0) {
-          throw new Error(`教学楼接口返回 JSON (ret=${json.ret}): ${json.msg || json.message || text}`);
-        }
-      } catch (e) {
-        if (e.message.includes("教学楼接口返回 JSON")) throw e;
-      }
+    if (IS_H5) {
+      // H5 用 fetch 绕过 taro-axios-adapter 响应体丢失问题
+      const resp = await fetch(`/hbut${API_PATH}`, {
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          Referer: "https://jwxt.hbut.edu.cn",
+          Origin: "https://jwxt.hbut.edu.cn",
+        },
+      });
+      return await resp.text();
+    } else {
+      // 微信小程序用 hbutRequest（Taro.request 正常工作且管理 cookie）
+      const response = await hbutRequest.get(API_PATH, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+          Referer: "https://jwxt.hbut.edu.cn",
+          Origin: "https://jwxt.hbut.edu.cn",
+        },
+        withCredentials: true,
+        responseType: "text",
+      });
+      return response.data;
     }
-
-    return text;
   })();
 
   _pendingRequest.finally(() => {
