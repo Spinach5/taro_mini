@@ -29,8 +29,18 @@ export async function getTeachBuildingCategory(forceRefresh = false) {
       },
     );
 
-    // 3. 校验响应是否为HTML
-    const html = response.data || response;
+    // 3. 校验响应数据
+    const data = response.data;
+
+    // 接口返回 JSON 错误（如未登录、会话过期等）
+    if (typeof data === "object" && data !== null) {
+      const ret = data.ret;
+      const msg = data.msg || data.message || JSON.stringify(data);
+      throw new Error(`教学楼接口返回 JSON (ret=${ret}): ${msg}`);
+    }
+
+    // 检查是否为有效 HTML
+    const html = data || response;
     if (typeof html !== "string" || !/<select/i.test(html)) {
       const preview = typeof html === "string" ? html.substring(0, 300) : String(html).substring(0, 300);
       throw new Error("教学楼接口返回数据格式异常，未包含选择器。响应预览: " + preview);
