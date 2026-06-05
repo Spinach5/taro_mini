@@ -166,8 +166,11 @@ export default function Index() {
           onChange={(e) => handlePickerChange("semester", e.detail.value)}
         >
           <View className="filter-item">
-            <Text className="filter-text">{semesterOptions[semesterIdx]}</Text>
-            <Text className="filter-arrow">▼</Text>
+            <Text className="filter-label">学期</Text>
+            <View className="filter-value">
+              <Text className="filter-text">{semesterOptions[semesterIdx]}</Text>
+              <Text className="filter-arrow">▼</Text>
+            </View>
           </View>
         </Picker>
 
@@ -178,8 +181,11 @@ export default function Index() {
           onChange={(e) => handlePickerChange("pass", e.detail.value)}
         >
           <View className="filter-item">
-            <Text className="filter-text">{PASS_OPTIONS[passIdx]}</Text>
-            <Text className="filter-arrow">▼</Text>
+            <Text className="filter-label">是否及格</Text>
+            <View className="filter-value">
+              <Text className="filter-text">{PASS_OPTIONS[passIdx]}</Text>
+              <Text className="filter-arrow">▼</Text>
+            </View>
           </View>
         </Picker>
 
@@ -190,8 +196,11 @@ export default function Index() {
           onChange={(e) => handlePickerChange("sort", e.detail.value)}
         >
           <View className="filter-item">
-            <Text className="filter-text">{SORT_OPTIONS[sortIdx]}</Text>
-            <Text className="filter-arrow">▼</Text>
+            <Text className="filter-label">排序</Text>
+            <View className="filter-value">
+              <Text className="filter-text">{SORT_OPTIONS[sortIdx]}</Text>
+              <Text className="filter-arrow">▼</Text>
+            </View>
           </View>
         </Picker>
       </View>

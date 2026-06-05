@@ -7,47 +7,57 @@
 
 .filter-bar {
   display: flex;
-  flex-direction: row;
-  padding: 16px 24px 12px;
+  flex-direction: column;
+  padding: 20px 24px 12px;
   gap: 12px;
 }
 
 .filter-item {
-  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 12px 10px;
-  background: rgba(255, 255, 255, 0.15);
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: #fff;
   border-radius: 10px;
-  gap: 4px;
+}
+
+.filter-label {
+  font-size: 28px;
+  color: #333;
+}
+
+.filter-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .filter-text {
   font-size: 26px;
-  color: rgba(255, 255, 255, 0.9);
+  color: #666;
 }
 
 .filter-arrow {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 22px;
+  color: #bbb;
 }
 
 .score-list {
   flex: 1;
   padding: 10px 24px 20px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .score-card {
   position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   background: #fff;
   border-radius: 16px;
-  padding: 24px 28px;
+  padding: 24px 28px 50px;
   margin-bottom: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
 .score-card-left {
@@ -55,7 +65,6 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-right: 16px;
 }
 
 .score-course-name {
@@ -75,12 +84,12 @@
 }
 
 .score-value {
-  flex-shrink: 0;
+  position: absolute;
+  right: 28px;
+  bottom: 14px;
   font-size: 48px;
   font-weight: bold;
   font-style: italic;
-  min-width: 80px;
-  text-align: right;
 }
 
 .empty-view {
