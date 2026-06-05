@@ -33,7 +33,11 @@ export async function getEmptyRoom(Building, weekNum, week, sectionStr) {
       return [];
     }
 
-    return extractEmpytClassRoom(results);
+    const rooms = extractEmpytClassRoom(results);
+    if (rooms.length > 0) {
+      console.log("[getEmptyRoom] 第一条数据:", JSON.stringify(rooms[0]));
+    }
+    return rooms;
   } catch (error) {
     if (error instanceof Error) throw error;
     console.warn("获取空教室失败：" + error);
