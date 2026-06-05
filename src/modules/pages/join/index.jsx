@@ -21,7 +21,7 @@ export default function Index() {
           color="#ffffff"
           onClick={() => Taro.navigateBack()}
         />
-        <HeadStatus text="加入我们" />
+        <HeadStatus text="关于我们" />
       </View>
 
       <View className="join-content">
@@ -102,6 +102,10 @@ export default function Index() {
             MIT License © 2026 好家伙{"\n"}
             允许自由使用、修改、分发本项目的代码，无需额外授权。
           </Text>
+        </View>
+
+        <View className="icp-record">
+          <Text className="icp-text">鄂ICP备2026028316号</Text>
         </View>
       </View>
     </SafeAreaView>
