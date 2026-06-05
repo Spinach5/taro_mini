@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { View, Text, ScrollView, Picker } from "@tarojs/components";
-import Taro from "@tarojs/taro";
+import Taro, { useDidShow } from "@tarojs/taro";
 import SafeAreaView from "../../../components/SafeAreaView";
 import Loading from "../../../components/Loading";
 import { getTeachBuilding } from "../../../service/hbut/getTeachBuilding";
@@ -11,6 +11,7 @@ import { getEmptyRoom } from "../../../service/hbut/getEmptyClassRoom";
 import { getCurrentWeek } from "../../../service/hbut/CurrentWeek";
 import { getSemesterList } from "../../../service/hbut/CurrentSemester";
 import { getColorFromName } from "../../../utils/getHashCode";
+import userManager from "../../../service/userInfo";
 import "./index.scss";
 
 const WEEKDAY_OPTIONS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
@@ -126,14 +127,42 @@ export default function Index() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [initReady, setInitReady] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [initError, setInitError] = useState(false);
 
-  const buildingList = [
-    { name: "全部", code: "" },
-    ...Object.entries(buildingMap).map(([name, code]) => ({ name, code })),
-  ];
-  const buildingNames = buildingList.map((b) => b.name);
+  const checkLoginStatus = useCallback(() => {
+    try {
+      const loggedIn = userManager.checkLogin();
+      if (loggedIn && !isLoggedIn) {
+        setIsLoggedIn(true);
+      } else if (!loggedIn && isLoggedIn === true) {
+        setIsLoggedIn(false);
+      } else if (isLoggedIn === null) {
+        setIsLoggedIn(loggedIn);
+      }
+    } catch (error) {
+      console.error("获取登录状态失败", error);
+      setIsLoggedIn(false);
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
+    checkLoginStatus();
+  }, [checkLoginStatus]);
+
+  useDidShow(() => {
+    checkLoginStatus();
+  });
+
+  const buildingList = useMemo(() => [
+    { name: "全部", code: "" },
+    ...Object.entries(buildingMap).map(([name, code]) => ({ name, code })),
+  ], [buildingMap]);
+  const buildingNames = useMemo(() => buildingList.map((b) => b.name), [buildingList]);
+
+  useEffect(() => {
+    if (isLoggedIn !== true) return;
+
     const init = async () => {
       try {
         const semesterList = await getSemesterList();
@@ -168,11 +197,12 @@ export default function Index() {
         setInitReady(true);
       } catch (err) {
         console.error("初始化空教室数据失败", err);
+        setInitError(true);
         Taro.showToast({ title: "初始化失败", icon: "none" });
       }
     };
     init();
-  }, []);
+  }, [isLoggedIn]);
 
   const fetchRooms = useCallback(async () => {
     if (!initReady) return;
@@ -221,6 +251,24 @@ export default function Index() {
     if (key === "section") setSelectedSection(value);
   }, []);
 
+  if (isLoggedIn === null) {
+    return (
+      <SafeAreaView>
+        <Loading />
+      </SafeAreaView>
+    );
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <SafeAreaView>
+        <View className="notLoginView">
+          <Text className="notLoginText">请先登录!</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView>
       <View className="empty-room-page">
@@ -237,7 +285,11 @@ export default function Index() {
           onChange={handleFilterChange}
         />
 
-        {!initReady || (loading && rooms.length === 0) ? (
+        {initError ? (
+          <View className="empty-view">
+            <Text className="empty-text">初始化失败</Text>
+          </View>
+        ) : !initReady || (loading && rooms.length === 0) ? (
           <View className="empty-view">
             <Loading />
           </View>
@@ -249,7 +301,7 @@ export default function Index() {
           <ScrollView scrollY className="room-list">
             {rooms.map((room, index) => (
               <RoomCard
-                key={index}
+                key={room.jsmc || index}
                 room={room}
                 typeName={categoryMap[room.jslx]}
               />
