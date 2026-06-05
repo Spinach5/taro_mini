@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { View } from "@tarojs/components";
 import "./index.css";
 import SafeAreaView from "../../components/SafeAreaView";
@@ -9,13 +10,15 @@ import { useLoad, useDidShow, useDidHide, useRouter } from "@tarojs/taro";
 export default function Index() {
 	const router = useRouter();
 	const currentPath = router.path.split("?")[0];
-	// 页面加载时执行
+	const [, setTick] = useState(0);
+
 	useLoad(() => {});
 
-	// 页面显示时执行（每次切换到前台都会执行）
-	useDidShow(() => {});
+	// 每次回到首页时触发重渲染，确保 GridContainer 读取最新存储
+	useDidShow(() => {
+		setTick((t) => t + 1);
+	});
 
-	// 页面隐藏时执行（切换到后台）
 	useDidHide(() => {});
 	return (
 		<SafeAreaView currentPath={currentPath}>
