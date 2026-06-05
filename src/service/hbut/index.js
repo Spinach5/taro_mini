@@ -12,3 +12,7 @@ export { getScores }         from './Scores';
 export { getStuInfo }        from './StuInfo';
 export { getTimeTable }      from './GetTimeTable';
 export { getAllClub }        from './clubs';
+export { getExamBatch }      from './getExamBatch';
+export { getTeachBuilding }  from './getTeachBuilding';
+export { getTeachBuildingCategory }  from './getTeachBuilding';
+export { getEmptyRoom }      from "./getEmptyClassRoom"

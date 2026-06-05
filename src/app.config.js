@@ -42,7 +42,7 @@ export default defineAppConfig({
 				"pages/student/index",
 				"pages/food/index",
 				"pages/exam/index",
-				"pages/map/index",
+				"pages/empty_room/index",
 				"pages/book/index",
 				"pages/runtimeLog/index",
 				"pages/repo/index",

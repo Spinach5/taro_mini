@@ -4,7 +4,7 @@ import Taro, { useDidShow } from "@tarojs/taro";
 import SafeAreaView from "../../../components/SafeAreaView";
 import Loading from "../../../components/Loading";
 import { getTeachBuilding } from "../../../service/hbut/getTeachBuilding";
-import { getTeachBuildingCategory } from "../../../service/hbut/getTeachBuildingCategory";
+import { getTeachBuildingCategory } from "../../../service/hbut/getTeachBuilding";
 import { getAllWeek } from "../../../service/hbut/GetAllWeek";
 import { getTimeTable } from "../../../service/hbut/GetTimeTable";
 import { getEmptyRoom } from "../../../service/hbut/getEmptyClassRoom";

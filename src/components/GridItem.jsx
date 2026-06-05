@@ -1,7 +1,6 @@
 import { View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import "./GridItem.css";
-import { AtIcon } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
 import runtimeLogger from "../utils/runtimeLogger";
 
