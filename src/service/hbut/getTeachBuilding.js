@@ -34,7 +34,24 @@ function _fetchHtml() {
 }
 
 function _validateAndGetHtml(response) {
-  const data = response.data;
+  // taro-axios-adapter 可能把响应体放在不同位置，先从多处尝试获取
+  let data = response.data;
+
+  // response.data 为 null/undefined 时，检查 response 自身或其他属性
+  if (data == null) {
+    if (typeof response === "string") {
+      data = response;
+    } else {
+      // 遍历 response 的属性，找包含 <select 的字符串
+      for (const key of Object.keys(response)) {
+        const val = response[key];
+        if (typeof val === "string" && /<select/i.test(val)) {
+          data = val;
+          break;
+        }
+      }
+    }
+  }
 
   // 1. 接口返回 JSON 对象（axios 自动解析）
   if (typeof data === "object" && data !== null) {
@@ -43,7 +60,7 @@ function _validateAndGetHtml(response) {
     throw new Error(`教学楼接口返回 JSON (ret=${ret}): ${msg}`);
   }
 
-  // 2. 接口返回 JSON 字符串（responseType: "text" 时不会自动解析）
+  // 2. 接口返回 JSON 字符串
   if (typeof data === "string" && /^\s*[\{\[]/.test(data)) {
     try {
       const json = JSON.parse(data);
