@@ -35,6 +35,16 @@ function _fetchHtml(forceRefresh) {
 }
 
 function _validateAndGetHtml(response) {
+  // 调试：打印 response 结构
+  console.log("[_validateAndGetHtml] response type:", typeof response);
+  console.log("[_validateAndGetHtml] response keys:", Object.keys(response));
+  console.log("[_validateAndGetHtml] response.data:", response.data);
+  console.log("[_validateAndGetHtml] response.status:", response.status);
+  // 尝试打印原型链上的 key
+  const allKeys = [];
+  for (const k in response) { allKeys.push(k + ":" + typeof response[k]); }
+  console.log("[_validateAndGetHtml] all enumerable keys:", allKeys);
+
   // taro-axios-adapter 可能把响应体放在不同位置，先从多处尝试获取
   let data = response.data;
 
