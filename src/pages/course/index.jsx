@@ -8,12 +8,14 @@ import TimeColumn from "../../components/TimeColumn";
 import CourseGrid from "../../components/CourseGrid";
 import Loading from "../../components/Loading";
 import CourseInfoModal from "../../components/CourseInfoModal";
+import PracticeCard from "../../components/PracticeCard";
 import {
 	getCurrentWeek,
 	getAllWeek,
 	getAllSchedule,
 	getTimeTable,
 	getSemesterList,
+	getExtroInfo,
 } from "../../service";
 import { getColorFromName } from "../../utils/getHashCode";
 import { addSchedule } from "../../service/AddSchedule";
@@ -40,6 +42,7 @@ export default function Index() {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [currentCourse, setCurrentCourse] = useState(null);
 	const [weeksDataReady, setWeeksDataReady] = useState(false);
+	const [practiceData, setPracticeData] = useState([]);
 	const [isTimeout, setIsTimeout] = useState(false);
 	const timeoutRef = useRef(null);
 
@@ -55,6 +58,7 @@ export default function Index() {
 	const closeModal = useCallback(() => {
 		setModalVisible(false);
 		setCurrentCourse(null);
+		setPracticeData([]);
 	}, []);
 
 	const handleSemesterChange = useCallback(
@@ -229,6 +233,14 @@ export default function Index() {
 				setTimeTable([]);
 			})
 			.finally(() => setLoading(false));
+	}, [isLoggedIn, currentSemester]);
+
+	// 获取实践信息（备注）
+	useEffect(() => {
+		if (!isLoggedIn || !currentSemester) return;
+		getExtroInfo(currentSemester)
+			.then((data) => setPracticeData(data || []))
+			.catch(() => setPracticeData([]));
 	}, [isLoggedIn, currentSemester]);
 
 	// 同步 Swiper 索引
@@ -457,6 +469,15 @@ export default function Index() {
 								</SwiperItem>
 							))}
 						</Swiper>
+					</View>
+				</View>
+				<View className="remark-divider" />
+				<View className="remark-row">
+					<View className="remark-label">
+						<Text>备注</Text>
+					</View>
+					<View className="remark-content">
+						<PracticeCard data={practiceData} />
 					</View>
 				</View>
 			</ScrollView>

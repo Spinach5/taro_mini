@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { View, Text, ScrollView } from "@tarojs/components";
-import Taro, { useRouter, useDidShow } from "@tarojs/taro";
+import { View, Text } from "@tarojs/components";
+import Taro, { useRouter, useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import SafeAreaView from "../../../components/SafeAreaView";
 import Loading from "../../../components/Loading";
 import SemesterSelector from "../../../components/SemesterSelector";
@@ -35,9 +35,6 @@ function formatExamDate(kssj) {
 }
 
 export default function Index() {
-  const router = useRouter();
-  const currentPath = router.path.split("?")[0];
-
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [semesterList, setSemesterList] = useState([]);
   const [currentSemester, setCurrentSemester] = useState(null);
@@ -85,29 +82,39 @@ export default function Index() {
       });
   }, [isLoggedIn]);
 
-  useEffect(() => {
-    if (!isLoggedIn || !currentSemester) return;
-    setLoading(true);
-    getExamInfo(currentSemester)
-      .then((data) => {
-        setExams(data.exams || []);
-      })
-      .catch((err) => {
-        console.error("获取考试信息失败", err);
-        Taro.showToast({ title: "获取考试信息失败", icon: "none" });
-      })
-      .finally(() => setLoading(false));
-  }, [isLoggedIn, currentSemester]);
-
   const handleSemesterChange = useCallback((selected) => {
     if (selected && selected !== currentSemester) {
       setCurrentSemester(selected);
     }
   }, [currentSemester]);
 
+  const fetchExams = useCallback(async (forceRefresh = false) => {
+    if (!isLoggedIn || !currentSemester) return;
+    setLoading(true);
+    try {
+      const data = await getExamInfo(currentSemester, forceRefresh);
+      setExams(data.exams || []);
+    } catch (err) {
+      console.error("获取考试信息失败", err);
+      Taro.showToast({ title: "获取考试信息失败", icon: "none" });
+    } finally {
+      setLoading(false);
+    }
+  }, [isLoggedIn, currentSemester]);
+
+  useEffect(() => {
+    fetchExams();
+  }, [fetchExams]);
+
+  usePullDownRefresh(() => {
+    fetchExams(true).finally(() => {
+      Taro.stopPullDownRefresh();
+    });
+  });
+
   if (isLoggedIn === null) {
     return (
-      <SafeAreaView currentPath={currentPath}>
+      <SafeAreaView >
         <Loading />
       </SafeAreaView>
     );
@@ -115,7 +122,7 @@ export default function Index() {
 
   if (!isLoggedIn) {
     return (
-      <SafeAreaView currentPath={currentPath}>
+      <SafeAreaView >
         <View className="notLoginView">
           <Text className="notLoginText">请先登录!</Text>
         </View>
@@ -124,7 +131,7 @@ export default function Index() {
   }
 
   return (
-    <SafeAreaView currentPath={currentPath}>
+    <SafeAreaView>
       <View className="uniform-page-header">
         <AtIcon
           value="arrow-left"
@@ -157,14 +164,13 @@ export default function Index() {
             <Text className="emptyText">暂无考试信息</Text>
           </View>
         ) : (
-          <ScrollView scrollY className="exam-scroll" showScrollbar={false} enhanced bounces={false}>
-            {exams.map((exam, index) => {
+          exams.map((exam, index) => {
               const status = getExamStatus(exam.kssj);
               return (
                 <View key={index} className="exam-card">
                   <Text className="exam-subject">{exam.kcmc}</Text>
                   <View className="exam-info">
-					<Text className="exam-info-item">考试批次: {exam.kspcmc}</Text>
+                    <Text className="exam-info-item">考试批次: {exam.kspcmc}</Text>
                     <Text className="exam-info-item">教室: {exam.jsmc}</Text>
                     <Text className="exam-info-item">时间: {formatExamDate(exam.kssj)}</Text>
                     <Text className="exam-info-item">方式: {exam.ksfs}</Text>
@@ -178,8 +184,7 @@ export default function Index() {
                   </Text>
                 </View>
               );
-            })}
-          </ScrollView>
+            })
         )}
       </View>
     </SafeAreaView>
