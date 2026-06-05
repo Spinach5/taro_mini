@@ -17,18 +17,18 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px 20px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgb(255, 255, 255);
   border-radius: 10px;
 }
 
 .filter-label {
   font-size: 28px;
-  color: #fff;
+  color: #000;
 }
 
 .filter-value {
   font-size: 26px;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgb(99, 94, 94);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -36,7 +36,7 @@
 
 .filter-arrow {
   font-size: 22px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgb(99, 94, 94)
 }
 
 .search-btn {

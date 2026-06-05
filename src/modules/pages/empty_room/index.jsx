@@ -11,6 +11,8 @@ import { getCurrentWeek } from "../../../service/hbut/CurrentWeek";
 import { getSemesterList } from "../../../service/hbut/CurrentSemester";
 import { getColorFromName } from "../../../utils/getHashCode";
 import userManager from "../../../service/userInfo";
+import { AtIcon } from "taro-ui";
+import HeadStatus from "../../../components/HeadStatus"
 import "./index.scss";
 
 const WEEKDAY_OPTIONS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
@@ -92,8 +94,8 @@ function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onCha
       </Picker>
 
       <View className="search-btn" onClick={onSearch}>
-        <Text className="search-icon">🔍</Text>
-        <Text className="search-text">搜索</Text>
+		<AtIcon value="search" size="20" color="#fff" className="search-icon"/>
+        <Text className="search-text">查询</Text>
       </View>
     </View>
   );
@@ -276,6 +278,14 @@ export default function Index() {
 
   return (
     <SafeAreaView>
+		<View className="uniform-page-header">
+						<AtIcon
+							value="arrow-left"
+							color="#ffffff"
+							onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
+						/>
+						<HeadStatus text="空教室" />
+					</View>
       <View className="empty-room-page">
         <FilterBar
           buildingNames={buildingNames}
@@ -305,7 +315,7 @@ export default function Index() {
           </View>
         ) : !hasSearched ? (
           <View className="empty-view">
-            <Text className="empty-text">请选择筛选条件后点击搜索</Text>
+            <Text className="empty-text">请选择筛选条件后点击查询</Text>
           </View>
         ) : rooms.length === 0 ? (
           <View className="empty-view">
