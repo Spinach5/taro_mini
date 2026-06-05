@@ -106,9 +106,8 @@ function RoomCard({ room, typeName }) {
     <View className="room-card">
       <View className="room-card-left">
         <Text className="room-name">{room.jsmc}</Text>
-        <Text className="room-info">
-          {room.jxlmc} | {room.maxvolume}座
-        </Text>
+        <Text className="room-info">{room.jxlmc}</Text>
+        <Text className="room-seats">{room.maxvolume}座</Text>
       </View>
       <Text className="room-type" style={{ color: typeColor }}>
         {typeName || "-"}
