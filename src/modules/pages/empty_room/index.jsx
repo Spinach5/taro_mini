@@ -158,7 +158,7 @@ export default function Index() {
 
         setCategoryMap(categories || {});
 
-        const weekIdx = weekNums.indexOf(currentWeek);
+        const weekIdx = weekNums.indexOf(Number(currentWeek));
         if (weekIdx !== -1) setSelectedWeek(weekIdx);
 
         if (sectionNums.length >= 2) {
