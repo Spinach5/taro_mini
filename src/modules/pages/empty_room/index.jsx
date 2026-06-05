@@ -51,7 +51,7 @@ function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onCha
         <View className="filter-item">
           <Text className="filter-label">周次</Text>
           <View className="filter-value">
-            <Text>第{weekOptions[selected.week]}周</Text>
+            <Text>{weekOptions.length > 0 ? `第${weekOptions[selected.week]}周` : "加载中"}</Text>
             <Text className="filter-arrow">▼</Text>
           </View>
         </View>
@@ -86,7 +86,9 @@ function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onCha
           <Text className="filter-label">节次</Text>
           <View className="filter-value">
             <Text>
-              第{sectionOptions[selected.section[0]]}-{sectionOptions[selected.section[1]]}节
+              {sectionOptions.length >= 2
+                ? `第${sectionOptions[selected.section[0]]}-${sectionOptions[selected.section[1]]}节`
+                : "加载中"}
             </Text>
             <Text className="filter-arrow">▼</Text>
           </View>
