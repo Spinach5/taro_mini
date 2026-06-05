@@ -30,7 +30,7 @@ const menuItems = [
 		onClick: () => Taro.navigateTo({ url: "/modules/pages/repo/index" }),
 	},
 	{
-		text: "加入我们",
+		text: "关于我们",
 		icon: "account-plus",
 		onClick: () => Taro.navigateTo({ url: "/modules/pages/join/index" }),
 	},
