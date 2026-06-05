@@ -10,7 +10,8 @@ const CACHE_KEY_CATEGORY = "TeachBuildingCategory";
 // 模块级：去重并发请求，两个函数共享同一个 in-flight promise
 let _pendingRequest = null;
 
-function _fetchHtml() {
+function _fetchHtml(forceRefresh) {
+  if (forceRefresh) _pendingRequest = null;
   if (_pendingRequest) return _pendingRequest;
 
   _pendingRequest = AutoRetry(async () => {
@@ -25,8 +26,8 @@ function _fetchHtml() {
     });
   }, { maxRetry: 1 });
 
-  // 失败时清除缓存，允许后续重试
-  _pendingRequest.catch(() => {
+  // 无论成功或失败，完成后清除 pending 状态，允许后续 forceRefresh 重新请求
+  _pendingRequest.finally(() => {
     _pendingRequest = null;
   });
 
@@ -86,7 +87,7 @@ export async function getTeachBuilding(forceRefresh = false) {
   }
 
   try {
-    const response = await _fetchHtml();
+    const response = await _fetchHtml(forceRefresh);
     const html = _validateAndGetHtml(response);
 
     const buildingData = extractTeachBuilding(html);
@@ -111,7 +112,7 @@ export async function getTeachBuildingCategory(forceRefresh = false) {
   }
 
   try {
-    const response = await _fetchHtml();
+    const response = await _fetchHtml(forceRefresh);
     const html = _validateAndGetHtml(response);
 
     const categoryData = extractTeachBuildingCategory(html);
