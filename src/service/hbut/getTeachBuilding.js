@@ -25,7 +25,31 @@ function _fetchHtml() {
     });
   }, { maxRetry: 1 });
 
+  // 失败时清除缓存，允许后续重试
+  _pendingRequest.catch(() => {
+    _pendingRequest = null;
+  });
+
   return _pendingRequest;
+}
+
+function _validateAndGetHtml(response) {
+  const data = response.data;
+
+  // 接口返回 JSON 错误（如未登录、会话过期等）
+  if (typeof data === "object" && data !== null) {
+    const ret = data.ret;
+    const msg = data.msg || data.message || JSON.stringify(data);
+    throw new Error(`教学楼接口返回 JSON (ret=${ret}): ${msg}`);
+  }
+
+  const html = data || response;
+  if (typeof html !== "string" || !/<select/i.test(html)) {
+    const preview = typeof html === "string" ? html.substring(0, 300) : String(html).substring(0, 300);
+    throw new Error("教学楼接口返回数据格式异常，未包含选择器。响应预览: " + preview);
+  }
+
+  return html;
 }
 
 export async function getTeachBuilding(forceRefresh = false) {
@@ -36,12 +60,7 @@ export async function getTeachBuilding(forceRefresh = false) {
 
   try {
     const response = await _fetchHtml();
-    const html = response.data || response;
-
-    if (typeof html !== "string" || !/<select/i.test(html)) {
-      const preview = typeof html === "string" ? html.substring(0, 300) : String(html).substring(0, 300);
-      throw new Error("教学楼接口返回数据格式异常，未包含选择器。响应预览: " + preview);
-    }
+    const html = _validateAndGetHtml(response);
 
     const buildingData = extractTeachBuilding(html);
     if (!buildingData || Object.keys(buildingData).length === 0) {
@@ -66,12 +85,7 @@ export async function getTeachBuildingCategory(forceRefresh = false) {
 
   try {
     const response = await _fetchHtml();
-    const html = response.data || response;
-
-    if (typeof html !== "string" || !/<select/i.test(html)) {
-      const preview = typeof html === "string" ? html.substring(0, 300) : String(html).substring(0, 300);
-      throw new Error("教学楼接口返回数据格式异常，未包含选择器。响应预览: " + preview);
-    }
+    const html = _validateAndGetHtml(response);
 
     const categoryData = extractTeachBuildingCategory(html);
     if (!categoryData || Object.keys(categoryData).length === 0) {
