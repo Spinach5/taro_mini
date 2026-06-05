@@ -99,3 +99,12 @@
 .custom-switch-thumb-off {
   left: 3px;
 }
+
+.custom-switch-disabled {
+  opacity: 0.4;
+}
+
+.settings-row-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
