@@ -124,9 +124,11 @@ export default function Index() {
   }, [allScores, semesterIdx, passIdx, sortIdx, semesterList]);
 
   const handlePickerChange = useCallback((key, value) => {
-    if (key === "semester") setSemesterIdx(value);
-    if (key === "pass") setPassIdx(value);
-    if (key === "sort") setSortIdx(value);
+    // Taro Picker onChange 可能返回字符串类型，显式转为数字
+    const numValue = Number(value);
+    if (key === "semester") setSemesterIdx(numValue);
+    if (key === "pass") setPassIdx(numValue);
+    if (key === "sort") setSortIdx(numValue);
   }, []);
 
   if (isLoggedIn === null) {
