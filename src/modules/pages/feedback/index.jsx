@@ -107,7 +107,7 @@ export default function Index() {
           ) : (
             <View className="token-saved-row">
               <View className="token-saved-left">
-                <AtIcon value="check-circle" size="16" color="#16a34a" />
+                <AtIcon value="check-circle" size={16} color="#16a34a" />
                 <Text className="token-saved-text">已设置</Text>
               </View>
               <View
@@ -150,7 +150,7 @@ export default function Index() {
 
         <View className="feedback-card feedback-tips-card">
           <View className="feedback-tips-row">
-            <AtIcon value="info" size="14" color="#999" />
+            <AtIcon value="info" size={14} color="#999" />
             <Text className="feedback-tips-text">
               反馈将以 Issue 形式提交到项目仓库，我们会尽快处理
             </Text>

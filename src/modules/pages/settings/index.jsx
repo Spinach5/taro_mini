@@ -233,7 +233,7 @@ export default function Index() {
         <View className="settings-group">
           <View className="settings-row clear-cache-row" onClick={handleClearCache}>
             <Text className="clear-cache-text">清除缓存</Text>
-            <AtIcon value="chevron-right" size="14" color="#e74c3c" />
+            <AtIcon value="chevron-right" size={14} color="#e74c3c" />
           </View>
         </View>
       </View>

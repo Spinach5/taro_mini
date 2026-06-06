@@ -96,7 +96,7 @@ function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onCha
       </Picker>
 
       <View className="search-btn" onClick={onSearch}>
-		<AtIcon value="search" size="20" color="#fff" className="search-icon"/>
+		<AtIcon value="search" size={20} color="#fff" className="search-icon"/>
         <Text className="search-text">查询</Text>
       </View>
     </View>

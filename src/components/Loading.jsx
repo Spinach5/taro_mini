@@ -19,7 +19,7 @@ export default function Loading({ text = "加载中..." }) {
 		>
 			<AtIcon
 				value="loading"
-				size="99"
+				size={99}
 				className="spin-icon"
 				style={{ marginBottom: "12px" }}
 			/>

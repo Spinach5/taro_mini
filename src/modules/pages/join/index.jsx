@@ -52,7 +52,7 @@ export default function Index() {
               { icon: "lock", label: "jsencrypt" },
             ].map((tech) => (
               <View className="tech-item" key={tech.label}>
-                <AtIcon value={tech.icon} size="16" color="#2563eb" />
+                <AtIcon value={tech.icon} size={16} color="#2563eb" />
                 <Text className="tech-label">{tech.label}</Text>
               </View>
             ))}
@@ -90,7 +90,7 @@ export default function Index() {
         <View className="join-card" onClick={handleCopyEmail}>
           <Text className="join-section-title">联系方式</Text>
           <View className="join-email-row">
-            <AtIcon value="mail" size="16" color="#2563eb" />
+            <AtIcon value="mail" size={16} color="#2563eb" />
             <Text className="join-email">{CONTACT_EMAIL}</Text>
             <Text className="join-email-hint">点击复制</Text>
           </View>

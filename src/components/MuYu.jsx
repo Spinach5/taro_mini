@@ -201,7 +201,7 @@ export default function MuYu({ merit = 0, onMerit }) {
 			</View>
 
 			<View className="choose-audio" onClick={() => setShowAudioModal(true)}>
-				<AtIcon value="sound" color="#0069cc" size="20" />
+				<AtIcon value="sound" color="#0069cc" size={20} />
 				<Text className="choose-audio-text">选择音频</Text>
 			</View>
 

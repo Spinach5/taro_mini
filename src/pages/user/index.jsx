@@ -173,7 +173,7 @@ export default function Index() {
 							<View className="user-menu-icon-wrap">
 								<MaterialCommunityIcons
 									name={item.icon}
-									size="30"
+									size={30}
 									color="#47a5fd"
 								/>
 							</View>
@@ -181,7 +181,7 @@ export default function Index() {
 						</View>
 						<AtIcon
 							value="chevron-right"
-							size="14"
+							size={14}
 							color="#c0c0c0"
 						/>
 					</View>
