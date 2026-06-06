@@ -1,6 +1,6 @@
 import { giteeRequest } from "../utils/request";
 import cacheManager from "../utils/cache";
-import { cleanContributors } from "../utils/contributorHelp";
+import { cleanContributors, NAME_OVERRIDES } from "../utils/contributorHelp";
 
 const CACHE_KEY = "Contributor"; // 定义缓存key
 
@@ -9,6 +9,13 @@ export async function getContributor(force = false) {
 	const cached = cacheManager.get(CACHE_KEY);
 	if (cached && !force) {
 		console.log("[getContributor] 从缓存获取贡献信息");
+		// 对缓存的贡献者也应用名字覆盖映射
+		if (cached.contributors) {
+			cached.contributors = cached.contributors.map(c => ({
+				...c,
+				name: NAME_OVERRIDES[c.name] || c.name,
+			}));
+		}
 		return cached;
 	}
 	const ref ="master"
@@ -50,8 +57,9 @@ export async function getContributor(force = false) {
 
 		const Results = cleanContributors(response.data);
 
-		// 3. 存入缓存（永不过期）
-		cacheManager.set(CACHE_KEY, Results);
+		// 3. 存入缓存（24小时后过期，确保名称变更能自动更新）
+		const CACHE_EXPIRATION = 24 * 60 * 60 * 1000;
+		cacheManager.set(CACHE_KEY, Results, CACHE_EXPIRATION);
 		console.log("[getContributor] 已缓存贡献信息");
 
 		return Results;
