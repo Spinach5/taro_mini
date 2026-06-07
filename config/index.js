@@ -126,6 +126,36 @@ export default defineConfig(async (merge, { command, mode }) => {
 							});
 						},
 					},
+					"/open_meteo": {
+						target: "https://api.open-meteo.com/",
+						changeOrigin: true,
+						rewrite: (path) => path.replace(/^\/open_meteo/, ""),
+						configure: (proxy, options) => {
+							proxy.on("proxyRes", (proxyRes, req, res) => {
+								console.log("proxyRes触发");
+								if (proxyRes.headers.location) {
+									let location = proxyRes.headers.location;
+									if (location.startsWith("/")) {
+										proxyRes.headers.location =
+											"/open_meteo" + location;
+									} else if (
+										location.includes("api.open-meteo.com")
+									) {
+										const relative = location.replace(
+											/https?:\/\/[^/]+/,
+											"",
+										);
+										proxyRes.headers.location =
+											"/open_meteo" + relative;
+									}
+									console.log(
+										"修改后的 location:",
+										proxyRes.headers.location,
+									);
+								}
+							});
+						},
+					},
 					"/hbut": {
 						target: "https://jwxt.hbut.edu.cn",
 						changeOrigin: true,

@@ -14,3 +14,13 @@
   background-color: white;
   padding: 8px;
 }
+
+.weather-icon {
+  margin-right: 4px;
+  font-size: 18px;
+}
+
+.weather-temp {
+  font-size: 15px;
+  white-space: nowrap;
+}

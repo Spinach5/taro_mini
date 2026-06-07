@@ -8,5 +8,6 @@ export const API_BASE = {
 	gitee:  isH5 ? "/gitee/" : "https://gitee.com/",
 	ipapi :  isH5 ? "/ipapi" : "https://ipapi.co/",
 	bigdata:  isH5 ? "/bigdata" : "https://api.bigdatacloud.net/",
+	open_meteo:  isH5 ? "/open_meteo" : "https://api.open-meteo.com/",
 
 };

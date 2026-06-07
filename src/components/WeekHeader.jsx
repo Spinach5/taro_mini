@@ -57,15 +57,36 @@ export default function WeekHeader({ currentWeek, weekDataList = [] }) {
 					<Text className="month-number">{currentMonth}</Text>
 					<Text className="month-unit">月</Text>
 				</View>
-				{weekDates.map((item, idx) => (
-					<View
-						key={idx}
-						className={`week-day-box ${isToday(item) ? "today" : ""}`}
-					>
-						<Text className="day-number">{item.date}</Text>
-						<Text className="day-week">{item.weekStr}</Text>
-					</View>
-				))}
+				{weekDates.map((item, idx) => {
+					const today = isToday(item);
+					return (
+						<View
+							key={idx}
+							className={`week-day-box${today ? " today" : ""}`}
+							style={
+								today
+									? {
+											backgroundColor: "#fff",
+											borderRadius: "10px",
+										}
+									: undefined
+							}
+						>
+							<Text
+								className="day-number"
+								style={today ? { color: "#007aff", fontWeight: "bold" } : undefined}
+							>
+								{item.date}
+							</Text>
+							<Text
+								className="day-week"
+								style={today ? { color: "#007aff", fontWeight: "bold" } : undefined}
+							>
+								{item.weekStr}
+							</Text>
+						</View>
+					);
+				})}
 			</View>
 		</View>
 	);

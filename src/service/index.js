@@ -21,3 +21,6 @@ export const auth = (...args) => getSchool().auth(...args);
 
 // login 是跨学校编排，从 login.js 导出
 export { login } from './login';
+
+// weatherManager 是全局单例，直接导出
+export { default as weatherManager } from './weatherInfo';
