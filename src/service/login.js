@@ -26,10 +26,10 @@ export async function login(stuId, password, university) {
 		return false;
 	}
 
-	// 保存基本信息（避免明文密码落盘，仅内存）
+	// 临时保存基本信息（auth 和 getSchool 需要通过 userManager 读取）
 	userManager.setField("stuId", stuId);
 	userManager.setField("university", university);
-	userManager.setField("password", password); // 不建议存储明文密码
+	userManager.setField("password", password);
 
 	// 执行登录（auth 应根据 university 调用不同接口）
 	const school = getSchool();
@@ -39,6 +39,7 @@ export async function login(stuId, password, university) {
 	} catch (err) {
 		runtimeLogger.error("Login", "登录请求异常", err);
 		Taro.hideLoading();
+		userManager.logout(); // 登录失败，清除已保存的信息
 		await Taro.showModal({ title: "网络错误", content: "网络请求失败，请检查网络后重试", showCancel: false, confirmText: "知道了" });
 		return false;
 	}
@@ -47,6 +48,7 @@ export async function login(stuId, password, university) {
 		const msg = authRes?.message || "登录失败，请检查账号密码";
 		runtimeLogger.warn("Login", msg);
 		Taro.hideLoading();
+		userManager.logout(); // 登录失败，清除已保存的信息
 		await Taro.showModal({ title: "登录失败", content: msg, showCancel: false, confirmText: "知道了" });
 		return false;
 	}
@@ -58,16 +60,19 @@ export async function login(stuId, password, university) {
 	} catch (err) {
 		runtimeLogger.error("Login", "获取用户信息失败", err);
 		Taro.hideLoading();
+		userManager.logout(); // 登录失败，清除已保存的信息
 		await Taro.showModal({ title: "登录失败", content: "获取用户信息失败，请重试", showCancel: false, confirmText: "知道了" });
 		return false;
 	}
 
 	if (!stuInfo) {
 		Taro.hideLoading();
+		userManager.logout(); // 登录失败，清除已保存的信息
 		await Taro.showModal({ title: "登录失败", content: "获取用户信息失败，请重试", showCancel: false, confirmText: "知道了" });
 		return false;
 	}
 
+	// 登录成功，补充用户详细信息
 	userManager.setFields(stuInfo);
 	userManager.setField("isLoggedIn", true);
 	runtimeLogger.info("Login", `登录成功: ${stuInfo.stuId || stuId}`);
