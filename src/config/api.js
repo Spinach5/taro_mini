@@ -5,6 +5,8 @@ const isH5 = process.env.TARO_ENV === "h5";
 export const API_BASE = {
 	hbut:  isH5 ? "/hbut" : "https://jwxt.hbut.edu.cn",
 	opendiff:  isH5 ? "/opendiff" : "https://api.zxionf.top",
-	gitee:  isH5 ? "/gitee/" : "https://gitee.com/"
+	gitee:  isH5 ? "/gitee/" : "https://gitee.com/",
+	ipapi :  isH5 ? "/ipapi" : "https://ipapi.co/",
+	bigdata:  isH5 ? "/bigdata" : "https://api.bigdatacloud.net/",
 
 };

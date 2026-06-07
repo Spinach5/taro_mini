@@ -1,5 +1,6 @@
 // utils/requestWithRetry.js
 import { auth } from "./auth";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 /**
  * 判断响应是否表示登录已失效
@@ -54,6 +55,7 @@ export async function AutoRetry(requestFn, options = {}) {
       // 检查是否需要重登
       if (isLoginInvalid(response) && retryCount < maxRetry) {
         console.warn("[AutoRetry] 检测到登录失效，尝试重新登录...");
+        runtimeLogger.warn("AutoRetry", "检测到登录失效，尝试重新登录");
         await auth();
         retryCount++;
         return await execute();
@@ -63,11 +65,13 @@ export async function AutoRetry(requestFn, options = {}) {
     } catch (error) {
       // 某些情况下请求直接抛出异常（如网络错误、超时）
       console.error("[AutoRetry] 请求异常：", error);
+      runtimeLogger.error("AutoRetry", "请求异常", error);
 
       // 若错误明显是重定向/未登录导致，也可以触发重登
       const msg = error?.message || error?.errMsg || "";
       if ((/redirect/i.test(msg) || /unauthorized/i.test(msg)) && retryCount < maxRetry) {
         console.warn("[AutoRetry] 捕获到疑似重定向/未登录异常，尝试重新登录...");
+        runtimeLogger.warn("AutoRetry", "捕获到疑似重定向/未登录异常，尝试重新登录");
         await auth();
         retryCount++;
         return await execute();

@@ -2,6 +2,12 @@
 export default defineAppConfig({
 	lazyCodeLoading: "requiredComponents", // 按需加载
 	pages: ["pages/index/index", "pages/course/index", "pages/user/index"],
+	permission: {
+		"scope.userLocation": {
+			desc: "你的位置信息将用于获取当地天气信息", // ⚠️ 必须填写使用说明
+		},
+	},
+	requiredPrivateInfos: ["getLocation"], // 声明需要使用的隐私接口
 
 	window: {
 		backgroundTextStyle: "light",

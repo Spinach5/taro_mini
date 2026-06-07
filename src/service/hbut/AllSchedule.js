@@ -4,6 +4,7 @@ import { hbutRequest } from "../../utils/request";
 import { getXhid } from "./GetXhid";
 import { extractCourseData } from "../../utils/hbut/courseHelper";
 import { AutoRetry } from "./autoRetry";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY = "All_COURSE_";
 
@@ -54,6 +55,7 @@ export async function getAllSchedule(forceRefresh = false, semester) {
     return courseData;
   } catch (error) {
     console.error("[getAllSchedule] 获取失败:", error);
+    runtimeLogger.error("AllSchedule", "获取所有课表失败", error);
     throw error;
   }
 }

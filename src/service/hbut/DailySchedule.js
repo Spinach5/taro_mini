@@ -2,6 +2,7 @@
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { AutoRetry } from "./autoRetry";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 // 注意：因为每天的时间参数不同，缓存key需要包含日期参数
 const getCacheKey = (time) => `DailySchedule_${time}`;
@@ -67,9 +68,11 @@ export async function getDailySchedule(time) {
 
   } catch (error) {
     // 如果错误已经是 Error 对象，直接抛出；否则包装一下
+    runtimeLogger.error("DailySchedule", "获取每日作息失败", error);
     if (error instanceof Error) {
       throw error;
     }
     console.warn("获取作息数据失败：" + error);
+    throw new Error(String(error));
   }
 }

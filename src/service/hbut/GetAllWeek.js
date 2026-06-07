@@ -3,6 +3,7 @@ import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { extractZc } from "../../utils/hbut/weekHelper";
 import { AutoRetry } from "./autoRetry";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY = "AllWeekData_"; // 定义缓存key
 
@@ -71,9 +72,11 @@ export async function getAllWeek(semester) {
 		return weekData;
 	} catch (error) {
 		// 如果错误已经是 Error 对象，直接抛出；否则包装一下
+		runtimeLogger.error("GetAllWeek", "获取排课周次失败", error);
 		if (error instanceof Error) {
 			throw error;
 		}
 		console.warn("获取排课周次失败：" + error);
+		throw new Error(String(error));
 	}
 }

@@ -1,6 +1,7 @@
 // 获取空教室
 import { hbutRequest } from "../../utils/request";
 import { extractEmpytClassRoom } from "../../utils/hbut/emptyClassRoom";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 const IS_H5 = process.env.TARO_ENV === "h5";
 
@@ -66,6 +67,7 @@ export async function getEmptyRoom(Building, weekNum, week, sectionStr) {
       return extractEmpytClassRoom(results);
     }
   } catch (error) {
+    runtimeLogger.error("GetEmptyRoom", "获取空教室失败", error);
     if (error instanceof Error) throw error;
     console.warn("获取空教室失败：" + error);
     throw error;

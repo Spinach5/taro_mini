@@ -4,6 +4,7 @@ import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { getXhid } from "./GetXhid"; // 需要获取 xhid
 import { AutoRetry } from "./autoRetry";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY = "ScoresData"; // 定义缓存key
 
@@ -85,9 +86,11 @@ export async function getScores(forceRefresh = false) {
 		return extractData;
 	} catch (error) {
 		// 如果错误已经是 Error 对象，直接抛出；否则包装一下
+		runtimeLogger.error("Scores", "获取成绩绩点失败", error);
 		if (error instanceof Error) {
 			throw error;
 		}
 		console.warn("获取成绩数据失败：" + error);
+		throw new Error(String(error));
 	}
 }

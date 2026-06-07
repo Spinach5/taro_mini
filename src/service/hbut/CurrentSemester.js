@@ -3,6 +3,7 @@ import { getGrade } from "../userInfo";
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { AutoRetry } from "./autoRetry";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY = "SemesterList"; // 定义缓存key
 
@@ -55,6 +56,7 @@ export async function getSemesterList() {
 		return SemesterList;
 	} catch (error) {
 		console.error("[getAllSchedule] 获取失败:", error);
+		runtimeLogger.error("CurrentSemester", "获取学期列表失败", error);
 		throw error;
 	}
 }

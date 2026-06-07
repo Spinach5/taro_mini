@@ -2,6 +2,7 @@
 import { hbutRequest } from "../../utils/request";
 import cacheManager from "../../utils/cache";
 import { AutoRetry } from "./autoRetry";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY = "CurrentWeek";
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
@@ -66,9 +67,11 @@ export async function getCurrentWeek() {
 		return currentWeek;
 	} catch (error) {
 		// 如果错误已经是 Error 对象，直接抛出；否则包装一下
+		runtimeLogger.error("CurrentWeek", "获取当前周数失败", error);
 		if (error instanceof Error) {
 			throw error;
 		}
 		console.warn("获取当前周数失败：" + error);
+		throw new Error(String(error));
 	}
 }

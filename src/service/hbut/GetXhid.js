@@ -2,6 +2,7 @@
 import cacheManager from "../../utils/cache";
 import { hbutRequest } from "../../utils/request";
 import { AutoRetry } from "./autoRetry";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY = "xhid";
 
@@ -33,19 +34,23 @@ export async function getXhid() {
 	if (response.status !== 200) {
 		console.log("[getXhid] 网络请求失败");
 		console.warn("获取 xhid 失败：网络请求失败");
+		runtimeLogger.error("GetXhid", "获取xhid失败：网络请求失败");
 	}
 	if (response.status === 300) {
 		console.log("[getXhid] 登录失效，请重新登录");
 		console.warn("获取 xhid 失败：登录失效，请重新登录");
+		runtimeLogger.error("GetXhid", "获取xhid失败：登录失效");
 	}
 	if (response.data.ret !== 0) {
 		console.log("[getCurrentWeek] 接口返回异常:", response.data);
 		console.warn("获取xhid失败：接口返回 ret 不为 0");
+		runtimeLogger.error("GetXhid", "获取xhid失败：接口返回ret不为0");
 	}
 	const xhid = response.data.data.id;
 
 	if (!xhid) {
 		console.warn("获取 xhid 失败：响应数据中无 id 字段");
+		runtimeLogger.error("GetXhid", "获取xhid失败：响应数据中无id字段");
 	}
 
 	// 3. 存入缓存（永不过期）

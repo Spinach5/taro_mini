@@ -5,6 +5,7 @@ import cacheManager from "../../utils/cache";
 import { AutoRetry } from "./autoRetry";
 import { extractPracticeInfo } from "../../utils/hbut/extroInfoHelper";
 import { getXhid } from "./GetXhid";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY = "ExtroInfoData_"; // 定义缓存key
 
@@ -75,9 +76,11 @@ export async function getExtroInfo(semester) {
 		return sjkData;
 	} catch (error) {
 		// 如果错误已经是 Error 对象，直接抛出；否则包装一下
+		runtimeLogger.error("ExtroInfo", "获取实践信息失败", error);
 		if (error instanceof Error) {
 			throw error;
 		}
 		console.warn("获取实践信息失败：" + error);
+		throw new Error(String(error));
 	}
 }

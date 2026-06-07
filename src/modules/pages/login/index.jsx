@@ -143,9 +143,11 @@ export default function Index() {
 			}, 150);
 		} catch (error) {
 			Taro.hideLoading();
-			Taro.showToast({
-				title: "登录失败，请检查学号和密码",
-				icon: "error",
+			Taro.showModal({
+				title: "登录失败",
+				content: "登录失败，请检查学号和密码是否正确",
+				showCancel: false,
+				confirmText: "知道了",
 			});
 			runtimeLogger.error("Login", "登录失败", error);
 		}

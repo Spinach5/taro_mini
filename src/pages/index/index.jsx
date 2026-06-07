@@ -1,33 +1,46 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { View } from "@tarojs/components";
+import Taro,{ useRouter }from "@tarojs/taro";
 import "./index.css";
 import SafeAreaView from "../../components/SafeAreaView";
 import HeadStatus from "../../components/HeadStatus";
 import IndexSwiper from "../../components/IndexSwiper";
 import GridContainer from "../../components/GridContainer";
-import { useLoad, useDidShow, useDidHide, useRouter } from "@tarojs/taro";
+import getLocation from "../../utils/getLocation"
+import getArea from "../../utils/getArea"
+
+async function getH5Location() {
+	const {latitude, longitude} = await getLocation();
+	console.log(latitude, longitude);
+	return await getArea(latitude, longitude);
+}
 
 export default function Index() {
 	const router = useRouter();
-	const currentPath = router.path.split("?")[0];
-	const [, setTick] = useState(0);
+		const currentPath = router.path.split("?")[0];
+	const [loading, setLoading] = useState(false);
 
-	useLoad(() => {});
+	const handleGetLocation = useCallback(async () => {
+		setLoading(true);
+		try {
+			await getH5Location();
+		} catch (err) {
+			Taro.showToast({ title: "获取位置失败", icon: "none" });
+		} finally {
+			setLoading(false);
+		}
+	}, []);
 
-	// 每次回到首页时触发重渲染，确保 GridContainer 读取最新存储
-	useDidShow(() => {
-		setTick((t) => t + 1);
-	});
-
-	useDidHide(() => {});
 	return (
 		<SafeAreaView currentPath={currentPath}>
 			<HeadStatus text="首页" />
-			{/* 轮播图组件 */}
 			<IndexSwiper />
-			{/* 功能展示组件 */}
 			<GridContainer />
-
+			<View className="button-wrapper">
+				<View className="button" onClick={handleGetLocation}>
+					{loading ? "定位中..." : "获取当前位置"}
+				</View>
+			</View>
 		</SafeAreaView>
 	);
 }

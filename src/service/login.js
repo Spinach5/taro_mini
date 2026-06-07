@@ -38,14 +38,16 @@ export async function login(stuId, password, university) {
 		authRes = await school.auth();
 	} catch (err) {
 		runtimeLogger.error("Login", "登录请求异常", err);
-		await Taro.showToast({ title: "网络错误", icon: "none" });
+		Taro.hideLoading();
+		await Taro.showModal({ title: "网络错误", content: "网络请求失败，请检查网络后重试", showCancel: false, confirmText: "知道了" });
 		return false;
 	}
 
 	if (!authRes?.success) {
 		const msg = authRes?.message || "登录失败，请检查账号密码";
 		runtimeLogger.warn("Login", msg);
-		await Taro.showToast({ title: msg, icon: "error", duration: 3000 });
+		Taro.hideLoading();
+		await Taro.showModal({ title: "登录失败", content: msg, showCancel: false, confirmText: "知道了" });
 		return false;
 	}
 
@@ -55,12 +57,14 @@ export async function login(stuId, password, university) {
 		stuInfo = await school.getStuInfo();
 	} catch (err) {
 		runtimeLogger.error("Login", "获取用户信息失败", err);
-		await Taro.showToast({ title: "获取用户信息失败", icon: "none" });
+		Taro.hideLoading();
+		await Taro.showModal({ title: "登录失败", content: "获取用户信息失败，请重试", showCancel: false, confirmText: "知道了" });
 		return false;
 	}
 
 	if (!stuInfo) {
-		await Taro.showToast({ title: "获取用户信息失败", icon: "none" });
+		Taro.hideLoading();
+		await Taro.showModal({ title: "登录失败", content: "获取用户信息失败，请重试", showCancel: false, confirmText: "知道了" });
 		return false;
 	}
 

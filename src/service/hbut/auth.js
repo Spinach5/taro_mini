@@ -2,6 +2,7 @@
 import { hbutRequest } from "../../utils/request";
 import encryptPassword from "../../utils/hbut/loginEncrypt";
 import userManager from "../userInfo";
+import runtimeLogger from "../../utils/runtimeLogger";
 
 export async function auth() {
 	const { stuId, password } = userManager.getAccount();
@@ -12,10 +13,12 @@ export async function auth() {
 		encodedPassword = encryptPassword(password);
 		if (!encodedPassword) {
 			console.error("密码加密失败");
+			runtimeLogger.error("Auth", "密码加密失败");
 			return { success: false, message: "密码加密失败" };
 		}
 	} catch (e) {
 		console.error(`加密异常: ${e.message}`);
+		runtimeLogger.error("Auth", "密码加密异常", e);
 		return { success: false, message: `加密异常: ${e.message}` };
 	}
 
@@ -61,9 +64,10 @@ export async function auth() {
 				// 根据返回的 JSON 判断失败原因
 				if (jsonData.code !== 0 && jsonData.code !== 200) {
 					console.error(
-						"登录失败:",
-						jsonData.message || jsonData.msg || "未知错误",
+					"登录失败:",
+					jsonData.message || jsonData.msg || "未知错误",
 					);
+				runtimeLogger.error("Auth", "登录失败", jsonData.message || jsonData.msg || "未知错误");
 					return {
 						success: false,
 						message: jsonData.message || jsonData.msg || "登录失败",
@@ -81,6 +85,7 @@ export async function auth() {
 		// 3. 检查 HTTP 状态码（如果请求库会抛出错误，则在 catch 中处理）
 		if (response.statusCode && response.statusCode !== 200) {
 			console.error(`HTTP 错误: ${response.statusCode}`);
+			runtimeLogger.error("Auth", `HTTP错误: ${response.statusCode}`);
 			return {
 				success: false,
 				message: `HTTP 错误: ${response.statusCode}`,
@@ -98,6 +103,7 @@ export async function auth() {
 	} catch (error) {
 		// 5. 请求异常处理（网络错误、超时等）
 		console.error("登录请求异常:", error);
+		runtimeLogger.error("Auth", "登录请求异常", error);
 
 		// 尝试获取响应数据（如果有的话）
 		if (error.response) {
