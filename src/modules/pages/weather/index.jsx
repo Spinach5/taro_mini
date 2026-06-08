@@ -259,7 +259,7 @@ export default function Weather() {
             <ScrollView scrollX className="hourly-scroll">
               <View className="hourly-list">
                 {hourly.map((item, idx) => (
-                  <View className="hourly-item" key={item.time || idx}>
+                  <View className="hourly-item bora" key={item.time || idx}>
                     <Text className="hourly-time">
                       {formatHour(item.time, currentHour)}
                     </Text>
