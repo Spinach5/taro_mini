@@ -94,12 +94,14 @@ export default function Index() {
 			}
 			setLoading(true);
 			try {
-				const [scheduleData, timeData] = await Promise.all([
+				const [scheduleData, timeData, extroData] = await Promise.all([
 					getAllSchedule(forceRefresh, currentSemester),
 					getTimeTable(currentSemester),
+					getExtroInfo(currentSemester, forceRefresh),
 				]);
 				setCourses(scheduleData || []);
 				setTimeTable(timeData || []);
+				setPracticeData(extroData || []);
 				if (forceRefresh) {
 					Taro.showToast({
 						title: "刷新成功",

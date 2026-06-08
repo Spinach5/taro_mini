@@ -9,12 +9,17 @@ import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY = "ExtroInfoData_"; // 定义缓存key
 
-export async function getExtroInfo(semester) {
-	// 1. 优先从缓存获取
-	const cached = cacheManager.get(CACHE_KEY + semester);
-	if (cached) {
-		console.log("[getExtroInfo] 从缓存获取实践信息");
-		return cached;
+export async function getExtroInfo(semester, forceRefresh = false) {
+	// 1. 强制刷新时清除缓存
+	if (forceRefresh) {
+		cacheManager.remove(CACHE_KEY + semester);
+		console.log(`[getExtroInfo] 已清除${semester}实践信息缓存`);
+	} else {
+		const cached = cacheManager.get(CACHE_KEY + semester);
+		if (cached) {
+			console.log("[getExtroInfo] 从缓存获取实践信息");
+			return cached;
+		}
 	}
 	const fetchExtroInfo = async () => {
 		const loginConfig = {
