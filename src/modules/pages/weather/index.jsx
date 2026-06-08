@@ -310,6 +310,7 @@ export default function Weather() {
                       <Text className="daily-temp-low">
                         {item.tempMin != null ? `${Math.round(item.tempMin)}°` : "--°"}
                       </Text>
+                      <Text className="daily-temp-sep">/</Text>
                       <Text className="daily-temp-high">
                         {item.tempMax != null ? `${Math.round(item.tempMax)}°` : "--°"}
                       </Text>
