@@ -321,6 +321,11 @@ export default function Weather() {
             </View>
           </>
         )}
+
+        {/* ===== Data Source ===== */}
+        <View className="data-source">
+          <Text className="data-source-text">数据来源: open-meteo</Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

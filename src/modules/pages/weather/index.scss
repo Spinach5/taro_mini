@@ -225,6 +225,18 @@
   font-weight: 500;
 }
 
+// ========== Data Source ==========
+.data-source {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 30px;
+}
+
+.data-source-text {
+  font-size: 22px;
+  color: #bbb;
+}
+
 // ========== Error state ==========
 .error-view {
   flex: 1;
