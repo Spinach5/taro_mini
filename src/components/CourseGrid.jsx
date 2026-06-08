@@ -26,7 +26,7 @@ export default function CourseGrid({ gridCourses, rowCount = 1, onCardClick }) {
 	const cards = safeCourses.map((course) => (
 		<View
 			key={course.id}
-			className="course-card"
+			className="course-card bora"
 			style={{
 				gridColumn: course.col + 1,
 				gridRow: `${course.row + 1} / span ${course.rowSpan}`,

@@ -1,4 +1,5 @@
 import { defineConfig } from "@tarojs/cli";
+import https from "https";
 import devConfig from "./dev";
 import prodConfig from "./prod";
 
@@ -215,8 +216,9 @@ export default defineConfig(async (merge, { command, mode }) => {
 						},
 					},
 					"/bigdata": {
-						target: "https://api.bigdatacloud.net/",
+						target: "https://api.bigdatacloud.net",
 						changeOrigin: true,
+						agent: new https.Agent({ family: 4 }),
 						rewrite: (path) => path.replace(/^\/bigdata/, ""),
 						configure: (proxy, options) => {
 							proxy.on("proxyRes", (proxyRes, req, res) => {
@@ -232,7 +234,7 @@ export default defineConfig(async (merge, { command, mode }) => {
 											"",
 										);
 										proxyRes.headers.location =
-											"/ipapi" + relative;
+											"/bigdata" + relative;
 									}
 									console.log(
 										"修改后的 location:",

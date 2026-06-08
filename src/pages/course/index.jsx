@@ -483,7 +483,7 @@ export default function Index() {
 			</ScrollView>
 
 			{actualWeek && currentWeek !== actualWeek && (
-				<View className="gobacktoday" onClick={handleBackToCurrentWeek}>
+				<View className="gobacktoday bora" onClick={handleBackToCurrentWeek}>
 					返回本周
 				</View>
 			)}

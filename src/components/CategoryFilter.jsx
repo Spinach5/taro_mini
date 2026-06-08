@@ -22,7 +22,7 @@ export default function CategoryFilter({
   const [currentActiveId, setCurrentActive] = useState(-1)
   const allcategories = allText ? [{ id: -1, name: allText }, ...categories] : categories
   return (
-    <View className={`category-filter ${className}`}>
+    <View className={`category-filter bora ${className}`}>
       {allcategories.map((cat) => (
         <View
           key={cat.id}

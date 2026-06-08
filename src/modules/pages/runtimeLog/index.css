@@ -25,7 +25,6 @@
 	min-height: 200px;
 	max-height: calc(100vh - 220px);
 	background: rgba(255, 255, 255, 0.95);
-	border-radius: 12px;
 	padding: 12px;
 	box-sizing: border-box;
 	margin-bottom: 12px;
@@ -72,7 +71,6 @@
 	flex: 1;
 	text-align: center;
 	padding: 12px 0;
-	border-radius: 12px;
 	font-size: 15px;
 	font-weight: 600;
 }

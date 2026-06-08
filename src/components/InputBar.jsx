@@ -21,7 +21,7 @@ export default function InputBar({
   return (
     <Input
       value={value}
-      className={`input-field ${className}`}
+      className={`input-field bora ${className}`}
       type='text' placeholder={placeholder} focus
       onInput={handleInput}
     >

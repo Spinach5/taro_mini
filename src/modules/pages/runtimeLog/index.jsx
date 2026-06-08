@@ -61,7 +61,7 @@ export default function Index() {
 				</View>
 				<Text className="runtime-log-count">共 {logs.length} 条记录</Text>
 
-				<ScrollView scrollY className="runtime-log-scroll" showScrollbar>
+				<ScrollView scrollY className="runtime-log-scroll bora" showScrollbar>
 					<View className="runtime-log-content">
 						{logs.length === 0 ? (
 							<Text className="runtime-log-empty">暂无运行日志</Text>
@@ -79,11 +79,11 @@ export default function Index() {
 				</ScrollView>
 
 				<View className="runtime-log-actions">
-					<View className="runtime-log-btn runtime-log-btn--copy" onClick={handleCopy}>
+					<View className="runtime-log-btn bora runtime-log-btn--copy" onClick={handleCopy}>
 						<Text>复制全部</Text>
 					</View>
 					<View
-						className="runtime-log-btn runtime-log-btn--delete"
+						className="runtime-log-btn bora runtime-log-btn--delete"
 						onClick={handleClear}
 					>
 						<Text>删除全部</Text>

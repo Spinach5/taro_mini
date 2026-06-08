@@ -2,11 +2,10 @@ import { View } from "@tarojs/components";
 
 export default function UserCard({ text }) {
   return (
-    <View
+    <View className="bora"
       style={{
         backgroundColor: "#47a5fd",
 		fontSize: "28rpx",
-        borderRadius: "16px",
         color: "white",
         display: "inline-flex",
         justifyContent: "center",

@@ -13,7 +13,7 @@ export default function PracticeCard({ data }) {
   }
 
   return (
-    <View className="practice-card">
+    <View className="practice-card bora">
       {data.map((item, idx) => (
         <View key={idx} className="practice-item">
           <View className="practice-info">

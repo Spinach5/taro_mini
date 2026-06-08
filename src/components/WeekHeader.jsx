@@ -67,7 +67,7 @@ export default function WeekHeader({ currentWeek, weekDataList = [] }) {
 								today
 									? {
 											backgroundColor: "#fff",
-											borderRadius: "10px",
+											borderRadius: "8px",
 										}
 									: undefined
 							}

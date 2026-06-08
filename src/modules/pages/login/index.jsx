@@ -225,7 +225,7 @@ export default function Index() {
 							setUniversity(universityList[e.detail.value])
 						}
 					>
-						<View className="university-picker">
+						<View className="university-picker bora">
 							<Text className="university-name">
 								{university}
 							</Text>
@@ -234,8 +234,8 @@ export default function Index() {
 					</Picker>
 				</View>
 
-				<View className="form">
-					<View className="input-item">
+				<View className="form bora">
+					<View className="input-item bora">
 						<Text className="input-label">学号</Text>
 						<View className="input-wrapper">
 							<Input
@@ -284,7 +284,7 @@ export default function Index() {
 						</View>
 					</View>
 
-					<Button className="login-btn" onClick={handleLogin}>
+					<Button className="login-btn bora" onClick={handleLogin}>
 						登录
 					</Button>
 
@@ -292,7 +292,7 @@ export default function Index() {
 						className="agreement"
 						onClick={() => setAgreed(!agreed)}
 					>
-						<View className={`checkbox ${agreed ? "checked" : ""}`}>
+						<View className={`checkbox bora ${agreed ? "checked" : ""}`}>
 							{agreed && <Text className="checkmark">✓</Text>}
 						</View>
 						<Text className="agreement-text">

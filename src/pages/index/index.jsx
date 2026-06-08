@@ -36,7 +36,7 @@ export default function Index() {
 						<MaterialCommunityIcons
 							name={weather.weatherIcon}
 							color="#47a5fd"
-							size={22}
+							size={40}
 						/>
 						<Text className="weather-temp">{weather.temperature}°C</Text>
 					</>

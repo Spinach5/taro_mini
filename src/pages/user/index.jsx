@@ -134,7 +134,7 @@ export default function Index() {
 	return (
 		<SafeAreaView currentPath={currentPath}>
 			<HeadStatus text="我的" />
-			<View className="user-header-card">
+			<View className="user-header-card bora">
 				<View
 					className="user-avatar-circle"
 					onClick={handleChooseAvatar}
@@ -166,11 +166,11 @@ export default function Index() {
 				{menuItems.map((item) => (
 					<View
 						key={item.text}
-						className="user-menu-item"
+						className="user-menu-item bora"
 						onClick={item.onClick}
 					>
 						<View className="user-menu-left">
-							<View className="user-menu-icon-wrap">
+							<View className="user-menu-icon-wrap bora">
 								<MaterialCommunityIcons
 									name={item.icon}
 									size={30}
@@ -189,11 +189,11 @@ export default function Index() {
 			</View>
 
 			{!isLoggedIn ? (
-				<View className="user-login-btn" onClick={handleLogin}>
+				<View className="user-login-btn bora" onClick={handleLogin}>
 					<Text>立即登录</Text>
 				</View>
 			) : (
-				<View className="user-logout-btn" onClick={handleLogout}>
+				<View className="user-logout-btn bora" onClick={handleLogout}>
 					<Text>退出登录</Text>
 				</View>
 			)}

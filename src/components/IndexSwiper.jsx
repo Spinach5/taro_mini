@@ -11,7 +11,7 @@ export default function IndexSwiper({ className = "" }) {
 			interval={3000}
 			duration={500}
 			circular
-			className={`swiper-box ${className}`}
+			className={`swiper-box bora ${className}`}
 		>
 			{bannerList.map((item) => (
 				<SwiperItem key={item.id}>

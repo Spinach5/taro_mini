@@ -33,7 +33,7 @@ function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onCha
         value={selected.building}
         onChange={(e) => onChange("building", e.detail.value)}
       >
-        <View className="filter-item">
+        <View className="filter-item bora">
           <Text className="filter-label">教学楼</Text>
           <View className="filter-value">
             <Text>{buildingNames[selected.building] || "全部"}</Text>
@@ -95,7 +95,7 @@ function FilterBar({ buildingNames, weekOptions, sectionOptions, selected, onCha
         </View>
       </Picker>
 
-      <View className="search-btn" onClick={onSearch}>
+      <View className="search-btn bora" onClick={onSearch}>
 		<AtIcon value="search" size={20} color="#fff" className="search-icon"/>
         <Text className="search-text">查询</Text>
       </View>
@@ -107,7 +107,7 @@ function RoomCard({ room, typeName }) {
   const typeColor = getColorFromName(typeName || room.jslx || "默认");
 
   return (
-    <View className="room-card">
+    <View className="room-card bora">
       <View className="room-card-left">
         <Text className="room-name">{room.jsmc}</Text>
         <Text className="room-info">教学楼名称：{room.jxlmc}</Text>

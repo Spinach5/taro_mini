@@ -50,8 +50,8 @@ const handleClick = async () => {
 		}
 	};
 	return (
-		<View className={`my-item ${className}`}>
-			<View className="icon-wrapper" onClick={handleClick}>
+		<View className={`my-item bora ${className}`}>
+			<View className="icon-wrapper bora" onClick={handleClick}>
 				<MaterialCommunityIcons
 					name={`${icon}`}
 					className="grid-icon"

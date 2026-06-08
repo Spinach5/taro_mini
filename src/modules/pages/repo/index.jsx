@@ -33,9 +33,9 @@ function ContributorBar({ contributor, maxCommits, index }) {
           </View>
           <Text className="contributor-commits">{commits} commits</Text>
         </View>
-        <View className="bar-track">
+        <View className="bar-track bora">
           <View
-            className="bar-fill"
+            className="bar-fill bora"
             style={{
               width: `${barWidth}%`,
               backgroundColor: bgColor,
@@ -50,6 +50,7 @@ function ContributorBar({ contributor, maxCommits, index }) {
 export default function Index() {
   const [contributors, setContributors] = useState([]);
   const [contributorsCount, setContributorsCount] = useState(0);
+  const [contributionsCount, setContributionsCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [repos, setRepos] = useState([]);
   const [reposLoading, setReposLoading] = useState(true);
@@ -62,6 +63,7 @@ export default function Index() {
         const sorted = [...data.contributors].sort((a, b) => b.commits - a.commits);
         setContributors(sorted);
         setContributorsCount(data.contributors_count);
+        setContributionsCount(data.contributions);
       }
     } catch (err) {
       console.warn("获取贡献者失败:", err);
@@ -106,7 +108,7 @@ export default function Index() {
         <HeadStatus text="项目仓库" />
       </View>
       <View className="repo-page-content">
-        <View className="repo-info-card">
+        <View className="repo-info-card bora">
           <Text className="repo-name">taro_mini</Text>
           <View className="repo-url-row">
             <Text className="repo-url-label">仓库地址：</Text>
@@ -119,9 +121,10 @@ export default function Index() {
             </Text>
           </View>
           <Text className="repo-contributors-count">{contributorsCount} 位贡献者</Text>
+          <Text className="repo-contributors-count">一共{contributionsCount} 次提交</Text>
         </View>
 
-        <View className="contributors-section">
+        <View className="contributors-section bora">
           <Text className="section-title">贡献度排行</Text>
           {loading ? (
             <View className="loading-wrap">
@@ -145,7 +148,7 @@ export default function Index() {
           )}
         </View>
 
-        <View className="repos-section">
+        <View className="repos-section bora">
           <Text className="section-title">开源项目</Text>
           {reposLoading ? (
             <View className="loading-wrap">
@@ -158,7 +161,7 @@ export default function Index() {
           ) : (
             <View className="repos-list">
               {repos.map((repo) => (
-                <View key={repo.name} className="repo-item">
+                <View key={repo.name} className="repo-item bora">
                   <View className="repo-item-icon">
                     <Text className="repo-item-icon-text">R</Text>
                   </View>

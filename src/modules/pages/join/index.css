@@ -11,7 +11,6 @@
   padding: 40px 0 32px;
   margin: 16px 0 20px;
   /* background: linear-gradient(160deg, #f8faff 0%, #eef3ff 40%, #f0f4ff 100%); */
-  border-radius: 20px;
   position: relative;
   overflow: hidden;
 }
@@ -41,7 +40,6 @@
 .join-illustration {
   width: 88px;
   height: 88px;
-  border-radius: 22px;
   background: #ffffff;
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
   display: flex;
@@ -55,7 +53,6 @@
 .join-illustration-icon {
   width: 80px;
   height: 80px;
-  border-radius: 18px;
 }
 
 .join-tagline {
@@ -81,7 +78,6 @@
 /* ========== 卡片通用 ========== */
 .join-card {
   background: #ffffff;
-  border-radius: 16px;
   padding: 22px;
   margin-bottom: 14px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
@@ -161,7 +157,6 @@
   gap: 10px;
   padding: 14px 16px;
   background: linear-gradient(135deg, #f0f4ff, #f8faff);
-  border-radius: 10px;
   border: 1px solid rgba(37, 99, 235, 0.08);
 }
 
@@ -177,7 +172,6 @@
   color: #aaa;
   background: #ffffff;
   padding: 4px 12px;
-  border-radius: 12px;
 }
 
 /* ========== 技术栈 ========== */
@@ -193,7 +187,6 @@
   gap: 6px;
   padding: 8px 14px;
   background: #f8faff;
-  border-radius: 10px;
   border: 1px solid rgba(37, 99, 235, 0.08);
 }
 

@@ -45,11 +45,11 @@ function saveFeatures(features) {
 function ToggleSwitch({ value, disabled, onClick }) {
   return (
     <View
-      className={`custom-switch ${value ? "custom-switch-on" : "custom-switch-off"}${disabled ? " custom-switch-disabled" : ""}`}
+      className={`custom-switch bora ${value ? "custom-switch-on" : "custom-switch-off"}${disabled ? " custom-switch-disabled" : ""}`}
       onClick={disabled ? undefined : onClick}
     >
       <View
-        className={`custom-switch-thumb ${value ? "custom-switch-thumb-on" : "custom-switch-thumb-off"}`}
+        className={`custom-switch-thumb bora ${value ? "custom-switch-thumb-on" : "custom-switch-thumb-off"}`}
       />
     </View>
   );
@@ -138,7 +138,7 @@ export default function Index() {
       </View>
 
       <View className="settings-content">
-        <View className="settings-group">
+        <View className="settings-group bora">
           <View className="settings-row" onClick={handleDarkMode}>
             <View className="settings-row-left">
               <Text className="settings-label">黑夜模式</Text>
@@ -178,7 +178,7 @@ export default function Index() {
           </View>
         </View>
 
-        <View className="settings-group">
+        <View className="settings-group bora">
           <View className="settings-row" onClick={() => updateFeature("expand", !features.expand)}>
             <View className="settings-row-left">
               <Text className="settings-label">拓展</Text>

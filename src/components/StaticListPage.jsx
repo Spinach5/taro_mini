@@ -51,7 +51,7 @@ export default function StaticListPage({
 						const visibleItems = (group.items || []).filter(matchItem);
 						if (visibleItems.length === 0) return null;
 						return (
-							<View key={group.title} className="static-list-group">
+							<View key={group.title} className="static-list-group bora">
 								<View className="static-list-group-title">{group.title}</View>
 								{visibleItems.map((item) => (
 									<View key={item.name} className="static-list-item">

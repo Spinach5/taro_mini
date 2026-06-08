@@ -175,7 +175,7 @@ export default function Index() {
           value={semesterIdx}
           onChange={(e) => handlePickerChange("semester", e.detail.value)}
         >
-          <View className="filter-item">
+          <View className="filter-item bora">
             <Text className="filter-label">学期</Text>
             <View className="filter-value">
               <Text className="filter-text">{semesterOptions[semesterIdx]}</Text>
@@ -234,7 +234,7 @@ export default function Index() {
               const color = getScoreColor(item.zhcj);
               const text = getScoreText(item.zhcj);
               return (
-                <View className="score-card" key={index}>
+                <View className="score-card bora" key={index}>
                   <View className="score-card-left">
                     <Text className="score-course-name">{item.kcmc}</Text>
                     <Text className="score-meta">

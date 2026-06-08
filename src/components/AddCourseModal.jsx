@@ -120,7 +120,7 @@ export default function AddCourseModal({
               placeholder="请输入课程名称"
               value={addForm.kcmc}
               onInput={(e) => handleInputChange("kcmc", e.detail.value)}
-              className={`form-input ${errors.kcmc ? "error" : ""}`}
+              className={`form-input bora ${errors.kcmc ? "error" : ""}`}
             />
           </View>
 
@@ -130,7 +130,7 @@ export default function AddCourseModal({
               placeholder="请输入教师姓名"
               value={addForm.teacher}
               onInput={(e) => handleInputChange("teacher", e.detail.value)}
-              className="form-input"
+              className="form-input bora"
             />
           </View>
 
@@ -145,7 +145,7 @@ export default function AddCourseModal({
                 handleInputChange("startJc", jcOptions[e.detail.value])
               }
             >
-              <View className={`picker-view ${errors.startJc ? "error" : ""}`}>
+              <View className={`picker-view bora ${errors.startJc ? "error" : ""}`}>
                 {addForm.startJc ? `第${addForm.startJc}节` : "请选择开始节次"}
               </View>
             </Picker>
@@ -162,7 +162,7 @@ export default function AddCourseModal({
                 handleInputChange("endJc", jcOptions[e.detail.value])
               }
             >
-              <View className={`picker-view ${errors.endJc ? "error" : ""}`}>
+              <View className={`picker-view bora ${errors.endJc ? "error" : ""}`}>
                 {addForm.endJc ? `第${addForm.endJc}节` : "请选择结束节次"}
               </View>
             </Picker>
@@ -177,7 +177,7 @@ export default function AddCourseModal({
                 handleInputChange("weekDay", (e.detail.value + 1).toString())
               }
             >
-              <View className="picker-view">
+              <View className="picker-view bora">
                 {weekOptions[parseInt(addForm.weekDay) - 1]}
               </View>
             </Picker>
@@ -195,7 +195,7 @@ export default function AddCourseModal({
               }
             >
               <View
-                className={`picker-view ${errors.startWeek ? "error" : ""}`}
+                className={`picker-view bora ${errors.startWeek ? "error" : ""}`}
               >
                 {addForm.startWeek
                   ? `第${addForm.startWeek}周`
@@ -215,7 +215,7 @@ export default function AddCourseModal({
                 handleInputChange("endWeek", weekRange[e.detail.value])
               }
             >
-              <View className={`picker-view ${errors.endWeek ? "error" : ""}`}>
+              <View className={`picker-view bora ${errors.endWeek ? "error" : ""}`}>
                 {addForm.endWeek ? `第${addForm.endWeek}周` : "请选择结束周"}
               </View>
             </Picker>
@@ -227,15 +227,15 @@ export default function AddCourseModal({
               placeholder="请输入教室"
               value={addForm.classroom}
               onInput={(e) => handleInputChange("classroom", e.detail.value)}
-              className="form-input"
+              className="form-input bora"
             />
           </View>
 
           <View className="modal-buttons">
-            <View className="btn-cancel" onClick={onClose}>
+            <View className="btn-cancel bora" onClick={onClose}>
               取消
             </View>
-            <View className="btn-confirm" onClick={handleConfirm}>
+            <View className="btn-confirm bora" onClick={handleConfirm}>
               确定
             </View>
           </View>

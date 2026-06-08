@@ -175,7 +175,7 @@ export default function Index() {
           exams.map((exam, index) => {
               const status = getExamStatus(exam.kssj);
               return (
-                <View key={index} className="exam-card">
+                <View key={index} className="exam-card bora">
                   <Text className="exam-subject">{exam.kcmc}</Text>
                   <View className="exam-info">
                     <Text className="exam-info-item">考试批次: {exam.kspcmc}</Text>

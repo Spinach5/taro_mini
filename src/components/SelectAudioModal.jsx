@@ -13,7 +13,7 @@ export default function SelectAudioModal({
 	return (
 		<View className="audio-modal-mask" onClick={onClose}>
 			<View
-				className="audio-modal-container"
+				className="audio-modal-container bora"
 				onClick={(e) => e.stopPropagation()}
 			>
 				<View className="audio-modal-title">选择音频</View>
@@ -23,7 +23,7 @@ export default function SelectAudioModal({
 							return (
 								<View
 									key={item.key}
-									className="audio-item audio-item-import"
+									className="audio-item audio-item-import bora"
 									onClick={onImportLocal}
 								>
 									<Text className="audio-item-icon">+</Text>

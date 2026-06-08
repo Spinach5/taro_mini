@@ -145,3 +145,6 @@ body[data-theme="dark"] {
 	align-items: center;
 	gap: 8px;
 }
+.bora{
+	border-radius: 8px;
+}

@@ -73,7 +73,7 @@ export default function CourseHeader({
 					onClick={() => setShowFunctionMenu(false)}
 				>
 					<View
-						className="menu-popup"
+						className="menu-popup bora"
 						onClick={(e) => e.stopPropagation()}
 					>
 						{[

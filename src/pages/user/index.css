@@ -3,7 +3,6 @@
   margin: 20px 24px;
   padding: 32px 24px 24px;
   background: #fff;
-  border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
@@ -63,7 +62,6 @@
 .user-menu-section {
   margin: 0 24px;
   background: #fff;
-  border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   overflow: hidden;
 }
@@ -93,7 +91,6 @@
 .user-menu-icon-wrap {
   width: 50px;
   height: 50px;
-  border-radius: 10px;
   background: rgba(71, 165, 253, 0.1);
   display: flex;
   align-items: center;
@@ -114,7 +111,6 @@
   font-weight: 600;
   padding: 26px 0;
   text-align: center;
-  border-radius: 60px;
   margin: 24px 24px 30px;
   box-shadow: 0 6px 16px rgba(71, 165, 253, 0.35);
 }
@@ -131,7 +127,6 @@
   font-weight: 500;
   padding: 26px 0;
   text-align: center;
-  border-radius: 60px;
   margin: 24px 24px 30px;
   border: 1px solid #ff4d4f;
 }

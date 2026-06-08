@@ -16,7 +16,6 @@
 	max-width: 420px;
 	max-height: 70vh;
 	background-color: #fff;
-	border-radius: 16px;
 	overflow: hidden;
 	padding: 20px 16px 16px;
 	box-sizing: border-box;
@@ -37,7 +36,6 @@
 .audio-item {
 	padding: 14px 16px;
 	margin-bottom: 10px;
-	border-radius: 12px;
 	border: 1px solid #e8ecf0;
 	background-color: #f7f9fc;
 	text-align: center;

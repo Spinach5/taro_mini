@@ -8,7 +8,7 @@ export default function Btn({
 }) {
   return (
     <View
-      className={`btn ${className}`}
+      className={`btn ${className} bora`}
       onClick={onClick}
     >
       {children}

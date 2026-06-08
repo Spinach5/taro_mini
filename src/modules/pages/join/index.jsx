@@ -25,14 +25,14 @@ export default function Index() {
       </View>
 
       <View className="join-content">
-        <View className="join-hero">
-          <View className="join-illustration">
-            <Image className="join-illustration-icon" src="https://foruda.gitee.com/avatar/1777480666913616794/16193480_damn_2_1777480666.png"></Image>
+        <View className="join-hero bora">
+          <View className="join-illustration bora">
+            <Image className="join-illustration-icon bora" src="https://foruda.gitee.com/avatar/1777480666913616794/16193480_damn_2_1777480666.png"></Image>
           </View>
           <Text className="join-tagline">好家伙</Text>
         </View>
 
-        <View className="join-card">
+        <View className="join-card bora">
           <Text className="join-section-title">关于项目</Text>
           <Text className="join-desc">
             本项目为学生提供课表查询、成绩查询、考试安排、校园地图、日常工具等一站式服务。项目完全开源，欢迎各位同学参与贡献，一起让校园生活更加便利。
@@ -51,7 +51,7 @@ export default function Index() {
               { icon: "link", label: "axios + taro-axios-adapter" },
               { icon: "lock", label: "jsencrypt" },
             ].map((tech) => (
-              <View className="tech-item" key={tech.label}>
+              <View className="tech-item bora" key={tech.label}>
                 <AtIcon value={tech.icon} size={16} color="#2563eb" />
                 <Text className="tech-label">{tech.label}</Text>
               </View>
@@ -89,10 +89,10 @@ export default function Index() {
 
         <View className="join-card" onClick={handleCopyEmail}>
           <Text className="join-section-title">联系方式</Text>
-          <View className="join-email-row">
+          <View className="join-email-row bora">
             <AtIcon value="mail" size={16} color="#2563eb" />
             <Text className="join-email">{CONTACT_EMAIL}</Text>
-            <Text className="join-email-hint">点击复制</Text>
+            <Text className="join-email-hint bora">点击复制</Text>
           </View>
         </View>
 

@@ -86,7 +86,7 @@ export default function Index() {
       </View>
 
       <View className="feedback-content">
-        <View className="feedback-card">
+        <View className="feedback-card bora">
           <Text className="feedback-label">
             Gitee Access Token
             <Text className="feedback-label-hint">（必填）</Text>
@@ -94,24 +94,24 @@ export default function Index() {
           {showTokenInput || !hasToken ? (
             <View className="token-input-row">
               <Input
-                className="token-input"
+                className="token-input bora"
                 placeholder="请输入您的 Gitee access_token"
                 value={token}
                 onInput={(e) => setToken(e.detail.value)}
                 password
               />
-              <View className="token-save-btn" onClick={handleSaveToken}>
+              <View className="token-save-btn bora" onClick={handleSaveToken}>
                 <Text className="token-save-btn-text">保存</Text>
               </View>
             </View>
           ) : (
-            <View className="token-saved-row">
+            <View className="token-saved-row bora">
               <View className="token-saved-left">
                 <AtIcon value="check-circle" size={16} color="#16a34a" />
                 <Text className="token-saved-text">已设置</Text>
               </View>
               <View
-                className="token-change-btn"
+                className="token-change-btn bora"
                 onClick={() => setShowTokenInput(true)}
               >
                 <Text className="token-change-btn-text">更改</Text>
@@ -123,10 +123,10 @@ export default function Index() {
           </Text>
         </View>
 
-        <View className="feedback-card">
+        <View className="feedback-card bora">
           <Text className="feedback-label">反馈内容</Text>
           <Textarea
-            className="feedback-textarea"
+            className="feedback-textarea bora"
             placeholder="请详细描述您的问题或建议..."
             value={content}
             onInput={(e) => setContent(e.detail.value)}
@@ -136,10 +136,10 @@ export default function Index() {
           <Text className="feedback-char-count">{charCount}/500</Text>
         </View>
 
-        <View className="feedback-card">
+        <View className="feedback-card bora">
           <Text className="feedback-label">联系方式（选填）</Text>
           <Textarea
-            className="feedback-contact-input"
+            className="feedback-contact-input bora"
             placeholder="QQ / 微信 / 邮箱，方便我们联系您"
             value={contact}
             onInput={(e) => setContact(e.detail.value)}
@@ -158,7 +158,7 @@ export default function Index() {
         </View>
 
         <View
-          className={`feedback-submit ${submitting ? "feedback-submit-disabled" : ""}`}
+          className={`bora feedback-submit ${submitting ? "feedback-submit-disabled" : ""}`}
           onClick={submitting ? undefined : handleSubmit}
         >
           <Text className="feedback-submit-text">

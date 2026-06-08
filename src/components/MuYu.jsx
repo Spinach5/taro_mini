@@ -167,12 +167,12 @@ export default function MuYu({ merit = 0, onMerit }) {
 
 	return (
 		<View className="muyu-page-body">
-			<View className="muyu-merit-card">
+			<View className="muyu-merit-card bora">
 				<Text className="muyu-merit-label">今日功德</Text>
 				<Text className="muyu-merit-value">{merit}</Text>
 			</View>
 
-			<View className="muyu-now-playing">
+			<View className="muyu-now-playing bora">
 				<View className={`muyu-now-playing-icon ${isPlaying ? "playing" : ""}`} />
 				<Text className="muyu-now-playing-text">当前音频：{currentLabel}</Text>
 				<Text className="muyu-now-playing-status">
@@ -200,7 +200,7 @@ export default function MuYu({ merit = 0, onMerit }) {
 				</View>
 			</View>
 
-			<View className="choose-audio" onClick={() => setShowAudioModal(true)}>
+			<View className="choose-audio bora" onClick={() => setShowAudioModal(true)}>
 				<AtIcon value="sound" color="#0069cc" size={20} />
 				<Text className="choose-audio-text">选择音频</Text>
 			</View>

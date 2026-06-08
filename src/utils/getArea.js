@@ -24,7 +24,7 @@ export default async function getArea(latitude, longitude) {
 
   try {
     const response = await createRequest.get(
-      `${API_BASE.bigdata}data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=zh-Hans`,
+      `${API_BASE.bigdata}/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=zh-Hans`,
       loginConfig
     );
 

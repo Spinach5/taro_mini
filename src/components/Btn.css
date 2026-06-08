@@ -5,13 +5,13 @@
   justify-content: center;
   align-items: center;
   padding: 10px ;
-  border-radius: 6px;
-  height: 25px;
-  margin-top: 10px;
+  height: 60px;
+  margin: 10px 0;
+  gap: 10px;
 }
 .btn text {
   line-height: 20px;
-  font-size: large;
+  font-size: 40px;
   font-weight: bold;
 }
 .btn image {

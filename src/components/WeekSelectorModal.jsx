@@ -46,7 +46,7 @@ export default function WeekSelectorModal({
                 return (
                   <View
                     key={week}
-                    className={`week-item ${isSelected ? "selected" : ""}`}
+                    className={`week-item bora ${isSelected ? "selected" : ""}`}
                     onClick={() => onSelect(week)}
                   >
                     {week}
