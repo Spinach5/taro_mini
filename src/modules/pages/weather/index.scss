@@ -1,0 +1,242 @@
+// Weather page styles
+
+.weather-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+// ========== Current Weather Card ==========
+.current-weather-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 24px;
+  margin: 16px 16px 0;
+  padding: 30px 20px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.weather-location {
+  font-size: 26px;
+  color: #666;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.weather-location-icon {
+  font-size: 22px;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.weather-desc {
+  font-size: 32px;
+  color: #333;
+  font-weight: 500;
+}
+
+.weather-temp-current {
+  font-size: 96px;
+  font-weight: 300;
+  color: #1a1a1a;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.weather-hi-lo {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 20px;
+}
+
+.weather-hi-lo-item {
+  font-size: 26px;
+  color: #666;
+}
+
+.weather-hi-lo-label {
+  color: #999;
+}
+
+.weather-extra {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.weather-extra-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.weather-extra-icon {
+  font-size: 24px;
+  color: #999;
+}
+
+.weather-extra-value {
+  font-size: 24px;
+  color: #555;
+}
+
+.weather-extra-label {
+  font-size: 20px;
+  color: #aaa;
+}
+
+// ========== Section Header ==========
+.section-header {
+  padding: 28px 32px 14px;
+  font-size: 30px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+// ========== Hourly Forecast ==========
+.hourly-scroll {
+  white-space: nowrap;
+}
+
+.hourly-list {
+  display: flex;
+  flex-direction: row;
+  padding: 0 16px 10px;
+}
+
+.hourly-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 18px;
+  min-width: 120px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.hourly-time {
+  font-size: 24px;
+  color: #999;
+}
+
+.hourly-temp {
+  font-size: 28px;
+  color: #333;
+  font-weight: 500;
+}
+
+// ========== Daily Forecast ==========
+.daily-list {
+  padding: 0 16px 40px;
+}
+
+.daily-item {
+  display: flex;
+  align-items: center;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.daily-item-yesterday {
+  opacity: 0.55;
+}
+
+.daily-date {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.daily-day {
+  font-size: 28px;
+  color: #333;
+  font-weight: 500;
+}
+
+.daily-date-sub {
+  font-size: 22px;
+  color: #aaa;
+}
+
+.daily-icon-wrap {
+  width: 70px;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.daily-desc {
+  flex: 1;
+  font-size: 26px;
+  color: #666;
+  padding: 0 12px;
+}
+
+.daily-temp-bar {
+  width: 100px;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #47a5fd, #f0ad4e);
+  flex-shrink: 0;
+  margin: 0 12px;
+  position: relative;
+}
+
+.daily-temps {
+  width: 110px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.daily-temp-high {
+  font-size: 26px;
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+.daily-temp-low {
+  font-size: 26px;
+  color: #47a5fd;
+  font-weight: 500;
+}
+
+// ========== Error state ==========
+.error-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px;
+}
+
+.error-text {
+  font-size: 28px;
+  color: #999;
+}
+
+.retry-btn {
+  padding: 14px 48px;
+  background: #47a5fd;
+  color: #fff;
+  border-radius: 40px;
+  font-size: 28px;
+}
