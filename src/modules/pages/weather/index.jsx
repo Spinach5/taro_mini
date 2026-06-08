@@ -256,25 +256,27 @@ export default function Weather() {
             <View className="section-header">
               <Text>逐时预报</Text>
             </View>
-            <ScrollView scrollX className="hourly-scroll">
-              <View className="hourly-list">
-                {hourly.map((item, idx) => (
-                  <View className="hourly-item bora" key={item.time || idx}>
-                    <Text className="hourly-time">
-                      {formatHour(item.time, currentHour)}
-                    </Text>
-                    <MaterialCommunityIcons
-                      name={item.weatherIcon || "weather-cloudy-alert"}
-                      color="#47a5fd"
-                      size={30}
-                    />
-                    <Text className="hourly-temp">
-                      {item.temperature != null ? `${Math.round(item.temperature)}°` : "--°"}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            </ScrollView>
+            <View className="hourly-card bora">
+              <ScrollView scrollX className="hourly-scroll">
+                <View className="hourly-list">
+                  {hourly.map((item, idx) => (
+                    <View className="hourly-item" key={item.time || idx}>
+                      <Text className="hourly-time">
+                        {formatHour(item.time, currentHour)}
+                      </Text>
+                      <MaterialCommunityIcons
+                        name={item.weatherIcon || "weather-cloudy-alert"}
+                        color="#47a5fd"
+                        size={30}
+                      />
+                      <Text className="hourly-temp">
+                        {item.temperature != null ? `${Math.round(item.temperature)}°` : "--°"}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </ScrollView>
+            </View>
           </>
         )}
 
