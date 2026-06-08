@@ -168,6 +168,8 @@
 .daily-date {
   width: 120px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .daily-day {
@@ -179,6 +181,7 @@
 .daily-date-sub {
   font-size: 22px;
   color: #aaa;
+  order: -1;
 }
 
 .daily-icon-wrap {
@@ -193,16 +196,6 @@
   font-size: 26px;
   color: #666;
   padding: 0 12px;
-}
-
-.daily-temp-bar {
-  width: 100px;
-  height: 6px;
-  border-radius: 3px;
-  background: linear-gradient(to right, #47a5fd, #f0ad4e);
-  flex-shrink: 0;
-  margin: 0 12px;
-  position: relative;
 }
 
 .daily-temps {

@@ -306,13 +306,12 @@ export default function Weather() {
                       />
                     </View>
                     <Text className="daily-desc">{item.weatherDescription || "--"}</Text>
-                    <View className="daily-temp-bar" />
                     <View className="daily-temps">
-                      <Text className="daily-temp-high">
-                        {item.tempMax != null ? `${Math.round(item.tempMax)}°` : "--°"}
-                      </Text>
                       <Text className="daily-temp-low">
                         {item.tempMin != null ? `${Math.round(item.tempMin)}°` : "--°"}
+                      </Text>
+                      <Text className="daily-temp-high">
+                        {item.tempMax != null ? `${Math.round(item.tempMax)}°` : "--°"}
                       </Text>
                     </View>
                   </View>
