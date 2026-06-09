@@ -1,10 +1,11 @@
 .form-scroll {
 	flex: 1;
-	padding: 20rpx 24rpx;
+	padding: 20rpx 0;
 }
 
 .form-group {
 	margin-bottom: 24rpx;
+	padding: 0 24rpx;
 }
 
 .form-label {
@@ -15,14 +16,23 @@
 	display: block;
 }
 
-.form-input {
-	height: 80rpx;
-	background: #f5f7fa;
-	border-radius: 12rpx;
-	padding: 0 20rpx;
-	font-size: 28rpx;
-	color: #333;
-}
+  .form-input-wrap {
+      width: 100%;
+      height: 80rpx;
+      background: #f5f7fa;
+      border-radius: 12rpx;
+      padding: 0 20rpx;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+  }
+
+  .form-input {
+      flex: 1;
+      font-size: 28rpx;
+      color: #333;
+      height: 100%;
+  }
 
 .form-textarea {
 	background: #f5f7fa;
