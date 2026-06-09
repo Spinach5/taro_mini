@@ -1,8 +1,9 @@
 {
-  "miniprogramRoot": "dist/",
+  "miniprogramRoot": "dist/weapp/",
   "projectname": "taro_mini",
+  "cloudfunctionRoot": "cloudfunctions/",
   "description": "taor跨平台开发",
-  "appid": "wx7f8142fe336a9896",
+  "appid": "wx34ee413298fbcb9f",
   "setting": {
     "urlCheck": true,
     "es6": false,
@@ -35,5 +36,6 @@
     "ignore": [],
     "include": []
   },
-  "editorSetting": {}
+  "editorSetting": {},
+  "libVersion": "3.16.1"
 }

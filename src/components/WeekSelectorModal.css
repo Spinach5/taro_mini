@@ -1,5 +1,5 @@
 .week-grid-modal {
-	padding: 40px;
+	padding: 10px;
 	display: grid;
 	grid-template-columns: repeat(8, 60px); /* 固定每列 60px */
 	gap: 8px;

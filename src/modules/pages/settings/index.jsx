@@ -5,6 +5,7 @@ import HeadStatus from "../../../components/HeadStatus";
 import SafeAreaView from "../../../components/SafeAreaView";
 import userManager from "../../../service/userInfo";
 import { useTheme } from "../../../utils/theme";
+import { serverGet, serverPost } from "../../../utils/serverRequest";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import "./index.css";
 
@@ -60,6 +61,7 @@ export default function Index() {
   const [forceUpdate, setForceUpdate] = useState(false);
   const [darkLoading, setDarkLoading] = useState(false);
   const [forceLoading, setForceLoading] = useState(false);
+  const [expandLoading, setExpandLoading] = useState(false);
   const [features, setFeatures] = useState(DEFAULT_FEATURES);
 
   useEffect(() => {
@@ -126,6 +128,82 @@ export default function Index() {
     });
   };
 
+  const handleExpandToggle = useCallback(async () => {
+    const targetState = !features.expand;
+
+    // 关闭：直接更新，无需服务器交互
+    if (!targetState) {
+      updateFeature("expand", false);
+      return;
+    }
+
+    // 打开：前置校验
+    const stuId = userManager.stuId;
+    const password = userManager.password;
+    const realName = userManager.realName;
+    if (!stuId || !password) {
+      Taro.showToast({ title: "请先登录教务系统", icon: "none" });
+      return;
+    }
+
+    setExpandLoading(true);
+
+    try {
+      const schoolId = userManager.getSchoolId() || "hbut";
+
+      // 1. 检查用户是否已注册
+      const checkRes = await serverGet("/api/v1/auth/check-user", {
+        stuId,
+        schoolId,
+      });
+
+      if (checkRes.success && checkRes.data && checkRes.data.exists) {
+        updateFeature("expand", true);
+        return;
+      }
+
+      // 2. 未注册，弹窗确认
+      const modalRes = await Taro.showModal({
+        title: "用户注册",
+        content: "使用拓展功能需要将你的个人信息上传到服务器，是否同意？",
+        confirmText: "同意",
+        cancelText: "取消",
+      });
+
+      if (!modalRes.confirm) return;
+
+      // 3. 调用注册接口
+      const regRes = await serverPost("/api/v1/auth/register", {
+        stuId,
+        password,
+        schoolId,
+        nickName: realName,
+      });
+
+      if (regRes.success && regRes.data && regRes.data.token) {
+        userManager.setServerToken(regRes.data.token);
+        if (!userManager.getSchoolId()) {
+          userManager.setSchoolId(schoolId);
+        }
+        updateFeature("expand", true);
+        Taro.showToast({ title: "注册成功", icon: "success" });
+      } else {
+        Taro.showToast({
+          title: regRes.message || "注册失败，请稍后重试",
+          icon: "none",
+        });
+      }
+    } catch (error) {
+      console.error("[Settings] handleExpandToggle error:", error);
+      Taro.showToast({
+        title: error.message || "网络连接失败，请稍后重试",
+        icon: "none",
+      });
+    } finally {
+      setExpandLoading(false);
+    }
+  }, [features.expand, updateFeature]);
+
   return (
     <SafeAreaView>
       <View className="uniform-page-header">
@@ -179,13 +257,16 @@ export default function Index() {
         </View>
 
         <View className="settings-group bora">
-          <View className="settings-row" onClick={() => updateFeature("expand", !features.expand)}>
+          <View className="settings-row" onClick={expandLoading ? undefined : handleExpandToggle}>
             <View className="settings-row-left">
               <Text className="settings-label">拓展</Text>
               <Text className="settings-desc">开启后可在首页显示更多功能入口</Text>
             </View>
             <View className="settings-row-right">
-              <ToggleSwitch value={features.expand} onClick={() => updateFeature("expand", !features.expand)} />
+              {expandLoading && (
+                <AtActivityIndicator isOpened size={24} mode="center" />
+              )}
+              <ToggleSwitch value={features.expand} disabled={expandLoading} onClick={handleExpandToggle} />
             </View>
           </View>
 

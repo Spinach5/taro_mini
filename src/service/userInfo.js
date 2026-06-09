@@ -15,6 +15,8 @@ class UserManager {
 		this.majority = ""; // 专业
 		this.class = "?"; // 班级
 		this.college = "?"; // 学院
+		this.schoolId = ""; // 学校代码 (用于服务器注册)
+		this.serverToken = ""; // 服务器 JWT token
 
 		this.isLoggedIn = false; // 登录状态
 		this.cacheKey = "userInfo"; // 缓存 key
@@ -32,6 +34,8 @@ class UserManager {
 			majority: this.majority,
 			class: this.class,
 			college: this.college,
+			schoolId: this.schoolId,
+			serverToken: this.serverToken,
 			isLoggedIn: this.isLoggedIn,
 		};
 		cacheManager.set(this.cacheKey, userData, null);
@@ -66,6 +70,8 @@ class UserManager {
 		this.majority = values.majority || "";
 		this.class = values.class || "";
 		this.college = values.college || "";
+		this.schoolId = values.schoolId || "";
+		this.serverToken = values.serverToken || "";
 		this.isLoggedIn = values.isLoggedIn || false;
 	}
 
@@ -79,8 +85,29 @@ class UserManager {
 			majority: this.majority,
 			college: this.college,
 			class: this.class,
+			schoolId: this.schoolId,
 			isLoggedIn: this.isLoggedIn,
 		};
+	}
+
+	// 获取/设置服务器 token
+	getServerToken() {
+		return this.serverToken;
+	}
+	setServerToken(token) {
+		this.serverToken = token;
+		this.saveToCache();
+		this._syncCache = this.getValues();
+	}
+
+	// 获取/设置学校代码
+	getSchoolId() {
+		return this.schoolId;
+	}
+	setSchoolId(id) {
+		this.schoolId = id;
+		this.saveToCache();
+		this._syncCache = this.getValues();
 	}
 
 	// 修改单个字段
@@ -127,6 +154,8 @@ class UserManager {
 		this.grade = 0;
 		this.majority = "";
 		this.college = "";
+		this.schoolId = "";
+		this.serverToken = "";
 		this.isLoggedIn = false;
 		this.password = "";
 		this.class = "";
@@ -179,3 +208,6 @@ export const setUserField = (key, value) => userManager.setField(key, value);
 export const setUserFields = (fields) => userManager.setFields(fields);
 export const isLoggedIn = () => userManager.checkLogin();
 export const getGrade = () => userManager.getGrade();
+export const getServerToken = () => userManager.getServerToken();
+export const setServerToken = (token) => userManager.setServerToken(token);
+export const getSchoolId = () => userManager.getSchoolId();

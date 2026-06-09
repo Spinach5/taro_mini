@@ -17,7 +17,11 @@ export default defineConfig(async (merge, { command, mode }) => {
 		sourceRoot: "src",
 		outputRoot: `dist/${process.env.TARO_ENV}`,
 		plugins: ["@tarojs/plugin-generator"],
-		defineConstants: {},
+		defineConstants: {
+			"process.env.TARO_WEAPP_CLOUD": JSON.stringify(
+				process.env.TARO_WEAPP_CLOUD || "cloudbase-d0gl91v7x5514ed03",
+			),
+		},
 		copy: {
 			patterns: [],
 			options: {},
@@ -97,27 +101,32 @@ export default defineConfig(async (merge, { command, mode }) => {
 							});
 						},
 					},
-					"/opendiff": {
-						target: "https://api.zxionf.top",
+					"/server": {
+						target: "https://8.148.69.248/",
 						changeOrigin: true,
-						rewrite: (path) => path.replace(/^\/opendiff/, ""),
+						rewrite: (path) => path.replace(/^\/server/, ""),
 						configure: (proxy, options) => {
+							proxy.on("proxyReq", (proxyReq, req, res) => {
+								// 去掉 Origin 避免后端 CORS 403
+								proxyReq.removeHeader("origin");
+								proxyReq.removeHeader("referer");
+							});
 							proxy.on("proxyRes", (proxyRes, req, res) => {
 								console.log("proxyRes触发");
 								if (proxyRes.headers.location) {
 									let location = proxyRes.headers.location;
 									if (location.startsWith("/")) {
 										proxyRes.headers.location =
-											"/opendiff" + location;
+											"/server" + location;
 									} else if (
-										location.includes("api.zxionf.top")
+										location.includes("8.148.69.248")
 									) {
 										const relative = location.replace(
 											/https?:\/\/[^/]+/,
 											"",
 										);
 										proxyRes.headers.location =
-											"/opendiff" + relative;
+											"/server" + relative;
 									}
 									console.log(
 										"修改后的 location:",

@@ -21,7 +21,7 @@ function getScoreColor(score) {
 }
 
 function getScoreText(score) {
-  if (score == null || isNaN(score)) return "--";
+  if (score == null || Number.isNaN(score)) return "--";
   return String(score);
 }
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { View, Text } from "@tarojs/components";
-import { useRouter } from "@tarojs/taro";
+import Taro,{ useRouter } from "@tarojs/taro";
 import "./index.css";
 import SafeAreaView from "../../components/SafeAreaView";
 import HeadStatus from "../../components/HeadStatus";
@@ -30,7 +30,7 @@ export default function Index() {
 	return (
 		<SafeAreaView currentPath={currentPath}>
 			<HeadStatus text="首页">
-				<Btn>
+				<Btn onClick={() => Taro.navigateTo({ url: "/modules/pages/weather/index" })}>
 				{weather ? (
 					<>
 						<MaterialCommunityIcons
