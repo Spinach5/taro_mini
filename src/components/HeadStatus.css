@@ -1,12 +1,14 @@
 .head-status {
 	display: flex;
 	flex-direction: row;
-	margin-bottom: 10px;
+	align-items: center;
+	margin-bottom: 8rpx;
 }
 
 .head-status-text {
 	color: #fff;
-	font-weight: bold;
-	font-size: 60px;
-	margin-right: 10px;
+	font-weight: 700;
+	font-size: 44rpx;
+	margin-right: 10rpx;
+	text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.1);
 }

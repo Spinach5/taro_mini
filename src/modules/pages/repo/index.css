@@ -5,7 +5,7 @@
 
 /* 项目信息卡片 */
 .repo-info-card {
-  background: #ffffff;
+  background: var(--color-bg-card, #fff);
   padding: 20px;
   margin-bottom: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -46,7 +46,7 @@
 
 /* 贡献度排行 */
 .contributors-section {
-  background: #ffffff;
+  background: var(--color-bg-card, #fff);
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
@@ -168,7 +168,7 @@
 
 /* 开源项目 */
 .repos-section {
-  background: #ffffff;
+  background: var(--color-bg-card, #fff);
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   margin-top: 16px;

@@ -81,7 +81,7 @@
 }
 
 .runtime-log-btn--delete {
-	background: #fff;
+	background: var(--color-bg-card, #fff);
 	color: #e64340;
 	border: 1px solid #e64340;
 }

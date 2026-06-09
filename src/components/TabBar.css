@@ -1,34 +1,36 @@
 .tab-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #fff;
-  border-top: 1px solid #e5e5e5;
-  display: flex;
-  z-index: 999;
-  padding: 10px 0;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	z-index: 999;
+	padding: 12rpx 0 env(safe-area-inset-bottom, 0);
+	background: var(--color-bg-card, #ffffff);
+	border-top: 1px solid var(--color-border, #eef1f5);
+	box-shadow: 0 -2rpx 16rpx rgba(0, 0, 0, 0.03);
 }
 
 .tab-bar .tab-bar-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;      /* 水平居中 */
-  justify-content: center;  /* 垂直居中 */
-  text-align: center;       /* 辅助文本居中 */
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
 }
 
 .tab-bar .tab-bar-item .tab-bar-icon {
-  width: 48px;
-  height: 48px;
-  display: block;           /* 避免行内元素影响 */
-  margin: 4px auto 0 auto;  /* 上下外边距，左右自动居中 */
+	width: 48px;
+	height: 48px;
+	display: block;
+	margin: 4px auto 0 auto;
 }
 
 .tab-bar .tab-bar-item .tab-bar-text {
-  font-size: 40px;
-  line-height: 1.2;         /* 保证垂直对齐 */
-  margin-top: 4px;
-  display: block;
+	font-size: 22rpx;
+	line-height: 1.2;
+	margin-top: 4px;
+	display: block;
+	font-weight: 500;
 }

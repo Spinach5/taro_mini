@@ -11,7 +11,7 @@
   align-items: center;
   justify-content: center;
   gap: 12px;
-  background: white;
+  background: var(--color-bg-card, #fff);
   padding: 12px 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   margin-bottom: 16px;
@@ -40,7 +40,7 @@
 
 /* 表单区域 */
 .form {
-  background: white;
+  background: var(--color-bg-card, #fff);
   padding: 40px 32px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   margin-bottom: 40px;
@@ -121,7 +121,7 @@
 
 .input-field:focus {
   border-color: none;
-  background: white;
+  background: var(--color-bg-card, #fff);
   outline: none;
 }
 
@@ -153,7 +153,7 @@
   width: 36px;
   height: 36px;
   border: 2px solid #cbd5e1;
-  background: white;
+  background: var(--color-bg-card, #fff);
   display: flex;
   align-items: center;
   justify-content: center;

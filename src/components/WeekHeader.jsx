@@ -66,7 +66,7 @@ export default function WeekHeader({ currentWeek, weekDataList = [] }) {
 							style={
 								today
 									? {
-											backgroundColor: "#fff",
+											backgroundColor: "var(--color-bg-card, #fff)",
 											borderRadius: "8px",
 										}
 									: undefined

@@ -43,6 +43,8 @@ export default defineAppConfig({
     pages: [
     "pages/login/index",
     "pages/club/index",
+    "pages/club/detail/index",
+    "pages/club/add/index",
     "pages/muyu/index",
     "pages/affair/index",
     "pages/student/index",

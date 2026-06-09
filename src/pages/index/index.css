@@ -11,7 +11,7 @@
 }
 
 .card {
-  background-color: white;
+  background: var(--color-bg-card, #fff);
   padding: 8px;
 }
 

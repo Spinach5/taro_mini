@@ -1,5 +1,5 @@
 .btn {
-  background-color: white;
+  background-color: var(--color-bg-card, #fff);
   width: fit-content;
   display: flex;
   justify-content: center;

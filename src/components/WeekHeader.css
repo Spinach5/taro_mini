@@ -41,7 +41,7 @@
 }
 
 .week-day-box.today {
-  background-color: #fff;
+  background-color: var(--color-bg-card, #fff);
 }
 .week-day-box.today .day-number,
 .week-day-box.today .day-week {

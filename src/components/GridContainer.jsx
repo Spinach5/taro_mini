@@ -1,5 +1,6 @@
 import { View } from "@tarojs/components";
-import Taro from "@tarojs/taro";
+import Taro, { useDidShow } from "@tarojs/taro";
+import { useState, useCallback } from "react";
 import GridItem from "./GridItem";
 
 const STORAGE_KEY_FEATURES = "settings_feature_toggles";
@@ -26,7 +27,15 @@ function getStoredFeatures() {
 }
 
 export default function GridContainer({ className = "" }) {
-  const features = getStoredFeatures();
+  const [features, setFeatures] = useState(() => getStoredFeatures());
+
+  const refreshFeatures = useCallback(() => {
+    setFeatures(getStoredFeatures());
+  }, []);
+
+  useDidShow(() => {
+    refreshFeatures();
+  });
 
   const visibleItems = TOGGLEABLE.filter((item) => features[item.key] === true);
   const gridItems = [...ALWAYS_VISIBLE, ...visibleItems];
@@ -39,7 +48,7 @@ export default function GridContainer({ className = "" }) {
         gridTemplateColumns: "repeat(4, 1fr)",
         gap: "10px",
         padding: "15px",
-        background: "#fff",
+        background: "var(--color-bg-card, #fff)",
         borderRadius: "16px",
       }}
     >

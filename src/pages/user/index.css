@@ -1,24 +1,26 @@
 /* 用户头部卡片 */
 .user-header-card {
-  margin: 20px 24px;
-  padding: 32px 24px 24px;
-  background: #fff;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin: 24rpx 24rpx;
+  padding: 32rpx 24rpx 24rpx;
+  background: var(--color-bg-card, #fff);
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.04);
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 20rpx;
 }
 
 .user-avatar-circle {
-  width: 100px;
-  height: 100px;
+  width: 120rpx;
+  height: 120rpx;
   border-radius: 50%;
-  background: #47a5fd;
+  background: linear-gradient(135deg, #47a5fd 0%, #6db9ff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 16rpx;
   overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(71,165,253,0.25);
 }
 
 .user-avatar-img {
@@ -28,7 +30,7 @@
 }
 
 .user-avatar-text {
-  font-size: 32px;
+  font-size: 48rpx;
   font-weight: 700;
   color: #fff;
 }
@@ -37,32 +39,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 20rpx;
 }
 
 .user-nick-name {
-  font-size: 36px;
+  font-size: 36rpx;
   font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 6px;
+  color: var(--color-text, #2c3e50);
+  margin-bottom: 6rpx;
 }
 
 .user-stu-id {
-  font-size: 26px;
-  color: #999;
+  font-size: 26rpx;
+  color: var(--color-text-secondary, #99a);
 }
 
 .user-tags {
   display: flex;
   flex-direction: row;
-  gap: 12px;
+  gap: 12rpx;
 }
 
 /* 功能区菜单 */
 .user-menu-section {
-  margin: 0 24px;
-  background: #fff;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin: 0 24rpx;
+  background: var(--color-bg-card, #fff);
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.04);
+  border-radius: 20rpx;
   overflow: hidden;
 }
 
@@ -70,8 +73,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 28px 24px;
-  border-bottom: 1px solid #f5f5f5;
+  padding: 28rpx 24rpx;
+  border-bottom: 1px solid var(--color-divider, #f0f2f5);
+  transition: background 0.15s;
 }
 
 .user-menu-item:last-child {
@@ -79,40 +83,43 @@
 }
 
 .user-menu-item:active {
-  background: #f8f8f8;
+  background: var(--color-primary-faded, #f0f7ff);
 }
 
 .user-menu-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 16rpx;
 }
 
 .user-menu-icon-wrap {
-  width: 50px;
-  height: 50px;
-  background: rgba(71, 165, 253, 0.1);
+  width: 56rpx;
+  height: 56rpx;
+  background: var(--color-primary-light, #e8f4fd);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 8rpx;
 }
 
 .user-menu-text {
-  font-size: 30px;
-  color: #333;
+  font-size: 28rpx;
+  color: var(--color-text, #2c3e50);
   font-weight: 500;
 }
 
-/* 登录 / 退出按钮 */
+/* 按钮 */
 .user-login-btn {
-  background: #47a5fd;
+  background: linear-gradient(135deg, #47a5fd 0%, #6db9ff 100%);
   color: #fff;
-  font-size: 32px;
-  font-weight: 600;
-  padding: 26px 0;
+  font-size: 32rpx;
+  font-weight: 700;
+  padding: 28rpx 0;
   text-align: center;
-  margin: 24px 24px 30px;
-  box-shadow: 0 6px 16px rgba(71, 165, 253, 0.35);
+  margin: 24rpx 24rpx 30rpx;
+  border-radius: 20rpx;
+  box-shadow: 0 6rpx 24rpx rgba(71,165,253,0.35);
+  transition: opacity 0.15s, transform 0.15s;
 }
 
 .user-login-btn:active {
@@ -121,16 +128,28 @@
 }
 
 .user-logout-btn {
-  background: #fff;
+  background: var(--color-bg-card, #fff);
   color: #ff4d4f;
-  font-size: 32px;
+  font-size: 32rpx;
   font-weight: 500;
-  padding: 26px 0;
+  padding: 28rpx 0;
   text-align: center;
-  margin: 24px 24px 30px;
+  margin: 24rpx 24rpx 30rpx;
+  border-radius: 20rpx;
   border: 1px solid #ff4d4f;
+  transition: background 0.15s;
 }
 
 .user-logout-btn:active {
   background: #fff1f0;
+}
+
+/* 加载 */
+.loading-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: var(--color-text-muted, #b0bec5);
 }

@@ -1,0 +1,94 @@
+.form-scroll {
+	flex: 1;
+	padding: 20rpx 24rpx;
+}
+
+.form-group {
+	margin-bottom: 24rpx;
+}
+
+.form-label {
+	font-size: 28rpx;
+	color: #333;
+	font-weight: bold;
+	margin-bottom: 12rpx;
+	display: block;
+}
+
+.form-input {
+	height: 80rpx;
+	background: #f5f7fa;
+	border-radius: 12rpx;
+	padding: 0 20rpx;
+	font-size: 28rpx;
+	color: #333;
+}
+
+.form-textarea {
+	background: #f5f7fa;
+	border-radius: 12rpx;
+	padding: 20rpx;
+	font-size: 28rpx;
+	color: #333;
+	min-height: 160rpx;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.form-picker {
+	height: 80rpx;
+	background: #f5f7fa;
+	border-radius: 12rpx;
+	padding: 0 20rpx;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.picker-value {
+	font-size: 28rpx;
+	color: #333;
+}
+
+.picker-options {
+	margin-top: 8rpx;
+	background: var(--color-bg-card, #fff);
+	border-radius: 12rpx;
+	border: 1px solid #eee;
+	overflow: hidden;
+}
+
+.picker-option {
+	height: 80rpx;
+	display: flex;
+	align-items: center;
+	padding: 0 20rpx;
+	font-size: 28rpx;
+	color: #333;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.picker-option:last-child {
+	border-bottom: none;
+}
+
+.picker-option-active {
+	background: #e8f4fd;
+	color: #47a5fd;
+}
+
+.submit-btn {
+	margin-top: 40rpx;
+	height: 88rpx;
+	background: #47a5fd;
+	border-radius: 44rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.submit-text {
+	font-size: 32rpx;
+	color: #fff;
+	font-weight: bold;
+}

@@ -21,7 +21,7 @@
 
 .exam-card {
   position: relative;
-  background: #fff;
+  background: var(--color-bg-card, #fff);
   padding: 18px 24px 0px;
   margin-bottom: 20px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);

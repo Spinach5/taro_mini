@@ -15,7 +15,7 @@
 	width: 82%;
 	max-width: 420px;
 	max-height: 70vh;
-	background-color: #fff;
+	background-color: var(--color-bg-card, #fff);
 	overflow: hidden;
 	padding: 20px 16px 16px;
 	box-sizing: border-box;

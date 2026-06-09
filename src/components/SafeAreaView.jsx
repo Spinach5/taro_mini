@@ -28,8 +28,8 @@ export default function SafeAreaView({ children, currentPath, className }) {
 		};
 	}, []);
 
-	const bgLight = "linear-gradient(to bottom, rgb(71,165,253) 0%, rgb(255,255,255) 40%)";
-	const bgDark = "linear-gradient(to bottom, rgb(26,26,46) 0%, rgb(22,33,62) 40%)";
+	const bgLight = "linear-gradient(to bottom, #47a5fd 0%, #cce5ff 28%, #f2f5f9 100%)";
+	const bgDark = "linear-gradient(to bottom, rgb(26,29,46) 0%, rgb(35,39,64) 100%)";
 
 	return (
 		<>

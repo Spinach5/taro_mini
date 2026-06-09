@@ -1,119 +1,216 @@
-import { View, ScrollView } from "@tarojs/components";
-import Taro, { useLoad, usePullDownRefresh } from "@tarojs/taro";
-import "./index.css";
+import { View, Text, ScrollView, Swiper, SwiperItem, Input } from "@tarojs/components";
+import Taro, { useLoad, useDidShow, usePullDownRefresh } from "@tarojs/taro";
+import { useState, useCallback } from "react";
+import { AtIcon, AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../components/SafeAreaView";
 import HeadStatus from "../../../components/HeadStatus";
-import InputBar from "../../../components/InputBar";
-import CategoryFilter from "../../../components/CategoryFilter";
-import Loading from "../../../components/Loading";
-import { useState, useCallback } from "react";
-import { AtIcon } from "taro-ui";
-import { getAllClub } from "../../../service";
+import userManager from "../../../service/userInfo";
+import { serverGet } from "../../../utils/serverRequest";
+import { getColorFromName } from "../../../utils/getHashCode";
+import cacheManager from "../../../utils/cache";
+import runtimeLogger from "../../../utils/runtimeLogger";
+import "./index.css";
+
+const CACHE_KEY_CLUBS = "v1_clubs";
+const CACHE_KEY_CATEGORIES = "v1_club_categories";
+
+const ALL_CATEGORIES = [
+	"全部",
+	"学术科技类",
+	"创新创业类",
+	"文化艺术类",
+	"体育活动类",
+	"志愿公益类",
+	"思想政治类",
+	"其他",
+];
+
+const NATURE_MAP = ["社团", "学生会", "其他"];
+
+function getCategories() {
+	const cached = cacheManager.get(CACHE_KEY_CATEGORIES);
+	if (cached && Array.isArray(cached)) return cached;
+	cacheManager.set(CACHE_KEY_CATEGORIES, ALL_CATEGORIES);
+	return ALL_CATEGORIES;
+}
 
 export default function Index() {
+	const [authState, setAuthState] = useState(null); // null=loading, "login"=need login, "register"=need register, "ok"=passed
 	const [clubs, setClubs] = useState([]);
-	const [clubcategory, setClubCategory] = useState([]);
-	const [currentcategory, setCurrentCategory] = useState(-1);
-	const [searchWhat, setSearchWhat] = useState("");
-	const [clubsDataReady, setClubsDataReady] = useState(false);
+	const [categories] = useState(() => getCategories());
+	const [activeCategory, setActiveCategory] = useState("全部");
+	const [loading, setLoading] = useState(true);
+
+	const checkAuth = useCallback(() => {
+		if (!userManager.checkLogin()) {
+			setAuthState("login");
+			return false;
+		}
+		if (!userManager.getServerToken()) {
+			setAuthState("register");
+			return false;
+		}
+		setAuthState("ok");
+		return true;
+	}, []);
 
 	const fetchClubs = useCallback(async (forceRefresh = false) => {
-		const clubData = await getAllClub(forceRefresh);
-		setClubs(clubData.club);
-		setClubCategory(clubData.clubcategory);
-		setClubsDataReady(true);
+		if (!forceRefresh) {
+			const cached = cacheManager.get(CACHE_KEY_CLUBS);
+			if (cached && Array.isArray(cached)) {
+				setClubs(cached);
+				setLoading(false);
+				return;
+			}
+		}
+		try {
+			const res = await serverGet("/api/v1/clubs");
+			const data = (res && res.data) || [];
+			setClubs(data);
+			cacheManager.set(CACHE_KEY_CLUBS, data);
+		} catch (error) {
+			runtimeLogger.error("Club", "获取社团列表失败", error);
+			Taro.showToast({ title: "加载失败，请下拉刷新", icon: "none" });
+		} finally {
+			setLoading(false);
+		}
 	}, []);
 
 	useLoad(() => {
-		fetchClubs();
+		if (checkAuth()) fetchClubs();
+	});
+
+	useDidShow(() => {
+		if (checkAuth()) fetchClubs(true);
 	});
 
 	usePullDownRefresh(() => {
-		fetchClubs(true).finally(() => {
+		if (authState === "ok") {
+			fetchClubs(true).finally(() => Taro.stopPullDownRefresh());
+		} else {
 			Taro.stopPullDownRefresh();
-		});
+		}
 	});
 
-	const card = (club) => {
-		return (
-			<View key={club.id} className="club-card">
-				<View>{club.name}</View>
-				<View className="content-row">
-					<View className="label">简介：</View>
-					<View className="value">{club.introduction}</View>
-				</View>
-				<View className="content-row">
-					<View className="label">活动：</View>
-					<View className="value">{club.activities}</View>
-				</View>
-				<View className="content-row">
-					<View className="label">联系方式：</View>
-					<View className="value">暂未取得联系方式</View>
-				</View>
-			</View>
-		);
-	};
-	if (!clubsDataReady) {
-				return (
-					<SafeAreaView>
-						<Loading text="加载社团数据中..." />
-					</SafeAreaView>
-				);
-			}
-	return (
+	const filteredClubs =
+		activeCategory === "全部"
+			? clubs
+			: clubs.filter((c) => c.category === activeCategory);
 
+	const handleCardClick = (id) => {
+		Taro.navigateTo({ url: `/modules/pages/club/detail/index?id=${id}` });
+	};
+
+	// 鉴权未通过
+	if (authState === "login") {
+		return (
+			<SafeAreaView>
+				<View className="uniform-page-header">
+					<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.switchTab({ url: "/pages/index/index" })} />
+					<HeadStatus text="社团" />
+				</View>
+				<View className="notLoginView">
+					<Text className="notLoginText">请先登录</Text>
+				</View>
+			</SafeAreaView>
+		);
+	}
+
+	if (authState === "register") {
+		return (
+			<SafeAreaView>
+				<View className="uniform-page-header">
+					<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.switchTab({ url: "/pages/index/index" })} />
+					<HeadStatus text="社团" />
+				</View>
+				<View className="notLoginView">
+					<Text className="notLoginText">请先在设置中注册拓展功能</Text>
+				</View>
+			</SafeAreaView>
+		);
+	}
+
+	return (
 		<SafeAreaView>
 			<View className="uniform-page-header">
-							<AtIcon
-								value="arrow-left"
-								color="#ffffff"
-								onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-							/>
-							<HeadStatus text="社团" />
-						</View>
-
-			<View className="header">
-				{/* 搜索组件 */}
-				<InputBar
-					placeholder="搜索社团"
-					onInput={(input) => {
-						setSearchWhat(input);
-					}}
-				></InputBar>
-				{/* 分类选择器 */}
-				<CategoryFilter
-					allText="全部"
-					categories={clubcategory}
-					onChange={(category) => {
-						setCurrentCategory(category);
-					}}
-				/>
+				<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.switchTab({ url: "/pages/index/index" })} />
+				<HeadStatus text="社团" />
 			</View>
 
-			{/* 卡片 */}
-			<ScrollView
-				scrollY
-				showScrollbar={false}
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					gap: "10px",
-				}}
-				enhanced
-				bounces={false}
-			>
-				{clubs.length > 0 ? (
-					clubs.map(
-						(club) =>
-							(currentcategory == -1 ||
-								currentcategory == club.category) &&
-							club.name.includes(searchWhat) &&
-							card(club),
-					)
-				) : (
-					<View>暂无社团数据</View>
-				)}
+			{/* 轮播图占位 */}
+			<View className="club-banner">
+				<Swiper indicatorDots autoplay circular style={{ height: "100%" }}>
+					<SwiperItem>
+						<View className="banner-placeholder">
+							<Text className="banner-text">轮播图区域</Text>
+						</View>
+					</SwiperItem>
+					<SwiperItem>
+						<View className="banner-placeholder">
+							<Text className="banner-text">更多内容即将上线</Text>
+						</View>
+					</SwiperItem>
+				</Swiper>
+			</View>
+
+			{/* 种类筛选 */}
+			<ScrollView scrollX showScrollbar={false} className="category-scroll" enhanced>
+				<View className="category-list">
+					{categories.map((cat) => (
+						<View
+							key={cat}
+							className={`category-tag ${activeCategory === cat ? "category-tag-active" : ""}`}
+							onClick={() => setActiveCategory(cat)}
+						>
+							<Text>{cat}</Text>
+						</View>
+					))}
+				</View>
 			</ScrollView>
+
+			{/* 社团列表 */}
+			{loading ? (
+				<View className="loading-view">
+					<AtActivityIndicator isOpened size={32} mode="center" />
+					<Text className="loading-text">加载社团数据中...</Text>
+				</View>
+			) : (
+				<ScrollView scrollY showScrollbar={false} className="club-list" enhanced bounces={false}>
+					{filteredClubs.length > 0 ? (
+						filteredClubs.map((club) => (
+							<View key={club.id} className="club-card" onClick={() => handleCardClick(club.id)}>
+								<View className="card-avatar" style={{ backgroundColor: getColorFromName(club.name) }}>
+									{club.image_url ? (
+										<View className="avatar-img" style={{ backgroundImage: `url(${club.image_url})` }} />
+									) : (
+										<Text className="avatar-text">{club.name.charAt(0)}</Text>
+									)}
+								</View>
+								<View className="card-info">
+									<Text className="card-name">{club.name}</Text>
+									<View className="card-meta">
+										<Text className="meta-tag">{club.category || "未分类"}</Text>
+										<Text className="meta-dot">|</Text>
+										<Text className="meta-tag">{NATURE_MAP[club.nature] || "社团"}</Text>
+										<Text className="meta-dot">|</Text>
+										<Text className="meta-tag">{club.schoolId}</Text>
+									</View>
+								</View>
+								<AtIcon value="chevron-right" size={14} color="#ccc" />
+							</View>
+						))
+					) : (
+						<View className="empty-view">
+							<Text className="empty-text">暂无社团数据</Text>
+						</View>
+					)}
+				</ScrollView>
+			)}
+
+			{/* 添加社团 FAB */}
+			<View className="fab-btn" onClick={() => Taro.navigateTo({ url: "/modules/pages/club/add/index" })}>
+				<Text className="fab-text">+</Text>
+			</View>
 		</SafeAreaView>
 	);
 }

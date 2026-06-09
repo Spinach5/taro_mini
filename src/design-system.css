@@ -1,0 +1,195 @@
+/* ========================================
+   Design System — 蓝白简约风格
+   主色：#47a5fd (蓝) 辅色：#ffffff (白)
+   柔和圆角 · 扁平阴影 · 统一间距
+   ======================================== */
+
+page {
+	/* ── 主色调 ── */
+	--color-primary: #47a5fd;
+	--color-primary-dark: #3a8de6;
+	--color-primary-light: #e8f4fd;
+	--color-primary-faded: #f0f7ff;
+	--color-white: #ffffff;
+	--color-bg: #f2f5f9;
+	--color-bg-card: #ffffff;
+	--color-text: #2c3e50;
+	--color-text-secondary: #8899aa;
+	--color-text-muted: #b0bec5;
+	--color-border: #eef1f5;
+	--color-divider: #f0f2f5;
+	--color-success: #52c41a;
+	--color-warning: #faad14;
+	--color-danger: #ff4d4f;
+
+	/* ── 圆角 ── */
+	--radius-sm: 8rpx;
+	--radius-md: 16rpx;
+	--radius-lg: 20rpx;
+	--radius-xl: 24rpx;
+	--radius-round: 50%;
+
+	/* ── 阴影 ── */
+	--shadow-card: 0 2rpx 16rpx rgba(0, 0, 0, 0.04);
+	--shadow-card-hover: 0 4rpx 24rpx rgba(0, 0, 0, 0.08);
+	--shadow-fab: 0 6rpx 24rpx rgba(71, 165, 253, 0.35);
+	--shadow-modal: 0 16rpx 48rpx rgba(0, 0, 0, 0.12);
+
+	/* ── 间距 ── */
+	--space-xs: 8rpx;
+	--space-sm: 16rpx;
+	--space-md: 24rpx;
+	--space-lg: 32rpx;
+	--space-xl: 48rpx;
+
+	/* ── 字体 ── */
+	--font-size-xs: 22rpx;
+	--font-size-sm: 26rpx;
+	--font-size-md: 28rpx;
+	--font-size-lg: 32rpx;
+	--font-size-xl: 36rpx;
+	--font-size-xxl: 44rpx;
+	--font-weight-normal: 400;
+	--font-weight-medium: 500;
+	--font-weight-bold: 700;
+
+	/* ── 背景 ── */
+	--bg-primary: var(--color-white);
+	--bg-secondary: var(--color-bg);
+	--bg-card: var(--color-bg-card);
+	--text-primary: var(--color-text);
+	--text-secondary: var(--color-text-secondary);
+	--border-color: var(--color-border);
+	--nav-bg: var(--color-white);
+	--nav-text: var(--color-text);
+
+	/* ── 渐变 ── */
+	--gradient-header: linear-gradient(135deg, #47a5fd 0%, #6db9ff 100%);
+	--gradient-page: linear-gradient(to bottom, #47a5fd 0%, #e8f4fd 35%, #f2f5f9 100%);
+}
+
+/* ========================================
+   暗色模式
+   ======================================== */
+.is-dark {
+	--color-bg: #1a1d2e;
+	--color-bg-card: #232740;
+	--color-text: #e4e6f0;
+	--color-text-secondary: #8890b0;
+	--color-text-muted: #5c6280;
+	--color-border: #2a2e44;
+	--color-divider: #262a3e;
+	--color-primary-light: #1e2d4a;
+	--color-primary-faded: #1a2640;
+	--shadow-card: 0 2rpx 16rpx rgba(0, 0, 0, 0.2);
+	--shadow-card-hover: 0 4rpx 24rpx rgba(0, 0, 0, 0.3);
+	--shadow-fab: 0 6rpx 24rpx rgba(71, 165, 253, 0.2);
+	--bg-primary: #1a1d2e;
+	--bg-secondary: #1a1d2e;
+	--bg-card: #232740;
+	--text-primary: #e4e6f0;
+	--text-secondary: #8890b0;
+	--border-color: #2a2e44;
+	--nav-bg: #1a1d2e;
+	--nav-text: #e4e6f0;
+	--gradient-page: linear-gradient(to bottom, #1a1d2e 0%, #232740 100%);
+}
+
+body[data-theme="dark"] {
+	--color-bg: #1a1d2e;
+	--color-bg-card: #232740;
+	--color-text: #e4e6f0;
+	--color-text-secondary: #8890b0;
+	--color-border: #2a2e44;
+	--bg-primary: #1a1d2e;
+	--bg-card: #232740;
+	--text-primary: #e4e6f0;
+	--text-secondary: #8890b0;
+	--border-color: #2a2e44;
+	--nav-bg: #1a1d2e;
+	--nav-text: #e4e6f0;
+	background-color: #1a1d2e;
+}
+
+/* ========================================
+   全局复位
+   ======================================== */
+::-webkit-scrollbar {
+	display: none;
+	width: 0;
+	height: 0;
+	color: transparent;
+}
+
+/* ========================================
+   通用原子类
+   ======================================== */
+.bora {
+	border-radius: var(--radius-sm);
+}
+
+/* 统一页面头部 */
+.uniform-page-header {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+	padding: 0 4px;
+}
+
+/* 统一卡片 */
+.card-base {
+	background: var(--color-bg-card);
+	border-radius: var(--radius-md);
+	padding: var(--space-md);
+	box-shadow: var(--shadow-card);
+}
+
+/* 统一标签 (inline pill) */
+.tag-base {
+	display: inline-flex;
+	align-items: center;
+	padding: 4rpx 16rpx;
+	border-radius: var(--radius-sm);
+	font-size: var(--font-size-xs);
+	background: var(--color-primary-light);
+	color: var(--color-primary);
+}
+
+/* 统一分割线 */
+.divider-base {
+	height: 1px;
+	background: var(--color-divider);
+	margin: var(--space-sm) 0;
+}
+
+/* 统一空状态 */
+.empty-state {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-sm);
+	padding: var(--space-xl);
+}
+
+.empty-state-text {
+	font-size: var(--font-size-md);
+	color: var(--color-text-muted);
+}
+
+/* 统一加载 */
+.loading-state {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--space-sm);
+}
+
+.loading-state-text {
+	font-size: var(--font-size-sm);
+	color: var(--color-text-muted);
+}
