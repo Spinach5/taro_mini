@@ -30,7 +30,7 @@ export default function Index() {
 	return (
 		<SafeAreaView currentPath={currentPath}>
 			<HeadStatus text="首页">
-				<Btn onClick={() => Taro.navigateTo({ url: "/modules/pages/weather/index" })}>
+				<Btn onClick={() => Taro.navigateTo({ url: "/modules/pages/weather/index" })} className="weather-icon">
 				{weather ? (
 					<>
 						<MaterialCommunityIcons
@@ -38,7 +38,7 @@ export default function Index() {
 							color="#47a5fd"
 							size={40}
 						/>
-						<Text className="weather-temp">{weather.temperature}°C</Text>
+						<Text className="weather-temp">{weather.temperature}°</Text>
 					</>
 				) : (
 					<Text className="weather-temp">--°</Text>

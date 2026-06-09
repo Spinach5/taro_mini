@@ -243,7 +243,7 @@ export default function Index() {
 		getExtroInfo(currentSemester)
 			.then((data) => setPracticeData(data || []))
 			.catch(() => setPracticeData([]));
-	}, [isLoggedIn, currentSemester]);
+	}, [isLoggedIn, currentSemester, weekList.length]);
 
 	// 同步 Swiper 索引
 	useEffect(() => {
