@@ -206,7 +206,8 @@ export default function Index() {
 					validWeek = weeksNum[0] || 1;
 				}
 				setWeekList(weeksNum);
-				setCurrentWeek(validWeek);
+				const isCurrentSemester = semesterList.length > 0 && currentSemester === semesterList[semesterList.length - 1];
+				setCurrentWeek(isCurrentSemester ? validWeek : (weeksNum[0] || 1));
 				setActualWeek(validWeek);
 				const idx = weeksNum.indexOf(validWeek);
 				setCurrentIndex(idx >= 0 ? idx : 0);
@@ -484,7 +485,7 @@ export default function Index() {
 				</View>
 			</ScrollView>
 
-			{actualWeek && currentWeek !== actualWeek && (
+			{actualWeek && currentWeek !== actualWeek && semesterList.length > 0 && currentSemester === semesterList[semesterList.length - 1] && (
 				<View className="gobacktoday bora" onClick={handleBackToCurrentWeek}>
 					返回本周
 				</View>
