@@ -102,18 +102,20 @@ export default function Index() {
 				setCourses(scheduleData || []);
 				setTimeTable(timeData || []);
 				setPracticeData(extroData || []);
-				if (forceRefresh) {
-					Taro.showToast({
-						title: "刷新成功",
-						icon: "success",
-						duration: 1000,
-					});
-				}
 			} catch (err) {
 				runtimeLogger.error("Course", "刷新课表失败", err);
 				Taro.showToast({ title: "刷新失败", icon: "none" });
 			} finally {
 				setLoading(false);
+			}
+			if (forceRefresh) {
+				// 等 React 重新渲染、Loading 组件消失后再弹出 toast
+				await new Promise((resolve) => setTimeout(resolve, 300));
+				Taro.showToast({
+					title: "刷新成功",
+					icon: "success",
+					duration: 1000,
+				});
 			}
 		},
 		[isLoggedIn, currentSemester],
