@@ -88,13 +88,15 @@ export default function Index() {
 				{/* 社团名称 */}
 				<View className="form-group">
 					<Text className="form-label">社团名称 *</Text>
-					<Input
-						className="form-input"
-						placeholder="请输入社团名称"
-						value={name}
-						onInput={(e) => setName(e.detail.value)}
-						maxlength={50}
-					/>
+					<View className="form-input-wrap">
+						<Input
+							className="form-input"
+							placeholder="请输入社团名称"
+							value={name}
+							onInput={(e) => setName(e.detail.value)}
+							maxlength={50}
+						/>
+					</View>
 				</View>
 
 				{/* 种类 */}
@@ -176,13 +178,15 @@ export default function Index() {
 				{/* 联系方式 */}
 				<View className="form-group">
 					<Text className="form-label">联系方式</Text>
-					<Input
-						className="form-input"
-						placeholder="请输入联系方式（选填）"
-						value={contact}
-						onInput={(e) => setContact(e.detail.value)}
-						maxlength={100}
-					/>
+					<View className="form-input-wrap">
+						<Input
+							className="form-input"
+							placeholder="请输入联系方式（选填）"
+							value={contact}
+							onInput={(e) => setContact(e.detail.value)}
+							maxlength={100}
+						/>
+					</View>
 				</View>
 
 				{/* 提交按钮 */}
