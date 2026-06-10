@@ -178,3 +178,17 @@ body[data-theme="dark"] {
 	border-top: 1px solid var(--color-divider, #f0f2f5);
 }
 .modal-close-text { font-size: 32rpx; color: var(--color-primary, #47a5fd); }
+
+.notLoginView {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notLoginText {
+  font-size: 80px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
