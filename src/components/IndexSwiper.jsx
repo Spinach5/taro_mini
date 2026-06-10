@@ -1,9 +1,20 @@
-import { Swiper, SwiperItem, View, Text } from "@tarojs/components";
+import { Swiper, SwiperItem, View, Image, Text } from "@tarojs/components";
 import "./IndexSwiper.css";
 
-const bannerList = [{ id: 1 }];
+const DEFAULT_BANNERS = [
+	{ id: "default-1", label: "校园服务" },
+];
 
-export default function IndexSwiper({ className = "" }) {
+/**
+ * 首页轮播图
+ * @param {{ bannerList?: string[], className?: string }} props
+ */
+export default function IndexSwiper({ bannerList, className = "" }) {
+	const hasBanners = bannerList && bannerList.length > 0;
+	const items = hasBanners
+		? bannerList.map((url, idx) => ({ id: `banner-${idx}`, url }))
+		: DEFAULT_BANNERS;
+
 	return (
 		<Swiper
 			indicatorDots
@@ -13,11 +24,19 @@ export default function IndexSwiper({ className = "" }) {
 			circular
 			className={`swiper-box bora ${className}`}
 		>
-			{bannerList.map((item) => (
+			{items.map((item) => (
 				<SwiperItem key={item.id}>
-					<View className="slide-image slide-placeholder">
-						<Text className="slide-placeholder-text">校园服务</Text>
-					</View>
+					{item.url ? (
+						<Image
+							src={item.url}
+							mode="aspectFill"
+							className="slide-image"
+						/>
+					) : (
+						<View className="slide-image slide-placeholder">
+							<Text className="slide-placeholder-text">{item.label}</Text>
+						</View>
+					)}
 				</SwiperItem>
 			))}
 		</Swiper>

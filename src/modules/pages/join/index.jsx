@@ -39,7 +39,7 @@ export default function Index() {
           </Text>
         </View>
 
-        <View className="join-card">
+        <View className="join-card bora">
           <Text className="join-section-title">技术栈</Text>
           <View className="tech-grid">
             {[
@@ -59,7 +59,7 @@ export default function Index() {
           </View>
         </View>
 
-        <View className="join-card">
+        <View className="join-card bora">
           <Text className="join-section-title">参与方式</Text>
           <View className="join-way-item">
             <View className="join-way-dot">
@@ -87,7 +87,7 @@ export default function Index() {
           </View>
         </View>
 
-        <View className="join-card" onClick={handleCopyEmail}>
+        <View className="join-card bora" onClick={handleCopyEmail}>
           <Text className="join-section-title">联系方式</Text>
           <View className="join-email-row bora">
             <AtIcon value="mail" size={16} color="#2563eb" />
@@ -96,7 +96,7 @@ export default function Index() {
           </View>
         </View>
 
-        <View className="join-card">
+        <View className="join-card bora">
           <Text className="join-section-title">开源许可</Text>
           <Text className="license-text">
             MIT License © 2026 好家伙{"\n"}

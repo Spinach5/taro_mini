@@ -14,30 +14,12 @@ import "./index.css";
 const CACHE_KEY_CLUBS = "v1_clubs";
 const CACHE_KEY_CATEGORIES = "v1_club_categories";
 
-const ALL_CATEGORIES = [
-	"全部",
-	"学术科技类",
-	"创新创业类",
-	"文化艺术类",
-	"体育活动类",
-	"志愿公益类",
-	"思想政治类",
-	"其他",
-];
-
 const NATURE_MAP = ["社团", "学生会", "其他"];
-
-function getCategories() {
-	const cached = cacheManager.get(CACHE_KEY_CATEGORIES);
-	if (cached && Array.isArray(cached)) return cached;
-	cacheManager.set(CACHE_KEY_CATEGORIES, ALL_CATEGORIES);
-	return ALL_CATEGORIES;
-}
 
 export default function Index() {
 	const [authState, setAuthState] = useState(null); // null=loading, "login"=need login, "register"=need register, "ok"=passed
 	const [clubs, setClubs] = useState([]);
-	const [categories] = useState(() => getCategories());
+	const [categories, setCategories] = useState(["全部"]);
 	const [activeCategory, setActiveCategory] = useState("全部");
 	const [loading, setLoading] = useState(true);
 
@@ -57,17 +39,29 @@ export default function Index() {
 	const fetchClubs = useCallback(async (forceRefresh = false) => {
 		if (!forceRefresh) {
 			const cached = cacheManager.get(CACHE_KEY_CLUBS);
+			const cachedCats = cacheManager.get(CACHE_KEY_CATEGORIES);
 			if (cached && Array.isArray(cached)) {
 				setClubs(cached);
+				if (cachedCats && Array.isArray(cachedCats)) setCategories(cachedCats);
 				setLoading(false);
 				return;
 			}
 		}
 		try {
-			const res = await serverGet("/api/v1/clubs");
-			const data = (res && res.data) || [];
-			setClubs(data);
-			cacheManager.set(CACHE_KEY_CLUBS, data);
+		const [clubRes, catRes] = await Promise.all([
+		 serverGet("/api/v1/clubs"),
+		 serverGet("/api/v1/clubs/categories"),
+		]);
+
+		const data = (clubRes && clubRes.data) || [];
+		setClubs(data);
+		cacheManager.set(CACHE_KEY_CLUBS, data);
+
+				// 从后端获取社团种类
+				const catData = (catRes && catRes.data) || [];
+				const cats = ["全部", ...(Array.isArray(catData) ? catData : [])];
+				setCategories(cats);
+				cacheManager.set(CACHE_KEY_CATEGORIES, cats);
 		} catch (error) {
 			runtimeLogger.error("Club", "获取社团列表失败", error);
 			Taro.showToast({ title: "加载失败，请下拉刷新", icon: "none" });
