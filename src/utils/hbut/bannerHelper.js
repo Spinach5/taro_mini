@@ -6,7 +6,7 @@
  */
 export function extractBannerImages(html) {
   // 防护：非字符串直接返回空数组
-  console.log("[extractBannerImages] 输入:", html);
+  //console.log("[extractBannerImages] 输入:", html);
   if (!html || typeof html !== "string") {
     console.warn("[extractBannerImages] 输入不是有效的 HTML 字符串, 类型:", typeof html);
     return [];
