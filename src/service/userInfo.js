@@ -11,6 +11,7 @@ class UserManager {
 		this.realName = "帅哥"; // 真实姓名
 		this.stuId = ""; // 学号
 		this.password = ""; // 密码
+		this.encryptedPassword = ""; // 加密后的密码（缓存复用，避免重复加密）
 		this.grade = "0"; // 入学年份
 		this.majority = ""; // 专业
 		this.class = "?"; // 班级
@@ -29,7 +30,8 @@ class UserManager {
 			university: this.university,
 			realName: this.realName,
 			stuId: this.stuId,
-			password: this.password,
+			// password 不存入缓存，仅保留在内存中
+			encryptedPassword: this.encryptedPassword,
 			grade: this.grade,
 			majority: this.majority,
 			class: this.class,
@@ -66,6 +68,7 @@ class UserManager {
 		this.realName = values.realName || "帅哥";
 		this.stuId = values.stuId || "";
 		this.password = values.password || "";
+		this.encryptedPassword = values.encryptedPassword || "";
 		this.grade = values.grade || 0;
 		this.majority = values.majority || "";
 		this.class = values.class || "";
@@ -96,6 +99,16 @@ class UserManager {
 	}
 	setServerToken(token) {
 		this.serverToken = token;
+		this.saveToCache();
+		this._syncCache = this.getValues();
+	}
+
+	// 获取/设置加密后的密码（缓存复用，避免重复加密）
+	getEncryptedPassword() {
+		return this.encryptedPassword;
+	}
+	setEncryptedPassword(encryptedPwd) {
+		this.encryptedPassword = encryptedPwd;
 		this.saveToCache();
 		this._syncCache = this.getValues();
 	}
@@ -158,6 +171,7 @@ class UserManager {
 		this.serverToken = "";
 		this.isLoggedIn = false;
 		this.password = "";
+		this.encryptedPassword = "";
 		this.class = "";
 		this._syncCache = null;
 

@@ -4,6 +4,7 @@ import Taro from "@tarojs/taro";
 import HeadStatus from "../../../components/HeadStatus";
 import SafeAreaView from "../../../components/SafeAreaView";
 import userManager from "../../../service/userInfo";
+import encryptPassword from "../../../utils/hbut/loginEncrypt";
 import { useTheme } from "../../../utils/theme";
 import { serverGet, serverPost } from "../../../utils/serverRequest";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
@@ -139,11 +140,23 @@ export default function Index() {
 
     // 打开：前置校验
     const stuId = userManager.stuId;
-    const password = userManager.password;
     const realName = userManager.realName;
-    if (!stuId || !password) {
+    if (!stuId || !userManager.password) {
       Taro.showToast({ title: "请先登录教务系统", icon: "none" });
       return;
+    }
+
+    // 获取加密后的密码（优先从缓存取，没有则即时加密）
+    let encodedPassword = userManager.getEncryptedPassword();
+    if (!encodedPassword) {
+      try {
+        encodedPassword = encryptPassword(userManager.password);
+        userManager.setEncryptedPassword(encodedPassword);
+      } catch (e) {
+        Taro.showToast({ title: "密码加密失败，请重试", icon: "none" });
+        setExpandLoading(false);
+        return;
+      }
     }
 
     setExpandLoading(true);
@@ -161,7 +174,7 @@ export default function Index() {
         // 已注册，自动登录获取 token
         const loginRes = await serverPost("/api/v1/auth/login", {
           stuId,
-          password,
+          password: encodedPassword,
           schoolId,
         });
         if (loginRes.success && loginRes.data && loginRes.data.token) {
@@ -187,7 +200,7 @@ export default function Index() {
       // 3. 调用注册接口
       const regRes = await serverPost("/api/v1/auth/register", {
         stuId,
-        password,
+        password: encodedPassword,
         schoolId,
         nickName: realName,
       });

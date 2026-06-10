@@ -7,19 +7,29 @@ import runtimeLogger from "../../utils/runtimeLogger";
 export async function auth() {
 	const { stuId, password } = userManager.getAccount();
 	console.log("正在登录，账号:", stuId);
-	console.log("正在登录，密码:", password);
-	let encodedPassword;
-	try {
-		encodedPassword = encryptPassword(password);
-		if (!encodedPassword) {
-			console.error("密码加密失败");
-			runtimeLogger.error("Auth", "密码加密失败");
-			return { success: false, message: "密码加密失败" };
+
+	let encodedPassword = userManager.getEncryptedPassword();
+	if (encodedPassword) {
+		// 缓存中已有加密后的密码，直接复用，避免重复加密
+		console.log("使用缓存的加密密码");
+	} else {
+		// 缓存中没有加密密码，需要从明文密码加密
+		console.log("缓存中无加密密码，使用明文密码加密");
+		try {
+			encodedPassword = encryptPassword(password);
+			if (!encodedPassword) {
+				console.error("密码加密失败");
+				runtimeLogger.error("Auth", "密码加密失败");
+				return { success: false, message: "密码加密失败" };
+			}
+			// 加密成功后，将加密密码保存到缓存，下次自动重登可直接使用
+			userManager.setEncryptedPassword(encodedPassword);
+			console.log("加密密码已保存到缓存");
+		} catch (e) {
+			console.error(`加密异常: ${e.message}`);
+			runtimeLogger.error("Auth", "密码加密异常", e);
+			return { success: false, message: `加密异常: ${e.message}` };
 		}
-	} catch (e) {
-		console.error(`加密异常: ${e.message}`);
-		runtimeLogger.error("Auth", "密码加密异常", e);
-		return { success: false, message: `加密异常: ${e.message}` };
 	}
 
 	const params = new URLSearchParams();
