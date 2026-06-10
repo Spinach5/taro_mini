@@ -11,7 +11,6 @@ import runtimeLogger from "../../../../utils/runtimeLogger";
 import "./index.css";
 
 const ALL_CATEGORIES = [
-	"学术科技",
 	"学术科技类",
 	"创新创业类",
 	"文化艺术类",
