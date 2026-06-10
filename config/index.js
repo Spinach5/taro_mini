@@ -166,6 +166,37 @@ export default defineConfig(async (merge, { command, mode }) => {
 							});
 						},
 					},
+					"/hbut_www": {
+						target: "https://www.hbut.edu.cn",
+						changeOrigin: true,
+						secure: false,
+						rewrite: (path) => path.replace(/^\/hbut_www/, ""),
+						configure: (proxy, options) => {
+							proxy.on("proxyRes", (proxyRes, req, res) => {
+								console.log("proxyRes触发");
+								if (proxyRes.headers.location) {
+									let location = proxyRes.headers.location;
+									if (location.startsWith("/")) {
+										proxyRes.headers.location =
+											"/hbut_www" + location;
+									} else if (
+										location.includes("hbut.edu.cn")
+									) {
+										const relative = location.replace(
+											/https?:\/\/[^/]+/,
+											"",
+										);
+										proxyRes.headers.location =
+											"/hbut_www" + relative;
+									}
+									console.log(
+										"修改后的 location:",
+										proxyRes.headers.location,
+									);
+								}
+							});
+						},
+					},
 					"/hbut": {
 						target: "https://jwxt.hbut.edu.cn",
 						changeOrigin: true,

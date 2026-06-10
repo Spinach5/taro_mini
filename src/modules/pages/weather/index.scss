@@ -19,13 +19,25 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
+.weather-location-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 6px;
+}
+
 .weather-location {
   font-size: 26px;
   color: #666;
-  margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.weather-update-time {
+  font-size: 20px;
+  color: #bbb;
 }
 
 .weather-location-icon {

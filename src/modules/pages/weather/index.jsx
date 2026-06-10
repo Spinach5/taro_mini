@@ -40,6 +40,13 @@ function formatHour(dateStr, currentHour) {
   return `${hour}时`;
 }
 
+/** Format timestamp to "HH:MM" */
+function formatTime(timestamp) {
+  if (!timestamp) return "--";
+  const d = new Date(timestamp);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
 /** Format wind direction degrees to Chinese */
 function windDirectionText(degrees) {
   if (degrees == null) return "--";
@@ -56,6 +63,7 @@ export default function Weather() {
   const [hourly, setHourly] = useState([]);
   const [daily, setDaily] = useState([]);
   const [currentHour, setCurrentHour] = useState(new Date().getHours());
+  const [updateTime, setUpdateTime] = useState(null);
 
   const fetchData = useCallback(async (forceRefresh = false) => {
     try {
@@ -79,6 +87,7 @@ export default function Weather() {
       setDaily(dailyData);
 
       setCurrentHour(new Date().getHours());
+      setUpdateTime(weatherManager.getCachedTime());
       setLoading(false);
     } catch (err) {
       console.error("获取天气数据失败", err);
@@ -175,14 +184,19 @@ export default function Weather() {
       <ScrollView scrollY className="weather-page">
         {/* ===== Current Weather Card ===== */}
         <View className="current-weather-card bora">
-          {/* Location */}
-          <View className="weather-location">
-            <MaterialCommunityIcons
-              name="map-marker"
-              color="#999"
-              size={22}
-            />
-            <Text>{locationText || "--"}</Text>
+          {/* Location + Update time */}
+          <View className="weather-location-row">
+            <View className="weather-location">
+              <MaterialCommunityIcons
+                name="map-marker"
+                color="#999"
+                size={22}
+              />
+              <Text>{locationText || "--"}</Text>
+            </View>
+            {updateTime && (
+              <Text className="weather-update-time">更新于 {formatTime(updateTime)}</Text>
+            )}
           </View>
 
           {/* Weather icon + description */}

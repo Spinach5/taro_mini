@@ -93,22 +93,45 @@ export default function Index() {
 				return;
 			}
 			setLoading(true);
+			let hasError = false;
 			try {
-				const [scheduleData, timeData, extroData] = await Promise.all([
+				const [scheduleResult, timeResult, extroResult] = await Promise.allSettled([
 					getAllSchedule(forceRefresh, currentSemester),
 					getTimeTable(currentSemester),
 					getExtroInfo(currentSemester, forceRefresh),
 				]);
-				setCourses(scheduleData || []);
-				setTimeTable(timeData || []);
-				setPracticeData(extroData || []);
+
+				if (scheduleResult.status === "fulfilled") {
+					setCourses(scheduleResult.value || []);
+				} else {
+					runtimeLogger.error("Course", "刷新课表失败", scheduleResult.reason);
+					hasError = true;
+				}
+
+				if (timeResult.status === "fulfilled") {
+					setTimeTable(timeResult.value || []);
+				} else {
+					runtimeLogger.error("Course", "刷新时间表失败", timeResult.reason);
+					hasError = true;
+				}
+
+				if (extroResult.status === "fulfilled") {
+					setPracticeData(extroResult.value || []);
+				} else {
+					runtimeLogger.error("Course", "刷新备注信息失败", extroResult.reason);
+					hasError = true;
+				}
+
+				if (hasError) {
+					Taro.showToast({ title: "部分数据刷新失败", icon: "none" });
+				}
 			} catch (err) {
 				runtimeLogger.error("Course", "刷新课表失败", err);
 				Taro.showToast({ title: "刷新失败", icon: "none" });
 			} finally {
 				setLoading(false);
 			}
-			if (forceRefresh) {
+			if (forceRefresh && !hasError) {
 				// 等 React 重新渲染、Loading 组件消失后再弹出 toast
 				await new Promise((resolve) => setTimeout(resolve, 300));
 				Taro.showToast({

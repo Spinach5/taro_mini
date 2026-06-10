@@ -16,3 +16,4 @@ export { getExamBatch }      from './getExamBatch';
 export { getTeachBuilding }  from './getTeachBuilding';
 export { getTeachBuildingCategory }  from './getTeachBuilding';
 export { getEmptyRoom }      from "./getEmptyClassRoom"
+export { getBanner }         from "./Banner"
