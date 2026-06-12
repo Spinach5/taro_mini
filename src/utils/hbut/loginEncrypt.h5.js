@@ -1,5 +1,3 @@
-
-/* eslint-disable import/no-commonjs */
 /**
  * h5端加密函数
  */

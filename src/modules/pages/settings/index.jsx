@@ -216,14 +216,16 @@ export default function Index() {
       } else {
         Taro.showToast({
           title: regRes.message || "注册失败，请稍后重试",
-          icon: "none",
+          icon: "error",
+		  duration: 3000,
         });
       }
     } catch (error) {
       console.error("[Settings] handleExpandToggle error:", error);
       Taro.showToast({
         title: error.message || "网络连接失败，请稍后重试",
-        icon: "none",
+        icon: "error",
+		duration: 3000,
       });
     } finally {
       setExpandLoading(false);

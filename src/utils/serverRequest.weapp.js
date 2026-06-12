@@ -1,4 +1,3 @@
-/* eslint-disable import/no-named-as-default-member */
 // utils/serverRequest.weapp.js
 import Taro from "@tarojs/taro";
 import userManager from "../service/userInfo";

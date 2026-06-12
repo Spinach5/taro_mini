@@ -11,6 +11,8 @@
     "import/first": "off",
     "react/jsx-indent": "off",
     "react/jsx-indent-props": "off",
-    "indent": "off"
+    "indent": "off",
+	"no-named-as-default-member":"off",
+	"no-undef":"off"
   }
 }

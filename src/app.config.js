@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+
 export default defineAppConfig({
   lazyCodeLoading: "requiredComponents", // 按需加载
   pages: ["pages/index/index", "pages/course/index", "pages/user/index"],
