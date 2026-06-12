@@ -15,6 +15,9 @@ export const getScores       = api('getScores');
 export const getStuInfo      = api('getStuInfo');
 export const getTimeTable    = api('getTimeTable');
 export const getAllClub      = api('getAllClub');
+export const getClubCategories = api('getClubCategories');
+export const getClubDetail    = api('getClubDetail');
+export const addClub          = api('addClub');
 export const getBanner       = api('getBanner');
 
 // auth 直接转发

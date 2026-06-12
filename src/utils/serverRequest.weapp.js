@@ -37,6 +37,10 @@ async function callCloudFunction(path, method, data, params) {
 
 		// 云函数返回结构: { result: { status, data, headers } }
 		if (res.result && res.result.status >= 400) {
+			// 401/403 令牌失效，清除 token
+			if (res.result.status === 401 || res.result.status === 403) {
+				userManager.setServerToken("");
+			}
 			const msg =
 				(res.result.data && res.result.data.message) ||
 				`请求失败 (${res.result.status})`;

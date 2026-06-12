@@ -45,6 +45,10 @@ async function request(method, path, data, params) {
 		});
 
 		if (res.statusCode >= 400) {
+			// 401/403 令牌失效，清除 token
+			if (res.statusCode === 401 || res.statusCode === 403) {
+				userManager.setServerToken("");
+			}
 			const body = res.data;
 			throw new Error(
 				(body && body.message) || `请求失败 (${res.statusCode})`,

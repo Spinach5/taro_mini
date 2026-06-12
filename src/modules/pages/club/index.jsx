@@ -5,14 +5,10 @@ import { AtIcon, AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../components/SafeAreaView";
 import HeadStatus from "../../../components/HeadStatus";
 import userManager from "../../../service/userInfo";
-import { serverGet } from "../../../utils/serverRequest";
+import { getAllClub } from "../../../service";
 import { getColorFromName } from "../../../utils/getHashCode";
-import cacheManager from "../../../utils/cache";
 import runtimeLogger from "../../../utils/runtimeLogger";
 import "./index.css";
-
-const CACHE_KEY_CLUBS = "v1_clubs";
-const CACHE_KEY_CATEGORIES = "v1_club_categories";
 
 const NATURE_MAP = ["社团", "学生会", "其他"];
 
@@ -37,31 +33,10 @@ export default function Index() {
 	}, []);
 
 	const fetchClubs = useCallback(async (forceRefresh = false) => {
-		if (!forceRefresh) {
-			const cached = cacheManager.get(CACHE_KEY_CLUBS);
-			const cachedCats = cacheManager.get(CACHE_KEY_CATEGORIES);
-			if (cached && Array.isArray(cached)) {
-				setClubs(cached);
-				if (cachedCats && Array.isArray(cachedCats)) setCategories(cachedCats);
-				setLoading(false);
-				return;
-			}
-		}
 		try {
-		const [clubRes, catRes] = await Promise.all([
-		 serverGet("/api/v1/clubs"),
-		 serverGet("/api/v1/clubs/categories"),
-		]);
-
-		const data = (clubRes && clubRes.data) || [];
-		setClubs(data);
-		cacheManager.set(CACHE_KEY_CLUBS, data);
-
-				// 从后端获取社团种类
-				const catData = (catRes && catRes.data) || [];
-				const cats = ["全部", ...(Array.isArray(catData) ? catData : [])];
-				setCategories(cats);
-				cacheManager.set(CACHE_KEY_CATEGORIES, cats);
+			const { clubs: data, categories: cats } = await getAllClub(forceRefresh);
+			setClubs(data);
+			setCategories(cats);
 		} catch (error) {
 			runtimeLogger.error("Club", "获取社团列表失败", error);
 			Taro.showToast({ title: "加载失败，请下拉刷新", icon: "none" });

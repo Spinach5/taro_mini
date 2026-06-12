@@ -5,8 +5,7 @@ import { AtIcon } from "taro-ui";
 import SafeAreaView from "../../../../components/SafeAreaView";
 import HeadStatus from "../../../../components/HeadStatus";
 import userManager from "../../../../service/userInfo";
-import { serverPost } from "../../../../utils/serverRequest";
-import cacheManager from "../../../../utils/cache";
+import { addClub } from "../../../../service";
 import runtimeLogger from "../../../../utils/runtimeLogger";
 import "./index.css";
 
@@ -45,19 +44,18 @@ export default function Index() {
 
 		setSubmitting(true);
 		try {
-			const schoolId = userManager.getSchoolId() || "hbut";
-			const res = await serverPost("/api/v1/clubs", {
-				name: name.trim(),
-				category,
-				nature,
-				introduction: introduction.trim() || null,
-				activities: activities.trim() || null,
-				contact: contact.trim() || null,
-				schoolId,
-			});
+		const schoolId = userManager.getSchoolId() || "hbut";
+		const res = await addClub({
+		name: name.trim(),
+		category,
+		nature,
+		introduction: introduction.trim() || null,
+		activities: activities.trim() || null,
+		contact: contact.trim() || null,
+		schoolId,
+		});
 
 			if (res && res.success) {
-				cacheManager.remove("v1_clubs"); // 清除缓存，下次刷新
 				Taro.showToast({ title: "创建成功", icon: "success" });
 				setTimeout(() => Taro.navigateBack(), 1500);
 			} else {

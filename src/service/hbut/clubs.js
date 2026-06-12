@@ -1,35 +1,103 @@
-// 获取所有社团
+// 社团相关 API（从后端获取，带缓存）
+import { serverGet, serverPost } from "../../utils/serverRequest";
 import cacheManager from "../../utils/cache";
-import { opendiffRequest } from "../../utils/request";
 import runtimeLogger from "../../utils/runtimeLogger";
 
-const CACHE_KEY_CLUBS = "All_CLUBS";
-const CACHE_KEY_CLUBCATEGORY = "ALL_CLUBCATEGORY"
+const CACHE_KEY_CLUBS = "v1_clubs";
+const CACHE_KEY_CATEGORIES = "v1_club_categories";
 
+/**
+ * 获取社团列表 + 种类（并行）
+ * @param {boolean} forceRefresh 是否强制刷新
+ * @returns {Promise<{ clubs: Array, categories: string[] }>}
+ */
 export async function getAllClub(forceRefresh = false) {
-    const cached_clubs = cacheManager.get(CACHE_KEY_CLUBS);
-    const cached_clubcategory = cacheManager.get(CACHE_KEY_CLUBCATEGORY);
-    if (cached_clubs && cached_clubcategory && !forceRefresh) {
-        console.log("[getAllClub] 从缓存获取社团");
-        return { club: cached_clubs, clubcategory: cached_clubcategory };
+  if (!forceRefresh) {
+    const cached = cacheManager.get(CACHE_KEY_CLUBS);
+    const cachedCats = cacheManager.get(CACHE_KEY_CATEGORIES);
+    if (cached && Array.isArray(cached)) {
+      return {
+        clubs: cached,
+        categories: cachedCats && Array.isArray(cachedCats) ? cachedCats : ["全部"],
+      };
     }
+  }
 
-    // 实际请求函数
-    const fetchClubs = async () => {
-        const club_res = await opendiffRequest.get('/opendiff/clubs')
-        const club_category_res = await opendiffRequest.get('/opendiff/clubcategory')
-        return { club: club_res.data, clubcategory: club_category_res.data };
-    };
+  try {
+    const [clubRes, catRes] = await Promise.all([
+      serverGet("/api/v1/clubs"),
+      serverGet("/api/v1/clubs/categories"),
+    ]);
 
-    try {
-        // TODO 自动重试
-        const response = await fetchClubs()
-        cacheManager.set(CACHE_KEY_CLUBS, response.club);
-        cacheManager.set(CACHE_KEY_CLUBCATEGORY, response.clubcategory);
-        console.log(`[getAllClub] 已缓存社团数据`);
-        return response;
-    } catch (error) {
-        runtimeLogger.error("Club", "获取社团列表失败", error);
-        throw error;
+    const clubs = (clubRes && clubRes.data) || [];
+    cacheManager.set(CACHE_KEY_CLUBS, clubs);
+
+    const catData = (catRes && catRes.data) || [];
+    const categories = ["全部", ...(Array.isArray(catData) ? catData : [])];
+    cacheManager.set(CACHE_KEY_CATEGORIES, categories);
+
+    return { clubs, categories };
+  } catch (error) {
+    runtimeLogger.error("Clubs", "获取社团列表失败", error);
+    throw error;
+  }
+}
+
+/**
+ * 获取社团种类
+ * @param {boolean} forceRefresh 是否强制刷新
+ * @returns {Promise<string[]>}
+ */
+export async function getClubCategories(forceRefresh = false) {
+  if (!forceRefresh) {
+    const cached = cacheManager.get(CACHE_KEY_CATEGORIES);
+    if (cached && Array.isArray(cached)) return cached;
+  }
+
+  try {
+    const res = await serverGet("/api/v1/clubs/categories");
+    const data = (res && res.data) || [];
+    const categories = ["全部", ...(Array.isArray(data) ? data : [])];
+    cacheManager.set(CACHE_KEY_CATEGORIES, categories);
+    return categories;
+  } catch (error) {
+    runtimeLogger.error("Clubs", "获取社团种类失败", error);
+    throw error;
+  }
+}
+
+/**
+ * 获取单个社团详情
+ * @param {string|number} id
+ * @returns {Promise<Object>}
+ */
+export async function getClubDetail(id) {
+  try {
+    const res = await serverGet(`/api/v1/clubs/${id}`);
+    if (res && res.data) return res.data;
+    throw new Error("社团不存在");
+  } catch (error) {
+    runtimeLogger.error("Clubs", "获取社团详情失败", error);
+    throw error;
+  }
+}
+
+/**
+ * 添加社团
+ * @param {Object} data 社团数据
+ * @returns {Promise<Object>}
+ */
+export async function addClub(data) {
+  try {
+    const res = await serverPost("/api/v1/clubs", data);
+    if (res && res.success) {
+      // 清除缓存，下次进入列表页时刷新
+      cacheManager.remove(CACHE_KEY_CLUBS);
+      cacheManager.remove(CACHE_KEY_CATEGORIES);
     }
+    return res;
+  } catch (error) {
+    runtimeLogger.error("Clubs", "添加社团失败", error);
+    throw error;
+  }
 }

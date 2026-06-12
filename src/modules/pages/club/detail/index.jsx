@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../../components/SafeAreaView";
 import HeadStatus from "../../../../components/HeadStatus";
-import { serverGet } from "../../../../utils/serverRequest";
+import { getClubDetail } from "../../../../service";
 import runtimeLogger from "../../../../utils/runtimeLogger";
 import "./index.css";
 
@@ -40,9 +40,9 @@ export default function Index() {
 
 		(async () => {
 			try {
-				const res = await serverGet(`/api/v1/clubs/${id}`);
-				if (res && res.data) {
-					setClub(res.data);
+			const data = await getClubDetail(id);
+			if (data) {
+			setClub(data);
 				} else {
 					Taro.showToast({ title: "社团不存在", icon: "none" });
 					Taro.navigateBack();
