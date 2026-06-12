@@ -171,14 +171,15 @@ export default function Index() {
       });
 
       if (checkRes.success && checkRes.data && checkRes.data.exists) {
-        // 已注册，自动登录获取 token
-        const loginRes = await serverPost("/api/v1/auth/login", {
+        // 已注册，调用幂等 register 获取 token
+        const regRes = await serverPost("/api/v1/auth/register", {
           stuId,
           password: encodedPassword,
           schoolId,
+          nickName: realName,
         });
-        if (loginRes.success && loginRes.data && loginRes.data.token) {
-          userManager.setServerToken(loginRes.data.token);
+        if (regRes.success && regRes.data && regRes.data.token) {
+          userManager.setServerToken(regRes.data.token);
           if (!userManager.getSchoolId()) {
             userManager.setSchoolId(schoolId);
           }
