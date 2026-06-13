@@ -1,7 +1,16 @@
+# taro_mini
+[![Latest Tag](https://img.shields.io/github/v/tag/Spinach5/taro_mini?label=latest)](https://github.com/Spinach5/taro_mini/tags)
+![GitHub Release Date](https://img.shields.io/github/release-date/Spinach5/taro_mini)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Gitee stars](https://gitee.com/damn_2/taro_mini/badge/star.svg?theme=dark)](https://gitee.com/damn_2/taro_mini)
+[![GitHub stars](https://img.shields.io/github/stars/Spinach5/taro_mini?style=social)](https://github.com/Spinach5/taro_mini)
 <p align="center">
-<img src="https://foruda.gitee.com/avatar/1777480666913616794/16193480_damn_2_1777480666.png" width="100">
+<img src="https://foruda.gitee.com/avatar/1777480666913616794/16193480_damn_2_1777480666.png" width="200">
 </p>
 本项目采用Vite+React+Sass构建，基于Taro框架
+
+[gitee仓库](https://gitee.com/damn_2/taro_mini)
+[github仓库](https://github.com/Spinach5/taro_mini)
 
 ## 部署教程
 ```sh
@@ -75,3 +84,7 @@ NODE_ENV=production taro build --type weapp --watch # Bash
 [Prettier](https://prettier.io/)
 
 [husky](https://typicode.github.io/husky/#/)
+
+## GitHub Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=Spinach5/taro_mini&type=date&logscale&legend=top-left)](https://www.star-history.com/?repos=Spinach5%2Ftaro_mini&type=date&logscale=&legend=top-left)

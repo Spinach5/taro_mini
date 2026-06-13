@@ -7,6 +7,12 @@ import runtimeLogger from "../../utils/runtimeLogger";
  * @param {*} response - axios 返回的响应对象
  * @returns {boolean}
  */
+function isCaptchaOrBan(response) {
+  const html = typeof response?.data === "string" ? response.data : "";
+  // 超星滑块验证 / 教务封禁页面 → 不应重试，需用户手动登录
+  return /captcha|jcaptcha|ban_error|无法访问|chaoxing\.com\/load\.min\.js/i.test(html);
+}
+
 function isLoginInvalid(response) {
   // 1. 业务 JSON 返回错误码（常见 ret !== 0 或 code 非 200）
   if (response?.data) {
@@ -18,17 +24,15 @@ function isLoginInvalid(response) {
 
   // 2. 返回的是 HTML 登录页面（如重定向到 /login）
   if (typeof response?.data === "string") {
-    // 检查常见登录页特征
     if (/login|password|用户名|密码/i.test(response.data)) {
       return true;
     }
-    // 如果整个响应是 HTML 且不含业务数据，也可怀疑
     if (/^<!DOCTYPE/i.test(response.data.trim())) {
       return true;
     }
   }
 
-  // 3. 原始响应状态码（极少情况能拿到，保留）
+  // 3. 原始响应状态码
   const status = response?.status || response?.statusCode;
   if (status && [300, 302, 303].includes(Number(status))) {
     return true;
@@ -52,6 +56,11 @@ export async function AutoRetry(requestFn, options = {}) {
     try {
       const response = await requestFn();
 
+      // 检测到验证码/封禁页面，直接报错，不重试
+      if (isCaptchaOrBan(response)) {
+        throw new Error("教务系统需要手动验证，请用浏览器打开 https://jwxt.hbut.edu.cn 登录一次后再试");
+      }
+
       // 检查是否需要重登
       if (isLoginInvalid(response) && retryCount < maxRetry) {
         console.warn("[AutoRetry] 检测到登录失效，尝试重新登录...");
@@ -67,11 +76,11 @@ export async function AutoRetry(requestFn, options = {}) {
       console.error("[AutoRetry] 请求异常：", error);
       runtimeLogger.error("AutoRetry", "请求异常", error);
 
-      // 若错误明显是重定向/未登录导致，也可以触发重登
+      // 未登录异常才触发重登，重定向过多不重登（重新登录解决不了重定向链问题）
       const msg = error?.message || error?.errMsg || "";
-      if ((/redirect/i.test(msg) || /unauthorized/i.test(msg)) && retryCount < maxRetry) {
-        console.warn("[AutoRetry] 捕获到疑似重定向/未登录异常，尝试重新登录...");
-        runtimeLogger.warn("AutoRetry", "捕获到疑似重定向/未登录异常，尝试重新登录");
+      if (/unauthorized/i.test(msg) && retryCount < maxRetry) {
+        console.warn("[AutoRetry] 捕获到未登录异常，尝试重新登录...");
+        runtimeLogger.warn("AutoRetry", "捕获到未登录异常，尝试重新登录");
         await auth();
         retryCount++;
         return await execute();

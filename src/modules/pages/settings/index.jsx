@@ -170,14 +170,41 @@ export default function Index() {
         schoolId,
       });
 
+      // 2. 微信端：通过云函数验证教务（避免服务器 IP 被封）
+      let eduSig = {};
+      if (process.env.TARO_ENV === "weapp") {
+        try {
+          const eduRes = await Taro.cloud.callFunction({
+            name: "eduLogin",
+            data: { stuId, encPwd: encodedPassword },
+          });
+          if (eduRes.result && eduRes.result.success) {
+            eduSig = {
+              eduVerifyStuId: eduRes.result.verifyStuId,
+              eduVerifyTs: eduRes.result.verifyTs,
+              eduVerifySig: eduRes.result.verifySig,
+            };
+          } else {
+            throw new Error(eduRes.result?.message || "教务验证失败");
+          }
+        } catch (e) {
+          Taro.showToast({ title: e.message || "教务验证失败", icon: "none", duration: 3000 });
+          setExpandLoading(false);
+          return;
+        }
+      }
+
+      const buildRegBody = () => ({
+        stuId,
+        password: encodedPassword,
+        schoolId,
+        nickName: realName,
+        ...eduSig,
+      });
+
       if (checkRes.success && checkRes.data && checkRes.data.exists) {
         // 已注册，调用幂等 register 获取 token
-        const regRes = await serverPost("/api/v1/auth/register", {
-          stuId,
-          password: encodedPassword,
-          schoolId,
-          nickName: realName,
-        });
+        const regRes = await serverPost("/api/v1/auth/register", buildRegBody());
         if (regRes.success && regRes.data && regRes.data.token) {
           userManager.setServerToken(regRes.data.token);
           if (!userManager.getSchoolId()) {
@@ -188,7 +215,7 @@ export default function Index() {
         return;
       }
 
-      // 2. 未注册，弹窗确认
+      // 3. 未注册，弹窗确认
       const modalRes = await Taro.showModal({
         title: "用户注册",
         content: "使用拓展功能需要将你的个人信息上传到服务器，是否同意？",
@@ -198,13 +225,8 @@ export default function Index() {
 
       if (!modalRes.confirm) return;
 
-      // 3. 调用注册接口
-      const regRes = await serverPost("/api/v1/auth/register", {
-        stuId,
-        password: encodedPassword,
-        schoolId,
-        nickName: realName,
-      });
+      // 4. 调用注册接口
+      const regRes = await serverPost("/api/v1/auth/register", buildRegBody());
 
       if (regRes.success && regRes.data && regRes.data.token) {
         userManager.setServerToken(regRes.data.token);

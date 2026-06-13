@@ -60,11 +60,11 @@ async function requestCore(url, method, data, headers, baseURL, cookieManager, r
   // 手动处理重定向
   if (res.statusCode >= 300 && res.statusCode < 400 && res.statusCode !== 304) {
     const location = res.header.Location || res.header.location
-    if (location && redirectCount < 5) {
+    if (location && redirectCount < 10) {
       const redirectUrl = resolveUrl(fullUrl, location)
       // 重定向后转为 GET 并清空 body
       return requestCore(redirectUrl, 'GET', null, {}, baseURL, cookieManager, redirectCount + 1)
-    } else if (redirectCount >= 5) {
+    } else if (redirectCount >= 10) {
       throw new Error('重定向次数过多')
     }
   }
