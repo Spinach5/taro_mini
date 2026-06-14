@@ -1,137 +1,133 @@
-// auth.js
+// auth.js —— 客户端教务登录（检测验证码 → 云函数求解 → 提交 → 重新登录）
+import Taro from "@tarojs/taro";
+import CryptoJS from "crypto-js";
 import { hbutRequest } from "../../utils/request";
+import { API_BASE } from "../../config/api";
 import encryptPassword from "../../utils/hbut/loginEncrypt";
 import userManager from "../userInfo";
 import runtimeLogger from "../../utils/runtimeLogger";
 
+const CAPTCHA_ID = "fdHguSojgSJag5B74ij8Bu8ZAzWlNgXM";
+const CAPTCHA = API_BASE.captcha;
+const REFERER = "https://jwxt.hbut.edu.cn";
+
+const md5 = (s) => CryptoJS.MD5(s).toString();
+const uuid4 = () => "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+  const r = (Math.random() * 16) | 0;
+  return (c === "x" ? r : (r & 3) | 8).toString(16);
+});
+
+// ─── 客户端求解滑块（本地会话，通过代理调超星 API） ───────
+async function solveCaptchaClient() {
+  for (let i = 0; i < 3; i++) {
+    try {
+      // 1. 获取 captcha 配置
+      const now = Date.now();
+      const confUrl = `${CAPTCHA}/get/conf?callback=cx_captcha_function&captchaId=${CAPTCHA_ID}&_=${now}`;
+      const confRes = await Taro.request({ url: confUrl, method: "GET", dataType: "text" });
+      const confText = confRes.data;
+      const t = JSON.parse(confText.slice(confText.indexOf("(") + 1, confText.lastIndexOf(")"))).t;
+
+      // 2. 生成参数
+      const captchaKey = md5(String(t) + uuid4());
+      const token = md5(String(t) + CAPTCHA_ID + "slide" + captchaKey) + ":" + String(Number(t) + 0x493e0);
+      const iv = md5(CAPTCHA_ID + "slide" + String(Date.now()) + uuid4());
+
+      // 3. 获取图片 URL
+      const imgUrl = `${CAPTCHA}/get/verification/image`;
+      const imgRes = await Taro.request({
+        url: imgUrl, method: "GET", dataType: "text",
+        data: { callback: "cx_captcha_function", captchaId: CAPTCHA_ID, type: "slide", version: "1.1.20", captchaKey, token, referer: REFERER, iv, _: String(Date.now()) },
+      });
+      const imgText = imgRes.data;
+      const imgData = JSON.parse(imgText.slice(imgText.indexOf("(") + 1, imgText.lastIndexOf(")")));
+      const { shadeImage, cutoutImage } = imgData.imageVerificationVo;
+
+      // 4. 云函数计算缺口距离
+      const cloudRes = await Taro.cloud.callFunction({ name: "captcha", data: { shadeImage, cutoutImage } });
+      const x = (cloudRes.result && cloudRes.result.x) || 0;
+      console.log(`[Captcha] gap: ${x}px`);
+      if (x < 10) continue;
+
+      // 5. 提交验证结果
+      const checkUrl = `${CAPTCHA}/check/verification/result`;
+      const checkRes = await Taro.request({
+        url: checkUrl, method: "GET", dataType: "text",
+        data: { callback: "cx_captcha_function", captchaId: CAPTCHA_ID, type: "slide", token, textClickArr: `[{"x":${x}}]`, coordinate: "[]", runEnv: "10", version: "1.1.20", t: "a", iv, _: String(Date.now()) },
+      });
+      const checkText = checkRes.data;
+      const checkData = JSON.parse(checkText.slice(checkText.indexOf("(") + 1, checkText.lastIndexOf(")")));
+      if (checkData.code === 0 || checkData.code === 200) return true;
+    } catch (e) {
+      console.error(`[Captcha] attempt ${i} failed:`, e.message || e);
+    }
+  }
+  return false;
+}
+
+// ─── 登录 ────────────────────────────────────────────────
 export async function auth() {
-	const { stuId, password } = userManager.getAccount();
-	console.log("正在登录，账号:", stuId);
+  const { stuId, password } = userManager.getAccount();
 
-	let encodedPassword = userManager.getEncryptedPassword();
-	if (encodedPassword) {
-		// 缓存中已有加密后的密码，直接复用，避免重复加密
-		console.log("使用缓存的加密密码");
-	} else {
-		// 缓存中没有加密密码，需要从明文密码加密
-		console.log("缓存中无加密密码，使用明文密码加密");
-		try {
-			encodedPassword = encryptPassword(password);
-			if (!encodedPassword) {
-				console.error("密码加密失败");
-				runtimeLogger.error("Auth", "密码加密失败");
-				return { success: false, message: "密码加密失败" };
-			}
-			// 加密成功后，将加密密码保存到缓存，下次自动重登可直接使用
-			userManager.setEncryptedPassword(encodedPassword);
-			console.log("加密密码已保存到缓存");
-		} catch (e) {
-			console.error(`加密异常: ${e.message}`);
-			runtimeLogger.error("Auth", "密码加密异常", e);
-			return { success: false, message: `加密异常: ${e.message}` };
-		}
-	}
+  let encodedPassword = userManager.getEncryptedPassword();
+  if (!encodedPassword) {
+    try {
+      encodedPassword = encryptPassword(password);
+      if (!encodedPassword) return { success: false, message: "密码加密失败" };
+      userManager.setEncryptedPassword(encodedPassword);
+    } catch (e) {
+      return { success: false, message: `加密异常: ${e.message}` };
+    }
+  }
 
-	const params = new URLSearchParams();
-	params.append("username", stuId);
-	params.append("password", encodedPassword);
-	params.append("rememberMe", "1");
-	params.append("vcode", "");
-	params.append("jcaptchaCode", "");
+  const doLogin = async (captchaHandled = false) => {
+    const params = new URLSearchParams();
+    params.append("username", stuId);
+    params.append("password", encodedPassword);
+    params.append("rememberMe", "1");
 
-	const loginConfig = {
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-			Referer: "https://jwxt.hbut.edu.cn",
-			Origin: "https://jwxt.hbut.edu.cn",
-		},
-		dataType: "text", // 期望返回 HTML
-		withCredentials: true,
-	};
+    const loginConfig = {
+      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Referer: REFERER, Origin: REFERER },
+      dataType: "text",
+      withCredentials: true,
+    };
 
-	try {
-		const response = await hbutRequest.post(
-			"/admin/login",
-			params,
-			loginConfig,
-		);
+    try {
+      const response = await hbutRequest.post("/admin/login", params, loginConfig);
+      const responseData = response.data;
 
-		// 判断登录是否成功的逻辑
-		const responseData = response.data;
+      // JSON = 失败
+      if (typeof responseData === "object" || (typeof responseData === "string" && (responseData.startsWith("{") || responseData.startsWith("[")))) {
+        try {
+          const jsonData = typeof responseData === "object" ? responseData : JSON.parse(responseData);
+          if (jsonData.code !== 0 && jsonData.code !== 200) {
+            return { success: false, message: jsonData.message || jsonData.msg || "登录失败" };
+          }
+        } catch (_) {}
+      }
 
-		// 1. 检查是否返回 JSON（失败情况）
-		if (
-			typeof responseData === "object" ||
-			responseData?.startsWith("{") ||
-			responseData?.startsWith("[")
-		) {
-			try {
-				const jsonData =
-					typeof responseData === "object"
-						? responseData
-						: JSON.parse(responseData);
+      // 检测验证码
+      const bodyStr = typeof responseData === "string" ? responseData : "";
+      if (!captchaHandled && /captcha|jcaptchaCode|chaoxing\.com\/load\.min\.js/i.test(bodyStr)) {
+        console.log("[Auth] 检测到验证码，自动求解...");
+        const solved = await solveCaptchaClient();
+        if (solved) return doLogin(true);
+        return { success: false, message: "验证码求解失败，请手动登录教务系统" };
+      }
 
-				// 根据返回的 JSON 判断失败原因
-				if (jsonData.code !== 0 && jsonData.code !== 200) {
-					console.error(
-					"登录失败:",
-					jsonData.message || jsonData.msg || "未知错误",
-					);
-				runtimeLogger.error("Auth", "登录失败", jsonData.message || jsonData.msg || "未知错误");
-					return {
-						success: false,
-						message: jsonData.message || jsonData.msg || "登录失败",
-						data: jsonData,
-					};
-				}
-			} catch (e) {
-				// 不是有效的 JSON，继续按 HTML 处理
-				console.log(e);
-			}
-		}
+      if (response.statusCode && response.statusCode !== 200) {
+        return { success: false, message: `HTTP 错误: ${response.statusCode}` };
+      }
 
-		// 2. 检查 HTML 特征（成功情况）
+      return { success: true, message: "登录成功" };
+    } catch (error) {
+      if (error.response) {
+        const d = error.response.data;
+        if (typeof d === "object") return { success: false, message: d.message || d.msg || "请求失败" };
+      }
+      return { success: false, message: error.message || "网络请求失败" };
+    }
+  };
 
-		// 3. 检查 HTTP 状态码（如果请求库会抛出错误，则在 catch 中处理）
-		if (response.statusCode && response.statusCode !== 200) {
-			console.error(`HTTP 错误: ${response.statusCode}`);
-			runtimeLogger.error("Auth", `HTTP错误: ${response.statusCode}`);
-			return {
-				success: false,
-				message: `HTTP 错误: ${response.statusCode}`,
-			};
-		}
-
-		// 4. 默认情况：返回 HTML 但不确定是否成功，保守处理
-		console.log("登录状态，返回了 HTML");
-
-		return {
-			success: true, // 根据实际情况调整，或进一步检查
-			message: "登录请求已完成，请验证",
-			data: responseData,
-		};
-	} catch (error) {
-		// 5. 请求异常处理（网络错误、超时等）
-		console.error("登录请求异常:", error);
-		runtimeLogger.error("Auth", "登录请求异常", error);
-
-		// 尝试获取响应数据（如果有的话）
-		if (error.response) {
-			const errorData = error.response.data;
-			// 判断返回的是否是 JSON 错误信息
-			if (typeof errorData === "object") {
-				return {
-					success: false,
-					message: errorData.message || errorData.msg || "请求失败",
-					data: errorData,
-				};
-			}
-		}
-
-		return {
-			success: false,
-			message: error.message || "网络请求失败",
-			error: error,
-		};
-	}
+  return doLogin();
 }

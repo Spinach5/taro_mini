@@ -9,5 +9,6 @@ export const API_BASE = {
 	ipapi :  isH5 ? "/ipapi" : "https://ipapi.co/",
 	bigdata:  isH5 ? "/bigdata" : "https://api.bigdatacloud.net",
 	open_meteo:  isH5 ? "/open_meteo" : "https://api.open-meteo.com/",
-    server: isH5 ? "server" : "https://8.148.69.248/"
+    server: isH5 ? "server" : "https://8.148.69.248/",
+	captcha: isH5 ? "/captcha" : "https://captcha.chaoxing.com",
 };

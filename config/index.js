@@ -284,6 +284,35 @@ export default defineConfig(async (merge, { command, mode }) => {
 							});
 						},
 					},
+					"/captcha": {
+						target: "https://captcha.chaoxing.com",
+						changeOrigin: true,
+						agent: new https.Agent({ family: 4 }),
+						rewrite: (path) => path.replace(/^\/captcha/, ""),
+						configure: (proxy, options) => {
+							proxy.on("proxyRes", (proxyRes, req, res) => {
+								console.log("proxyRes触发");
+								if (proxyRes.headers.location) {
+									let location = proxyRes.headers.location;
+									if (location.startsWith("/")) {
+										proxyRes.headers.location =
+											"/captcha" + location;
+									} else if (location.includes("captcha.chaoxing.com")) {
+										const relative = location.replace(
+											/https?:\/\/[^/]+/,
+											"",
+										);
+										proxyRes.headers.location =
+											"/captcha" + relative;
+									}
+									console.log(
+										"修改后的 location:",
+										proxyRes.headers.location,
+									);
+								}
+							});
+						},
+					},
 				},
 			},
 			miniCssExtractPluginOption: {
