@@ -17,8 +17,8 @@ export function extractExamInfo(raw) {
 
   const exams = (Array.isArray(results) ? results : [])
     .map(item => ({
-      kcmc: item.kcmc || '',
-      jsmc: item.jsmc || '',
+      kcmc: (item.kcmc || '').replace(/<[^>]*>/g, ''),
+      jsmc: (item.jsmc || '').replace(/<[^>]*>/g, ''),
       kssj: item.kssj || '',
       ksfs: item.ksfs || '',
       kspcmc: item.kspcmc || '',

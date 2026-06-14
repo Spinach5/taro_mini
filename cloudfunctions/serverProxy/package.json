@@ -1,6 +1,0 @@
-{
-  "name": "serverProxy",
-  "version": "1.0.0",
-  "description": "转发请求到 8.148.69.248 服务器",
-  "main": "index.js"
-}

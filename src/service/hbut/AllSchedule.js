@@ -6,7 +6,7 @@ import { extractCourseData } from "../../utils/hbut/courseHelper";
 import { AutoRetry } from "./autoRetry";
 import runtimeLogger from "../../utils/runtimeLogger";
 
-const CACHE_KEY = "All_COURSE_";
+const CACHE_KEY = "v3_All_COURSE_";
 
 export async function getAllSchedule(forceRefresh = false, semester) {
   console.log(`[getAllSchedule] semester:${semester}`);

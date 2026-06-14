@@ -6,7 +6,7 @@ import { AutoRetry } from "./autoRetry";
 import { extractExamInfo } from "../../utils/hbut/examHelper";
 import runtimeLogger from "../../utils/runtimeLogger";
 
-const CACHE_KEY = "ExamInfoData_"; // 定义缓存key
+const CACHE_KEY = "v2_ExamInfoData_"; // 定义缓存key
 
 export async function getExamInfo(semester, forceRefresh = false) {
 	// 1. 优先从缓存获取

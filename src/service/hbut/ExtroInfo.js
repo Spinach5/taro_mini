@@ -7,7 +7,7 @@ import { extractPracticeInfo } from "../../utils/hbut/extroInfoHelper";
 import { getXhid } from "./GetXhid";
 import runtimeLogger from "../../utils/runtimeLogger";
 
-const CACHE_KEY = "ExtroInfoData_"; // 定义缓存key
+const CACHE_KEY = "v2_ExtroInfoData_"; // 定义缓存key
 
 export async function getExtroInfo(semester, forceRefresh = false) {
 	// 1. 强制刷新时清除缓存

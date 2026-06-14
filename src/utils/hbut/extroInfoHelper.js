@@ -7,9 +7,9 @@ export function extractPracticeInfo(data) {
 	if (!Array.isArray(data)) return [];
 	return data.map((item) => ({
 		jxbzc: item.jxbzc || "",
-		kcmc: item.kcmc || "",
+		kcmc: (item.kcmc || '').replace(/<[^>]*>/g, ''),
 		xkrs: item.xkrs || "",
 		zcstr: item.zcstr || "",
-		zjname: item.zjname || "",
+		zjname: (item.zjname || "").replace(/<[^>]*>/g, ""),
 	}));
 }

@@ -9,3 +9,4 @@ node_modules/
 /docs
 /.playwright-mcp
 /.superpowers
+/cloudfunctions

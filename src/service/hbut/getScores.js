@@ -6,7 +6,7 @@ import runtimeLogger from "../../utils/runtimeLogger";
 import { extractScores } from "../../utils/hbut/scoresHelper"
 import { AutoRetry } from "./autoRetry";
 
-const CACHE_KEY_PREFIX = "AllScores";
+const CACHE_KEY_PREFIX = "v2_AllScores";
 const DEFAULT_PAGE_SIZE = 80;
 
 export async function getScores(semester, forceRefresh = false) {

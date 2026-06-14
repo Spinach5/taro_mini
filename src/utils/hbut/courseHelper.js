@@ -5,23 +5,27 @@
  *   kcmc, tmc, croommc, xqmc, jxbzc, kcxz,
  *   zcstr (数组), xf, zongxs, xingqi, djc (数组)
  */
+function stripHtml(str) {
+  return (str || '').replace(/<[^>]*>/g, '');
+}
+
 export function extractCourseData(courseList) {
   const map = new Map();
 
   for (const item of courseList) {
+    const name = stripHtml(item.kcmc);
     // 生成唯一键：课程名 + 周次串 + 星期几
-    // 如果同一门课同一周次但在不同教室/教师，可考虑加入更多字段区分
-    const key = `${item.kcmc}|${item.zcstr}|${item.xingqi}|${item.djs}`;
+    const key = `${name}|${item.zcstr}|${item.xingqi}|${item.djs}`;
 
     if (!map.has(key)) {
       // 首次遇到：创建清洗后的对象
       map.set(key, {
-        kcmc: item.kcmc,
-        tmc: item.tmc,
-        croommc: item.croommc,       // 教室名称
-        xqmc: item.xqmc,             // 校区
-        jxbzc: item.jxbzc,           // 上课班级
-        kcxz: item.kcxz,             // 课程性质
+        kcmc: name,
+        tmc: stripHtml(item.tmc),
+        croommc: stripHtml(item.croommc),
+        xqmc: item.xqmc,
+        jxbzc: stripHtml(item.jxbzc),
+        kcxz: item.kcxz,
         zcstr: item.zcstr.split(',').map(Number), // 周次转数字数组
         xf: item.xf,
         zongxs: item.zongxs,
