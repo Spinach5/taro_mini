@@ -234,11 +234,11 @@ export default defineConfig(async (merge, { command, mode }) => {
 						},
 					},
 					"/hbut": {
-					target: "https://jwxt.hbut.edu.cn",
-					changeOrigin: true,
-					secure: false,
-					agent: new https.Agent({ family: 4, keepAlive: true }),
-					rewrite: (path) => path.replace(/^\/hbut/, ""),
+						target: "https://jwxt.hbut.edu.cn",
+						changeOrigin: true,
+						secure: false,
+						agent: new https.Agent({ family: 4, keepAlive: true }),
+						rewrite: (path) => path.replace(/^\/hbut/, ""),
 						configure: (proxy, options) => {
 							proxy.on("proxyRes", (proxyRes, req, res) => {
 								console.log("proxyRes触发");
