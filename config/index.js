@@ -1,7 +1,34 @@
 import { defineConfig } from "@tarojs/cli";
 import https from "https";
+import fs from "fs";
 import devConfig from "./dev";
 import prodConfig from "./prod";
+
+// 手动加载 .env 文件（Taro 不自动加载），确保 defineConstants 能取到环境变量
+function loadEnvFile(envPath) {
+  if (!fs.existsSync(envPath)) return;
+  const content = fs.readFileSync(envPath, "utf-8");
+  for (const line of content.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eqIdx = trimmed.indexOf("=");
+    if (eqIdx === -1) continue;
+    const key = trimmed.slice(0, eqIdx).trim();
+    let val = trimmed.slice(eqIdx + 1).trim();
+    // 去除首尾引号（.env 文件常用双引号包裹值）
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1);
+    }
+    if (key && !process.env[key]) {
+      process.env[key] = val;
+    }
+  }
+}
+const configDir = new URL(".", import.meta.url).pathname;
+const projectDir = configDir.replace(/\/config\/$/, "");
+const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
+loadEnvFile(`${projectDir}/${envFile}`);
+loadEnvFile(`${projectDir}/.env`);
 
 export default defineConfig(async (merge, { command, mode }) => {
 	const baseConfig = {
@@ -21,6 +48,12 @@ export default defineConfig(async (merge, { command, mode }) => {
 			"process.env.TARO_WEAPP_CLOUD": JSON.stringify(
 				process.env.TARO_WEAPP_CLOUD || "cloudbase-d0gl91v7x5514ed03",
 			),
+			"process.env.VITE_CLOUDBASE_ENV_ID": JSON.stringify(
+				process.env.VITE_CLOUDBASE_ENV_ID || "cloudbase-d0gl91v7x5514ed03",
+			),
+			"process.env.VITE_CLOUDBASE_ACCESS_KEY": JSON.stringify(
+				process.env.VITE_CLOUDBASE_ACCESS_KEY || "",
+			),
 		},
 		copy: {
 			patterns: [],
@@ -30,6 +63,9 @@ export default defineConfig(async (merge, { command, mode }) => {
 		compiler: {
 			type: "vite",
 			vitePlugins: [{
+				name: "cloudbase-target",
+				config: () => ({ build: { target: "es2020" } }),
+			}, {
 				name: "fix-taro-icons-jsx",
 				config: () => ({
 					optimizeDeps: {
@@ -61,11 +97,11 @@ export default defineConfig(async (merge, { command, mode }) => {
 					config: {
 						namingPattern: "module",
 						generateScopedName: "[name]__[local]___[hash:base64:5]",
-					},
 				},
 			},
 		},
-		h5: {
+	},
+	h5: {
 			publicPath: "/",
 			staticDirectory: "static",
 			esnextModules: ["taro-ui", "taro-icons"],
@@ -198,9 +234,11 @@ export default defineConfig(async (merge, { command, mode }) => {
 						},
 					},
 					"/hbut": {
-						target: "https://jwxt.hbut.edu.cn",
-						changeOrigin: true,
-						rewrite: (path) => path.replace(/^\/hbut/, ""),
+					target: "https://jwxt.hbut.edu.cn",
+					changeOrigin: true,
+					secure: false,
+					agent: new https.Agent({ family: 4, keepAlive: true }),
+					rewrite: (path) => path.replace(/^\/hbut/, ""),
 						configure: (proxy, options) => {
 							proxy.on("proxyRes", (proxyRes, req, res) => {
 								console.log("proxyRes触发");
@@ -285,34 +323,37 @@ export default defineConfig(async (merge, { command, mode }) => {
 						},
 					},
 					"/captcha": {
-						target: "https://captcha.chaoxing.com",
-						changeOrigin: true,
-						agent: new https.Agent({ family: 4 }),
-						rewrite: (path) => path.replace(/^\/captcha/, ""),
-						configure: (proxy, options) => {
-							proxy.on("proxyRes", (proxyRes, req, res) => {
-								console.log("proxyRes触发");
-								if (proxyRes.headers.location) {
-									let location = proxyRes.headers.location;
-									if (location.startsWith("/")) {
-										proxyRes.headers.location =
-											"/captcha" + location;
-									} else if (location.includes("captcha.chaoxing.com")) {
-										const relative = location.replace(
-											/https?:\/\/[^/]+/,
-											"",
-										);
-										proxyRes.headers.location =
-											"/captcha" + relative;
-									}
-									console.log(
-										"修改后的 location:",
-										proxyRes.headers.location,
+					// 超星 captcha API 路径自身包含 /captcha/ 前缀，target 必须带 /captcha
+					// 例：/captcha/get/conf → rewrite 去 /captcha → /get/conf → target 拼接
+					// → https://captcha.chaoxing.com/captcha/get/conf
+					target: "https://captcha.chaoxing.com/captcha",
+					changeOrigin: true,
+					agent: new https.Agent({ family: 4 }),
+					rewrite: (path) => path.replace(/^\/captcha/, ""),
+					configure: (proxy, options) => {
+						proxy.on("proxyRes", (proxyRes, req, res) => {
+							console.log("proxyRes触发");
+							if (proxyRes.headers.location) {
+								let location = proxyRes.headers.location;
+								if (location.startsWith("/")) {
+									proxyRes.headers.location =
+										"/captcha" + location;
+								} else if (location.includes("captcha.chaoxing.com")) {
+									const relative = location.replace(
+										/https?:\/\/[^/]+/,
+										"",
 									);
+									proxyRes.headers.location =
+										"/captcha" + relative;
 								}
-							});
-						},
+								console.log(
+									"修改后的 location:",
+									proxyRes.headers.location,
+								);
+							}
+						});
 					},
+				},
 				},
 			},
 			miniCssExtractPluginOption: {
