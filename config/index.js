@@ -331,6 +331,27 @@ export default defineConfig(async (merge, { command, mode }) => {
 					agent: new https.Agent({ family: 4 }),
 					rewrite: (path) => path.replace(/^\/captcha/, ""),
 					configure: (proxy, options) => {
+						proxy.on("proxyReq", (proxyReq, req, res) => {
+							// 覆盖浏览器默认的 localhost Referer 为教务系统地址
+							proxyReq.setHeader("referer", "https://jwxt.hbut.edu.cn/");
+
+							// 清理 cookie：只保留 captcha 自己的 uid，去掉从
+							// localhost:10086 泄漏过来的 hbut cookie（rememberMe/route 等），
+							// 否则超星验证码服务器会因收到无关 cookie 而返回 result:false
+							const rawCookie = proxyReq.getHeader("cookie");
+							if (rawCookie) {
+								const filtered = String(rawCookie)
+									.split(";")
+									.map(c => c.trim())
+									.filter(c => c.startsWith("uid="))
+									.join("; ");
+								if (filtered) {
+									proxyReq.setHeader("cookie", filtered);
+								} else {
+									proxyReq.removeHeader("cookie");
+								}
+							}
+						});
 						proxy.on("proxyRes", (proxyRes, req, res) => {
 							console.log("proxyRes触发");
 							if (proxyRes.headers.location) {

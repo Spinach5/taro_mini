@@ -10,5 +10,5 @@ export const API_BASE = {
 	bigdata:  isH5 ? "/bigdata" : "https://api.bigdatacloud.net",
 	open_meteo:  isH5 ? "/open_meteo" : "https://api.open-meteo.com/",
     server: isH5 ? "server" : "https://8.148.69.248/",
-	captcha: isH5 ? "/captcha" : "https://captcha.chaoxing.com",
+	captcha: isH5 ? "/captcha" : "https://captcha.chaoxing.com/captcha",
 };
