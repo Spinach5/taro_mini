@@ -221,3 +221,53 @@
   word-break: break-all;
   text-decoration: underline;
 }
+
+/* 最新提交 */
+.latest-commit-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0 0;
+}
+
+.latest-commit-loading-text {
+  font-size: 22px;
+  color: #999;
+}
+
+.latest-commit-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.latest-commit-label {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.latest-commit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.latest-commit-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.latest-commit-field {
+  font-size: 22px;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.latest-commit-value {
+  font-size: 22px;
+  color: #333;
+  word-break: break-all;
+}

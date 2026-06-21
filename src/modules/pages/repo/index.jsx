@@ -4,6 +4,7 @@ import HeadStatus from "../../../components/HeadStatus";
 import SafeAreaView from "../../../components/SafeAreaView";
 import { getContributor } from "../../../service/getContributor";
 import { getRepos } from "../../../service/getRepos";
+import { getLatestCommit } from "../../../service/getLatestCommit";
 import { getHashCode } from "../../../utils/getHashCode";
 import Taro, { usePullDownRefresh } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
@@ -54,6 +55,8 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
   const [repos, setRepos] = useState([]);
   const [reposLoading, setReposLoading] = useState(true);
+  const [latestCommit, setLatestCommit] = useState(null);
+  const [latestCommitLoading, setLatestCommitLoading] = useState(true);
 
   const fetchContributors = useCallback(async (force = false) => {
     setLoading(true);
@@ -84,13 +87,26 @@ export default function Index() {
     }
   }, []);
 
+  const fetchLatestCommit = useCallback(async (force = false) => {
+    setLatestCommitLoading(true);
+    try {
+      const data = await getLatestCommit(force);
+      setLatestCommit(data);
+    } catch (err) {
+      console.warn("获取最新提交失败:", err);
+    } finally {
+      setLatestCommitLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchContributors();
     fetchRepos();
-  }, [fetchContributors, fetchRepos]);
+    fetchLatestCommit();
+  }, [fetchContributors, fetchRepos, fetchLatestCommit]);
 
   usePullDownRefresh(() => {
-    Promise.all([fetchContributors(true), fetchRepos(true)]).finally(() => {
+    Promise.all([fetchContributors(true), fetchRepos(true), fetchLatestCommit(true)]).finally(() => {
       Taro.stopPullDownRefresh();
     });
   });
@@ -122,6 +138,29 @@ export default function Index() {
           </View>
           <Text className="repo-contributors-count">{contributorsCount} 位贡献者</Text>
           <Text className="repo-contributors-count">一共{contributionsCount} 次提交</Text>
+          {latestCommitLoading ? (
+            <View className="latest-commit-loading">
+              <Text className="latest-commit-loading-text">加载最新提交...</Text>
+            </View>
+          ) : latestCommit ? (
+            <View className="latest-commit-section">
+              <Text className="latest-commit-label">最新提交</Text>
+              <View className="latest-commit-info">
+                <View className="latest-commit-row">
+                  <Text className="latest-commit-field">提交人：</Text>
+                  <Text className="latest-commit-value">{latestCommit.author}</Text>
+                </View>
+                <View className="latest-commit-row">
+                  <Text className="latest-commit-field">时间：</Text>
+                  <Text className="latest-commit-value">{latestCommit.date}</Text>
+                </View>
+                <View className="latest-commit-row">
+                  <Text className="latest-commit-field">提交信息：</Text>
+                  <Text className="latest-commit-value">{latestCommit.message}</Text>
+                </View>
+              </View>
+            </View>
+          ) : null}
         </View>
 
         <View className="contributors-section bora">
