@@ -168,8 +168,8 @@ export default function Index() {
       {/* 排序切换栏 */}
       <View className="sort-bar">
         <View className="sort-left">
-          <MaterialCommunityIcons name={sortMode === "time" ? "format-list-text" : "fire-circle"} size={18} color="#333" />
-          <Text className={`sort-label ${sortMode === "time" ? "sort-label-active" : ""}`}>
+          <MaterialCommunityIcons name={sortMode === "time" ? "clock" : "fire"} size={18} color="#333" />
+          <Text className='sort-label'>
             {sortMode === "time" ? "最新书籍" : "最热书籍"}
           </Text>
         </View>

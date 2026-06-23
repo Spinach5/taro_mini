@@ -135,10 +135,13 @@ export default function Index() {
 
         {/* 价格 + 配送方式 */}
         <View className="price-condition-row">
-          <Text className="book-price">
-            <Text className="price-symbol">¥</Text>
-            <Text className="price-number">{book.price}</Text>
-          </Text>
+          <View className="price-left">
+            <Text className="book-price">
+              <Text className="price-symbol">¥</Text>
+              <Text className="price-number">{book.price}</Text>
+            </Text>
+            <Text className="want-count-text">{book.wantCount || 0}人想要</Text>
+          </View>
           <Text className={`delivery-badge ${book.isDelivery === 1 ? "delivery-send" : "delivery-pickup"}`}>
             {book.isDelivery === 1 ? "可送" : "自提"}
           </Text>

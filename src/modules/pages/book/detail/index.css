@@ -67,6 +67,17 @@
   margin: 20rpx 24rpx 0;
 }
 
+.price-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.want-count-text {
+  font-size: 22rpx;
+  color: var(--color-text-secondary, #999);
+  margin-top: 4rpx;
+}
+
 .book-price {
   font-weight: bold;
   color: #e74c3c;

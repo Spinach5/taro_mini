@@ -74,9 +74,6 @@
 .sort-label {
   font-size: 26rpx;
   color: #333;
-}
-
-.sort-label-active {
   color: #000;
   font-weight: bold;
 }
