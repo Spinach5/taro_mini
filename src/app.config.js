@@ -52,6 +52,8 @@ export default defineAppConfig({
     "pages/exam/index",
     "pages/empty_room/index",
     "pages/book/index",
+    "pages/book/detail/index",
+    "pages/book/edit/index",
     "pages/runtimeLog/index",
     "pages/repo/index",
     "pages/settings/index",
