@@ -41,7 +41,8 @@
 
 .publish-time {
   font-size: 24rpx;
-  color: var(--color-text-secondary, #999);
+  color: #333;
+  text-decoration: underline;
 }
 
 /* 书名 */
@@ -188,7 +189,7 @@
   width: 100%;
   padding: 16rpx 24rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
-  background: var(--color-bg-card, #fff);
+  background: transparent;
   border-top: 1px solid #f0f0f0;
   display: flex;
   align-items: center;
