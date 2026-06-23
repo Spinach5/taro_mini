@@ -5,7 +5,30 @@ import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY_BOOKS = "v1_books";
 const CACHE_KEY_CATEGORIES = "v1_book_categories";
+const CACHE_KEY_FAVORITES = "v1_favorite_book_ids";
 const CACHE_TTL = 5 * 60 * 1000; // 5 分钟
+
+/** 收藏相关（纯本地缓存） */
+export function getFavoriteBookIds() {
+  return cacheManager.get(CACHE_KEY_FAVORITES) || [];
+}
+
+export function addFavoriteBookId(bookId) {
+  const ids = getFavoriteBookIds();
+  if (!ids.includes(bookId)) {
+    ids.push(bookId);
+    cacheManager.set(CACHE_KEY_FAVORITES, ids);
+  }
+}
+
+export function removeFavoriteBookId(bookId) {
+  const ids = getFavoriteBookIds().filter((id) => id !== bookId);
+  cacheManager.set(CACHE_KEY_FAVORITES, ids);
+}
+
+export function isFavoriteBook(bookId) {
+  return getFavoriteBookIds().includes(bookId);
+}
 
 /**
  * 将后端字段映射为前端使用的字段名

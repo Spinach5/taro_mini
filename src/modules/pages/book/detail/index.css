@@ -198,39 +198,60 @@
   flex-shrink: 0;
 }
 
-.want-btn {
+/* 收藏按钮 */
+.fav-btn {
   flex: 1;
   height: 80rpx;
   border-radius: 40rpx;
-  border: 2px solid #e74c3c;
+  background: #FFD700;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8rpx;
 }
 
-.want-btn-active {
-  background: #e74c3c;
+.fav-btn-active {
+  background: #FFF5CC;
 }
 
-.want-btn-text {
-  font-size: 30rpx;
-  color: #e74c3c;
+.fav-btn-disabled {
+  opacity: 0.6;
+}
+
+.fav-heart {
+  font-size: 32rpx;
+}
+
+.fav-text {
+  font-size: 28rpx;
+  color: #000;
   font-weight: bold;
 }
 
-.want-btn-active .want-btn-text {
+/* 联系按钮 */
+.contact-btn {
+  width: 160rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background: #ff9800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.contact-btn-text {
+  font-size: 30rpx;
   color: #fff;
+  font-weight: bold;
 }
 
-.want-btn-disabled {
-  opacity: 0.5;
-}
-
+/* 编辑按钮 */
 .edit-btn {
   width: 160rpx;
   height: 80rpx;
   border-radius: 40rpx;
-  background: #47a5fd;
+  background: #1890FF;
   display: flex;
   align-items: center;
   justify-content: center;

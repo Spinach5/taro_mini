@@ -4,7 +4,13 @@ import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../../components/SafeAreaView";
 import HeadStatus from "../../../../components/HeadStatus";
-import { getBookDetail, toggleWantBook } from "../../../../service";
+import {
+  getBookDetail,
+  toggleWantBook,
+  addFavoriteBookId,
+  removeFavoriteBookId,
+  isFavoriteBook,
+} from "../../../../service";
 import { getColorFromName } from "../../../../utils/getHashCode";
 import runtimeLogger from "../../../../utils/runtimeLogger";
 import "./index.css";
@@ -15,7 +21,8 @@ export default function Index() {
 
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [wantLoading, setWantLoading] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
+  const [isFav, setIsFav] = useState(false);
 
   useLoad(() => {
     if (!id) {
@@ -29,6 +36,7 @@ export default function Index() {
         const data = await getBookDetail(id);
         if (data) {
           setBook(data);
+          setIsFav(isFavoriteBook(Number(id)));
         } else {
           Taro.showToast({ title: "书籍不存在", icon: "none" });
           Taro.navigateBack();
@@ -43,18 +51,22 @@ export default function Index() {
     })();
   });
 
-  const handleWant = async () => {
-    if (wantLoading) return;
-    setWantLoading(true);
+  const handleFavorite = async () => {
+    if (favLoading) return;
+    setFavLoading(true);
     try {
-      const res = await toggleWantBook(id);
-      if (res && res.success) {
-        setBook({ ...book, isWanted: res.isWanted });
+      await toggleWantBook(id);
+      if (isFav) {
+        removeFavoriteBookId(Number(id));
+        setIsFav(false);
+      } else {
+        addFavoriteBookId(Number(id));
+        setIsFav(true);
       }
     } catch (error) {
       Taro.showToast({ title: "操作失败", icon: "none" });
     } finally {
-      setWantLoading(false);
+      setFavLoading(false);
     }
   };
 
@@ -169,14 +181,13 @@ export default function Index() {
       {/* 底部固定栏 */}
       <View className="bottom-bar">
         <View
-          className={`want-btn ${book.isWanted ? "want-btn-active" : ""} ${wantLoading ? "want-btn-disabled" : ""}`}
-          onClick={handleWant}
+          className={`fav-btn ${isFav ? "fav-btn-active" : ""} ${favLoading ? "fav-btn-disabled" : ""}`}
+          onClick={handleFavorite}
         >
-          <Text className="want-btn-text">
-            {wantLoading ? "..." : book.isWanted ? "已想要" : "想要"}
-          </Text>
+          <Text className="fav-heart">{isFav ? "❤️" : "♡"}</Text>
+          <Text className="fav-text">{isFav ? "已收藏" : "收藏"}</Text>
         </View>
-        {book.isPublisher && (
+        {book.isPublisher ? (
           <View
             className="edit-btn"
             onClick={() =>
@@ -186,6 +197,20 @@ export default function Index() {
             }
           >
             <Text className="edit-btn-text">编辑</Text>
+          </View>
+        ) : (
+          <View
+            className="contact-btn"
+            onClick={() => {
+              if (book.contact) {
+                Taro.setClipboardData({ data: book.contact });
+                Taro.showToast({ title: "联系方式已复制", icon: "success" });
+              } else {
+                Taro.showToast({ title: "暂无联系方式", icon: "none" });
+              }
+            }}
+          >
+            <Text className="contact-btn-text">联系</Text>
           </View>
         )}
       </View>

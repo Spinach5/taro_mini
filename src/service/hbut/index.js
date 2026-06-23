@@ -16,6 +16,7 @@ export {
   getBookList, getBookCategories, getBookDetail,
   createBook, updateBook, toggleWantBook,
   uploadBookImage, deleteBookImage,
+  getFavoriteBookIds, addFavoriteBookId, removeFavoriteBookId, isFavoriteBook,
 } from './book';
 export { getExamBatch }      from './getExamBatch';
 export { getTeachBuilding }  from './getTeachBuilding';

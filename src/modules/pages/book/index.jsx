@@ -4,10 +4,23 @@ import { useState, useCallback, useRef } from "react";
 import { AtIcon } from "taro-ui";
 import SafeAreaView from "../../../components/SafeAreaView";
 import HeadStatus from "../../../components/HeadStatus";
-import { getBookList, getBookCategories } from "../../../service";
+import { getBookList, getBookCategories, getFavoriteBookIds } from "../../../service";
 import { getColorFromName } from "../../../utils/getHashCode";
+import userManager from "../../../service/userInfo";
 import runtimeLogger from "../../../utils/runtimeLogger";
 import "./index.css";
+
+/** 排序：自己的书 > 已收藏 > 其他 */
+function sortBooks(list, currentUserId, favIds) {
+  return [...list].sort((a, b) => {
+    const aOwn = a.user_id === currentUserId ? 0 : 1;
+    const bOwn = b.user_id === currentUserId ? 0 : 1;
+    if (aOwn !== bOwn) return aOwn - bOwn;
+    const aFav = favIds.includes(a.id) ? 0 : 1;
+    const bFav = favIds.includes(b.id) ? 0 : 1;
+    return aFav - bFav;
+  });
+}
 
 export default function Index() {
   const [books, setBooks] = useState([]);
@@ -19,7 +32,9 @@ export default function Index() {
   const [loading, setLoading] = useState("loading"); // 'loading'|'error'|'done'|'empty'
   const [refreshing, setRefreshing] = useState(false);
   const [sortMode, setSortMode] = useState("time"); // 'time' | 'hot'
+  const [favIds, setFavIds] = useState([]);
   const debounceRef = useRef(null);
+  const currentUserId = Number(userManager.stuId) || 0;
 
   const fetchList = useCallback(
     async (p = 1, kw = keyword, cat = activeCategory, srt = sortMode, append = false) => {
@@ -27,10 +42,13 @@ export default function Index() {
         const data = await getBookList(
           { page: p, pageSize: 20, keyword: kw, category: cat, sort: srt },
         );
+        const favs = getFavoriteBookIds();
+        setFavIds(favs);
+        const sorted = sortBooks(data.books || [], currentUserId, favs);
         if (append && p > 1) {
-          setBooks((prev) => [...prev, ...(data.books || [])]);
+          setBooks((prev) => sortBooks([...prev, ...(data.books || [])], currentUserId, favs));
         } else {
-          setBooks(data.books || []);
+          setBooks(sorted);
         }
         setTotal(data.total || 0);
         setPage(p);
@@ -244,6 +262,11 @@ export default function Index() {
                     <Text className={`delivery-tag ${book.isDelivery === 1 ? "delivery-send" : "delivery-pickup"}`}>
                       {book.isDelivery === 1 ? "可送" : "自提"}
                     </Text>
+                    {book.user_id === currentUserId ? (
+                      <Text className="owner-tag">自己</Text>
+                    ) : favIds.includes(book.id) ? (
+                      <Text className="fav-tag">已收藏</Text>
+                    ) : null}
                   </View>
                 </View>
               </View>

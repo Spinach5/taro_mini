@@ -221,9 +221,12 @@
   white-space: nowrap;
 }
 
-/* 自提/可送标签 */
+/* 自提/可送 + 自己/已收藏 标签行 */
 .card-delivery-row {
   margin-top: 4rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .delivery-tag {
@@ -241,6 +244,22 @@
 .delivery-send {
   background: #e8f5e9;
   color: #27ae60;
+}
+
+.owner-tag {
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.fav-tag {
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+  background: #fce4ec;
+  color: #c62828;
 }
 
 /* Skeleton */

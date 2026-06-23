@@ -26,6 +26,10 @@ export const updateBook        = api('updateBook');
 export const toggleWantBook    = api('toggleWantBook');
 export const uploadBookImage   = api('uploadBookImage');
 export const deleteBookImage   = api('deleteBookImage');
+export const getFavoriteBookIds    = api('getFavoriteBookIds');
+export const addFavoriteBookId     = api('addFavoriteBookId');
+export const removeFavoriteBookId  = api('removeFavoriteBookId');
+export const isFavoriteBook        = api('isFavoriteBook');
 export const getBanner       = api('getBanner');
 
 // auth 直接转发
