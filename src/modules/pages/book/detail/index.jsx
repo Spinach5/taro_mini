@@ -190,18 +190,18 @@ export default function Index() {
           </ScrollView>
         </View>
 
-        {/* 书籍图片 — 横向滑动 */}
+        {/* 书籍图片 */}
         {images.length > 0 ? (
-          <ScrollView scrollX className="detail-images" enhanced bounces={false}>
+          <View className="detail-images">
             {images.map((img, idx) => (
               <Image
                 key={idx}
                 className="detail-image"
                 src={img.url}
-                mode="heightFix"
+                mode="widthFix"
               />
             ))}
-          </ScrollView>
+          </View>
         ) : (
           <View className="detail-images-empty">
             <Text className="images-empty-text">暂无图片</Text>
