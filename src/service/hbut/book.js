@@ -59,13 +59,10 @@ function normalizeBook(b) {
  * @returns {Promise<{ books: Array, total: number }>}
  */
 export async function getBookList(
-  { page = 1, pageSize = 20, keyword = "", category = "" } = {},
+  { page = 1, pageSize = 20 } = {},
   forceRefresh = false,
 ) {
-  const hasFilter = !!(keyword || (category && category !== "全部"));
-
-  // 有筛选条件时跳过缓存
-  if (!forceRefresh && !hasFilter) {
+  if (!forceRefresh) {
     const cached = cacheManager.get(CACHE_KEY_BOOKS);
     if (cached && Array.isArray(cached.books)) {
       return cached;
@@ -74,9 +71,6 @@ export async function getBookList(
 
   try {
     const params = { page, pageSize };
-    if (keyword) params.keyword = keyword;
-    if (category && category !== "全部") params.category = category;
-
     const res = await serverGet("/api/v1/books", params);
     const rawBooks = (res && res.data) || [];
     const books = rawBooks.map(normalizeBook);
@@ -85,8 +79,8 @@ export async function getBookList(
       total: (res && res.total) || 0,
     };
 
-    // 只在无筛选条件时缓存首页
-    if (!hasFilter && page === 1) {
+    // 缓存首页
+    if (page === 1) {
       cacheManager.set(CACHE_KEY_BOOKS, data, CACHE_TTL);
     }
 

@@ -1,6 +1,6 @@
 import { View, Text, Image, Input, ScrollView } from "@tarojs/components";
 import Taro, { useLoad, useDidShow } from "@tarojs/taro";
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { AtIcon } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
 import SafeAreaView from "../../../components/SafeAreaView";
@@ -11,7 +11,7 @@ import userManager from "../../../service/userInfo";
 import runtimeLogger from "../../../utils/runtimeLogger";
 import "./index.css";
 
-/** 排序：自己的书 > 已收藏 > 其他，组内按时按热度 */
+/** 排序：自己的书 > 已收藏 > 其他，组内按时/按热度 */
 function sortBooks(list, currentUserId, favIds, sort) {
   return [...list].sort((a, b) => {
     const aOwn = a.user_id === currentUserId ? 0 : 1;
@@ -20,43 +20,50 @@ function sortBooks(list, currentUserId, favIds, sort) {
     const aFav = favIds.includes(a.id) ? 0 : 1;
     const bFav = favIds.includes(b.id) ? 0 : 1;
     if (aFav !== bFav) return aFav - bFav;
-    // 组内排序
     if (sort === "hot") {
       return (b.wantCount || 0) - (a.wantCount || 0);
     }
-    // 默认按时间（新到旧）
     return (b.publishTime || "").localeCompare(a.publishTime || "");
   });
 }
 
+/** 本地关键字过滤 */
+function filterBooks(list, kw) {
+  if (!kw) return list;
+  const lower = kw.toLowerCase();
+  return list.filter((b) =>
+    (b.name || "").toLowerCase().includes(lower) ||
+    (b.isbn || "").toLowerCase().includes(lower)
+  );
+}
+
 export default function Index() {
-  const [books, setBooks] = useState([]);
+  const [allBooks, setAllBooks] = useState([]);       // 服务端拉取的全部数据
   const [total, setTotal] = useState(0);
   const [categories, setCategories] = useState(["全部"]);
   const [activeCategory, setActiveCategory] = useState("全部");
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState("loading"); // 'loading'|'error'|'done'|'empty'
+  const [loading, setLoading] = useState("loading");
   const [refreshing, setRefreshing] = useState(false);
-  const [sortMode, setSortMode] = useState("time"); // 'time' | 'hot'
+  const [sortMode, setSortMode] = useState("time");
   const [favIds, setFavIds] = useState([]);
   const debounceRef = useRef(null);
   const currentUserId = userManager.getServerUserId();
 
   const fetchList = useCallback(
-    async (p = 1, kw = keyword, cat = activeCategory, srt = sortMode, append = false, forceRefresh = false) => {
+    async (p = 1, forceRefresh = false) => {
       try {
         const data = await getBookList(
-          { page: p, pageSize: 20, keyword: kw, category: cat },
+          { page: p, pageSize: 200 },
           forceRefresh,
         );
         const favs = getFavoriteBookIds();
         setFavIds(favs);
-        const sorted = sortBooks(data.books || [], currentUserId, favs, srt);
-        if (append && p > 1) {
-          setBooks((prev) => sortBooks([...prev, ...(data.books || [])], currentUserId, favs, srt));
+        if (p === 1) {
+          setAllBooks(data.books || []);
         } else {
-          setBooks(sorted);
+          setAllBooks((prev) => [...prev, ...(data.books || [])]);
         }
         setTotal(data.total || 0);
         setPage(p);
@@ -65,21 +72,26 @@ export default function Index() {
       } catch (error) {
         runtimeLogger.error("BookList", "加载书籍列表失败", error);
         Taro.showToast({ title: "加载失败", icon: "none" });
-        if (!append) {
-          // 保留已有数据不覆盖
-          setLoading(books.length === 0 ? "error" : "done");
-        }
+        if (allBooks.length === 0) setLoading("error");
       }
     },
-    [keyword, activeCategory, sortMode, books.length],
+    [allBooks.length],
   );
+
+  // 本地筛选 + 排序
+  const books = useMemo(() => {
+    let list = filterBooks(allBooks, keyword);
+    if (activeCategory !== "全部") {
+      list = list.filter((b) => b.category === activeCategory);
+    }
+    return sortBooks(list, currentUserId, favIds, sortMode);
+  }, [allBooks, keyword, activeCategory, sortMode, favIds, currentUserId]);
 
   const fetchCategories = useCallback(async () => {
     try {
       const cats = await getBookCategories();
       setCategories(cats || ["全部"]);
     } catch {
-      // 分类加载失败使用默认值，不阻塞列表
     }
   }, []);
 
@@ -89,37 +101,30 @@ export default function Index() {
   });
 
   useDidShow(() => {
-    fetchList(1);
+    const favs = getFavoriteBookIds();
+    setFavIds(favs);
   });
 
   const handleSearch = (value) => {
     setKeyword(value);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      fetchList(1, value, activeCategory, sortMode);
-    }, 300);
   };
 
   const handleCategoryChange = (cat) => {
     setActiveCategory(cat);
-    setLoading("loading");
-    fetchList(1, keyword, cat, sortMode);
   };
 
   const handleSortChange = (mode) => {
     setSortMode(mode);
-    setLoading("loading");
-    fetchList(1, keyword, activeCategory, mode);
   };
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchList(1, keyword, activeCategory, sortMode, false, true).finally(() => setRefreshing(false));
+    fetchList(1, true).finally(() => setRefreshing(false));
   };
 
   const handleLoadMore = () => {
-    if (books.length >= total) return;
-    fetchList(page + 1, keyword, activeCategory, sortMode, true);
+    if (allBooks.length >= total) return;
+    fetchList(page + 1);
   };
 
   const handleRetry = () => {
@@ -183,7 +188,7 @@ export default function Index() {
       </View>
 
       {/* 列表 */}
-      {loading === "loading" && books.length === 0 ? (
+      {loading === "loading" && allBooks.length === 0 ? (
         <View className="book-grid">
           {[1, 2, 3, 4].map((i) => (
             <View key={i} className="book-card skeleton-card">
@@ -196,11 +201,15 @@ export default function Index() {
             </View>
           ))}
         </View>
-      ) : loading === "error" && books.length === 0 ? (
+      ) : loading === "error" && allBooks.length === 0 ? (
         <View className="empty-view" onClick={handleRetry}>
           <Text className="empty-text">加载失败，点击重试</Text>
         </View>
-      ) : loading === "empty" ? (
+      ) : books.length === 0 && allBooks.length > 0 ? (
+        <View className="empty-view">
+          <Text className="empty-text">暂无匹配的书籍</Text>
+        </View>
+      ) : books.length === 0 ? (
         <View className="empty-view">
           <Text className="empty-text">暂无书籍</Text>
         </View>
@@ -280,7 +289,7 @@ export default function Index() {
               </View>
             ))}
           </View>
-          {books.length >= total && books.length > 0 && (
+          {allBooks.length >= total && allBooks.length > 0 && (
             <View className="list-footer">
               <Text className="footer-text">— 已加载全部 —</Text>
             </View>
