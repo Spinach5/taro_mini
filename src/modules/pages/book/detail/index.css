@@ -162,15 +162,18 @@
   flex-shrink: 0;
 }
 
-/* 书籍图片 — 统一宽度，贴合无间隙 */
+/* 书籍图片 — 统一宽度，上下有小间距 */
 .detail-images {
-  margin: 24rpx 0 0;
-  width: 100%;
+  margin: 24rpx 24rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
 }
 
 .detail-image {
   width: 100%;
   display: block;
+  border-radius: 8rpx;
 }
 
 .detail-images-empty {
