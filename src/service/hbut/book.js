@@ -59,10 +59,10 @@ function normalizeBook(b) {
  * @returns {Promise<{ books: Array, total: number }>}
  */
 export async function getBookList(
-  { page = 1, pageSize = 20, keyword = "", category = "", sort = "time" } = {},
+  { page = 1, pageSize = 20, keyword = "", category = "" } = {},
   forceRefresh = false,
 ) {
-  const hasFilter = !!(keyword || (category && category !== "全部") || sort !== "time");
+  const hasFilter = !!(keyword || (category && category !== "全部"));
 
   // 有筛选条件时跳过缓存
   if (!forceRefresh && !hasFilter) {
@@ -73,7 +73,7 @@ export async function getBookList(
   }
 
   try {
-    const params = { page, pageSize, sort };
+    const params = { page, pageSize };
     if (keyword) params.keyword = keyword;
     if (category && category !== "全部") params.category = category;
 

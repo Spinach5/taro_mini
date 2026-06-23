@@ -11,15 +11,21 @@ import userManager from "../../../service/userInfo";
 import runtimeLogger from "../../../utils/runtimeLogger";
 import "./index.css";
 
-/** 排序：自己的书 > 已收藏 > 其他 */
-function sortBooks(list, currentUserId, favIds) {
+/** 排序：自己的书 > 已收藏 > 其他，组内按时按热度 */
+function sortBooks(list, currentUserId, favIds, sort) {
   return [...list].sort((a, b) => {
     const aOwn = a.user_id === currentUserId ? 0 : 1;
     const bOwn = b.user_id === currentUserId ? 0 : 1;
     if (aOwn !== bOwn) return aOwn - bOwn;
     const aFav = favIds.includes(a.id) ? 0 : 1;
     const bFav = favIds.includes(b.id) ? 0 : 1;
-    return aFav - bFav;
+    if (aFav !== bFav) return aFav - bFav;
+    // 组内排序
+    if (sort === "hot") {
+      return (b.wantCount || 0) - (a.wantCount || 0);
+    }
+    // 默认按时间（新到旧）
+    return (b.publishTime || "").localeCompare(a.publishTime || "");
   });
 }
 
@@ -41,13 +47,13 @@ export default function Index() {
     async (p = 1, kw = keyword, cat = activeCategory, srt = sortMode, append = false) => {
       try {
         const data = await getBookList(
-          { page: p, pageSize: 20, keyword: kw, category: cat, sort: srt },
+          { page: p, pageSize: 20, keyword: kw, category: cat },
         );
         const favs = getFavoriteBookIds();
         setFavIds(favs);
-        const sorted = sortBooks(data.books || [], currentUserId, favs);
+        const sorted = sortBooks(data.books || [], currentUserId, favs, srt);
         if (append && p > 1) {
-          setBooks((prev) => sortBooks([...prev, ...(data.books || [])], currentUserId, favs));
+          setBooks((prev) => sortBooks([...prev, ...(data.books || [])], currentUserId, favs, srt));
         } else {
           setBooks(sorted);
         }
