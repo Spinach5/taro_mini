@@ -143,6 +143,7 @@ export default function Index() {
       {/* 排序切换栏 */}
       <View className="sort-bar">
         <View className="sort-left">
+          <AtIcon value={sortMode === "time" ? "clock" : "heart"} size={16} color={sortMode === "time" ? "#47a5fd" : "#e74c3c"} />
           <Text className={`sort-label ${sortMode === "time" ? "sort-label-active" : ""}`}>
             {sortMode === "time" ? "最新书籍" : "最热书籍"}
           </Text>
@@ -219,10 +220,13 @@ export default function Index() {
                   )}
                 </View>
                 <View className="card-body">
-                  <Text className="card-category">{book.category || "未分类"}</Text>
                   <Text className="card-name">{book.name}</Text>
+                  <Text className="card-category">{book.category || "未分类"}</Text>
                   <View className="card-price-row">
-                    <Text className="card-price">¥{book.price}</Text>
+                    <Text className="card-price">
+                      <Text className="price-symbol">¥</Text>
+                      <Text className="price-number">{book.price}</Text>
+                    </Text>
                     <Text className="card-want">{book.wantCount || 0}人想要</Text>
                   </View>
                   <View className="card-publisher-row">

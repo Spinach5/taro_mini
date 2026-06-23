@@ -66,6 +66,9 @@
 
 .sort-left {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
 }
 
 .sort-label {
@@ -146,18 +149,18 @@
   gap: 6rpx;
 }
 
-.card-category {
-  font-size: 22rpx;
-  color: var(--color-text, #333);
+.card-name {
+  font-size: 28rpx;
+  color: var(--color-text, #2c3e50);
   font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.card-name {
-  font-size: 28rpx;
-  color: var(--color-text, #2c3e50);
+.card-category {
+  font-size: 22rpx;
+  color: var(--color-text-secondary, #888);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -165,14 +168,21 @@
 
 .card-price-row {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
 }
 
 .card-price {
-  font-size: 28rpx;
   color: #e74c3c;
   font-weight: bold;
+}
+
+.price-symbol {
+  font-size: 22rpx;
+}
+
+.price-number {
+  font-size: 30rpx;
 }
 
 .card-want {
