@@ -1,5 +1,5 @@
 import { View, Text, Image, Input, ScrollView } from "@tarojs/components";
-import Taro, { useLoad, useDidShow } from "@tarojs/taro";
+import Taro, { useLoad, useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import { useState, useCallback, useMemo, useRef } from "react";
 import { AtIcon } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
@@ -112,6 +112,15 @@ export default function Index() {
     }
   });
 
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchList(1, true).finally(() => setRefreshing(false));
+  };
+
+  usePullDownRefresh(() => {
+    fetchList(1, true).finally(() => Taro.stopPullDownRefresh());
+  });
+
   const handleSearch = (value) => {
     setKeyword(value);
   };
@@ -122,11 +131,6 @@ export default function Index() {
 
   const handleSortChange = (mode) => {
     setSortMode(mode);
-  };
-
-  const handleRefresh = () => {
-    setRefreshing(true);
-    fetchList(1, true).finally(() => setRefreshing(false));
   };
 
   const handleLoadMore = () => {
