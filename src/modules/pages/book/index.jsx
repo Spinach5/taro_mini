@@ -8,6 +8,7 @@ import HeadStatus from "../../../components/HeadStatus";
 import { getBookList, getBookCategories, getFavoriteBookIds } from "../../../service";
 import { getColorFromName } from "../../../utils/getHashCode";
 import userManager from "../../../service/userInfo";
+import cacheManager from "../../../utils/cache";
 import runtimeLogger from "../../../utils/runtimeLogger";
 import "./index.css";
 
@@ -101,8 +102,14 @@ export default function Index() {
   });
 
   useDidShow(() => {
+    // 从缓存同步收藏状态
     const favs = getFavoriteBookIds();
     setFavIds(favs);
+    // 从缓存同步书籍数据（详情页可能已更新 wantCount）
+    const cached = cacheManager.get("v1_books");
+    if (cached && Array.isArray(cached.books)) {
+      setAllBooks(cached.books);
+    }
   });
 
   const handleSearch = (value) => {
