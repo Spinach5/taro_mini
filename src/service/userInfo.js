@@ -103,6 +103,19 @@ class UserManager {
 		this._syncCache = this.getValues();
 	}
 
+	// 从 JWT 中解析服务器用户 ID
+	getServerUserId() {
+		try {
+			const token = this.serverToken;
+			if (!token) return 0;
+			const payload = token.split(".")[1];
+			const decoded = JSON.parse(atob(payload));
+			return decoded.userId || decoded.user_id || decoded.id || 0;
+		} catch {
+			return 0;
+		}
+	}
+
 	// 获取/设置加密后的密码（缓存复用，避免重复加密）
 	getEncryptedPassword() {
 		return this.encryptedPassword;

@@ -12,6 +12,7 @@ import {
   isFavoriteBook,
 } from "../../../../service";
 import { getColorFromName } from "../../../../utils/getHashCode";
+import userManager from "../../../../service/userInfo";
 import runtimeLogger from "../../../../utils/runtimeLogger";
 import "./index.css";
 
@@ -187,7 +188,7 @@ export default function Index() {
           <Text className="fav-heart">{isFav ? "❤️" : "♡"}</Text>
           <Text className="fav-text">{isFav ? "已收藏" : "收藏"}</Text>
         </View>
-        {book.isPublisher ? (
+        {(book.isPublisher || book.user_id === userManager.getServerUserId()) ? (
           <View
             className="edit-btn"
             onClick={() =>

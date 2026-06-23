@@ -34,7 +34,7 @@ export default function Index() {
   const [sortMode, setSortMode] = useState("time"); // 'time' | 'hot'
   const [favIds, setFavIds] = useState([]);
   const debounceRef = useRef(null);
-  const currentUserId = Number(userManager.stuId) || 0;
+  const currentUserId = userManager.getServerUserId();
 
   const fetchList = useCallback(
     async (p = 1, kw = keyword, cat = activeCategory, srt = sortMode, append = false) => {

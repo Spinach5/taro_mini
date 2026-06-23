@@ -43,6 +43,7 @@ function normalizeBook(b) {
     images: b.images || (b.image_url ? [{ url: b.image_url }] : []),
     wantCount: b.wantCount || b.want_count || 0,
     isDelivery: b.isDelivery !== undefined ? b.isDelivery : (b.is_delivery !== undefined ? b.is_delivery : 0),
+    isPublisher: b.isPublisher !== undefined ? b.isPublisher : false,
   };
 }
 
