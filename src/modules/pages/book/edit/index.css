@@ -5,6 +5,10 @@
   justify-content: center;
 }
 
+.back-btn {
+  padding: 8rpx;
+}
+
 .form-scroll {
   flex: 1;
   padding: 20rpx 0;

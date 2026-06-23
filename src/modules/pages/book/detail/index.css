@@ -1,3 +1,7 @@
+.back-btn {
+  padding: 8rpx;
+}
+
 .detail-scroll {
   flex: 1;
   padding: 24rpx 0;

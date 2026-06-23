@@ -80,7 +80,7 @@ export default function Index() {
     return (
       <SafeAreaView>
         <View className="uniform-page-header">
-          <AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.navigateBack()} />
+          <View className="back-btn" onClick={() => Taro.navigateBack()}><AtIcon value="arrow-left" color="#ffffff" size={20} /></View>
           <HeadStatus text="书籍详情" />
         </View>
         <View className="loading-view">
@@ -95,7 +95,7 @@ export default function Index() {
   return (
     <SafeAreaView>
       <View className="uniform-page-header">
-        <AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.navigateBack()} />
+        <View className="back-btn" onClick={() => Taro.navigateBack()}><AtIcon value="arrow-left" color="#ffffff" size={20} /></View>
         <HeadStatus text="书籍详情" />
       </View>
 
