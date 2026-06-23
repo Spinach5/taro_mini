@@ -34,8 +34,10 @@ export async function getBookList(
     if (category && category !== "全部") params.category = category;
 
     const res = await serverGet("/api/v1/books", params);
+    const rawBooks = (res && res.data) || [];
+    const books = rawBooks.map((b) => ({ ...b, id: b.id || b._id }));
     const data = {
-      books: (res && res.data) || [],
+      books,
       total: (res && res.total) || 0,
     };
 
@@ -82,7 +84,10 @@ export async function getBookCategories(forceRefresh = false) {
 export async function getBookDetail(id) {
   try {
     const res = await serverGet(`/api/v1/books/${id}`);
-    if (res && res.data) return res.data;
+    if (res && res.data) {
+      const book = res.data;
+      return { ...book, id: book.id || book._id || id };
+    }
     throw new Error("书籍不存在");
   } catch (error) {
     runtimeLogger.error("Books", "获取书籍详情失败", error);
