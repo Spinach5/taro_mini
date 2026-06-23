@@ -8,7 +8,6 @@ import { getBookDetail, toggleWantBook } from "../../../../service";
 import runtimeLogger from "../../../../utils/runtimeLogger";
 import "./index.css";
 
-const CONDITION_MAP = ["全新", "几乎全新", "有笔记", "较旧"];
 const CONDITION_COLORS = {
   全新: "#27ae60",
   几乎全新: "#3498db",
@@ -78,24 +77,6 @@ export default function Index() {
         </View>
         <View className="loading-view">
           <AtActivityIndicator isOpened size={32} mode="center" />
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  if (!book) {
-    return (
-      <SafeAreaView>
-        <View className="uniform-page-header">
-          <AtIcon
-            value="arrow-left"
-            color="#ffffff"
-            onClick={() => Taro.navigateBack()}
-          />
-          <HeadStatus text="书籍详情" />
-        </View>
-        <View className="empty-view">
-          <Text>书籍数据为空</Text>
         </View>
       </SafeAreaView>
     );
@@ -194,7 +175,7 @@ export default function Index() {
       {/* 底部固定栏 */}
       <View className="bottom-bar">
         <View
-          className={`want-btn ${book.isWanted ? "want-btn-active" : ""}`}
+          className={`want-btn ${book.isWanted ? "want-btn-active" : ""} ${wantLoading ? "want-btn-disabled" : ""}`}
           onClick={handleWant}
         >
           <Text className="want-btn-text">

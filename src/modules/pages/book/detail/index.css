@@ -142,6 +142,10 @@
   background: #e74c3c;
 }
 
+.want-btn-disabled {
+  opacity: 0.5;
+}
+
 .want-btn-text {
   font-size: 30rpx;
   color: #e74c3c;

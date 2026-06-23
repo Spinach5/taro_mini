@@ -104,16 +104,16 @@ export default function Index() {
     try {
       await deleteBookImage(isEdit ? editId : null, img.imageId);
       setImages((prev) => prev.filter((_, i) => i !== index));
-    } catch {
+    } catch (error) {
+      runtimeLogger.error("BookEdit", "删除图片失败", error);
       Taro.showToast({ title: "删除失败", icon: "none" });
     }
   };
 
-  const canSubmit =
-    name.trim() && isbn.trim() && category && price.trim();
+  const canSubmit = name.trim() && isbn.trim() && category && price.trim() && !uploading;
 
   const handleSubmit = async () => {
-    if (!canSubmit || submitting) return;
+    if (!canSubmit || submitting || uploading) return;
 
     const data = {
       name: name.trim(),
@@ -308,7 +308,7 @@ export default function Index() {
           <Text className="form-label">图片（最多3张）</Text>
           <View className="image-grid">
             {images.map((img, idx) => (
-              <View key={idx} className="image-item">
+              <View key={img.imageId || idx} className="image-item">
                 <Image
                   className="image-thumb"
                   src={img.url}
