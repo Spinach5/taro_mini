@@ -155,7 +155,14 @@ export default function Index() {
     return (
       <SafeAreaView>
         <View className="uniform-page-header">
-          <View className="back-btn" onClick={() => Taro.navigateBack()}>
+          <View className="back-btn" onClick={() => {
+  const pages = Taro.getCurrentPages();
+  if (pages.length > 1) {
+    Taro.navigateBack();
+  } else {
+    Taro.redirectTo({ url: "/modules/pages/book/index" });
+  }
+}}>
             <AtIcon value="arrow-left" color="#ffffff" size={20} />
           </View>
           <HeadStatus text={isEdit ? "编辑书籍" : "发布书籍"} />
@@ -170,7 +177,14 @@ export default function Index() {
   return (
     <SafeAreaView>
       <View className="uniform-page-header">
-        <View className="back-btn" onClick={() => Taro.navigateBack()}>
+        <View className="back-btn" onClick={() => {
+  const pages = Taro.getCurrentPages();
+  if (pages.length > 1) {
+    Taro.navigateBack();
+  } else {
+    Taro.redirectTo({ url: "/modules/pages/book/index" });
+  }
+}}>
           <AtIcon value="arrow-left" color="#ffffff" size={20} />
         </View>
         <HeadStatus text={isEdit ? "编辑书籍" : "发布书籍"} />

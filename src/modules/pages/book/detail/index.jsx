@@ -80,7 +80,14 @@ export default function Index() {
     return (
       <SafeAreaView>
         <View className="uniform-page-header">
-          <View className="back-btn" onClick={() => Taro.navigateBack()}><AtIcon value="arrow-left" color="#ffffff" size={20} /></View>
+          <View className="back-btn" onClick={() => {
+  const pages = Taro.getCurrentPages();
+  if (pages.length > 1) {
+    Taro.navigateBack();
+  } else {
+    Taro.redirectTo({ url: "/modules/pages/book/index" });
+  }
+}}><AtIcon value="arrow-left" color="#ffffff" size={20} /></View>
           <HeadStatus text="书籍详情" />
         </View>
         <View className="loading-view">
@@ -95,7 +102,14 @@ export default function Index() {
   return (
     <SafeAreaView>
       <View className="uniform-page-header">
-        <View className="back-btn" onClick={() => Taro.navigateBack()}><AtIcon value="arrow-left" color="#ffffff" size={20} /></View>
+        <View className="back-btn" onClick={() => {
+  const pages = Taro.getCurrentPages();
+  if (pages.length > 1) {
+    Taro.navigateBack();
+  } else {
+    Taro.redirectTo({ url: "/modules/pages/book/index" });
+  }
+}}><AtIcon value="arrow-left" color="#ffffff" size={20} /></View>
         <HeadStatus text="书籍详情" />
       </View>
 
