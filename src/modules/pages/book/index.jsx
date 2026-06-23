@@ -2,6 +2,7 @@ import { View, Text, Image, Input, ScrollView } from "@tarojs/components";
 import Taro, { useLoad, useDidShow } from "@tarojs/taro";
 import { useState, useCallback, useRef } from "react";
 import { AtIcon } from "taro-ui";
+import { MaterialCommunityIcons } from "taro-icons";
 import SafeAreaView from "../../../components/SafeAreaView";
 import HeadStatus from "../../../components/HeadStatus";
 import { getBookList, getBookCategories, getFavoriteBookIds } from "../../../service";
@@ -161,13 +162,13 @@ export default function Index() {
       {/* 排序切换栏 */}
       <View className="sort-bar">
         <View className="sort-left">
-          <AtIcon value={sortMode === "time" ? "format-list-text" : "fire-circle"} size={16} color="#333" />
+          <MaterialCommunityIcons name={sortMode === "time" ? "format-list-text" : "fire-circle"} size={18} color="#333" />
           <Text className={`sort-label ${sortMode === "time" ? "sort-label-active" : ""}`}>
             {sortMode === "time" ? "最新书籍" : "最热书籍"}
           </Text>
         </View>
         <View className="sort-right" onClick={() => handleSortChange(sortMode === "time" ? "hot" : "time")}>
-          <AtIcon value="swap" size={14} color="#333" />
+          <MaterialCommunityIcons name="swap-vertical" size={16} color="#333" />
           <Text className="sort-toggle-text">
             {sortMode === "time" ? "按时间排序" : "按热度排序"}
           </Text>
