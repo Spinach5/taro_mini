@@ -74,4 +74,49 @@ export function serverPost(url, data) {
 	return request("POST", url, data);
 }
 
-export default { serverGet, serverPost };
+/**
+ * 上传文件（H5 环境）
+ * @param {string} url  如 "/api/v1/books/upload"
+ * @param {string} filePath  本地临时文件路径
+ * @param {object} params  额外 formData 字段
+ * @returns {Promise<object>} 解析后的响应 JSON
+ */
+export async function serverUpload(url, filePath, params = {}) {
+	const token = userManager.getServerToken();
+	const header = {};
+	if (token) {
+		header["Authorization"] = `Bearer ${token}`;
+	}
+
+	try {
+		const res = await Taro.uploadFile({
+			url: `${BASE_URL}${url}`,
+			filePath,
+			name: "file",
+			formData: params,
+			header,
+		});
+
+		const body = JSON.parse(res.data);
+
+		if (res.statusCode >= 400) {
+			if (res.statusCode === 401 || res.statusCode === 403) {
+				userManager.setServerToken("");
+			}
+			throw new Error(
+				(body && body.message) || `上传失败 (${res.statusCode})`,
+			);
+		}
+
+		return body;
+	} catch (error) {
+		runtimeLogger.error(
+			"ServerRequest",
+			`UPLOAD ${url} 失败`,
+			error?.message || error,
+		);
+		throw error;
+	}
+}
+
+export default { serverGet, serverPost, serverUpload };

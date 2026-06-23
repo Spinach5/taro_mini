@@ -65,4 +65,46 @@ export function serverPost(url, data) {
 	return callCloudFunction(url, "POST", data);
 }
 
-export default { serverGet, serverPost };
+/**
+ * 上传文件（微信小程序环境）
+ * 小程序云函数有 body 大小限制，uploadFile 直接请求服务器
+ */
+export async function serverUpload(url, filePath, params = {}) {
+	const token = userManager.getServerToken();
+	const header = {};
+	if (token) {
+		header["Authorization"] = `Bearer ${token}`;
+	}
+
+	try {
+		const res = await Taro.uploadFile({
+			url: `${SERVER_BASE}${url}`,
+			filePath,
+			name: "file",
+			formData: params,
+			header,
+		});
+
+		const body = JSON.parse(res.data);
+
+		if (res.statusCode >= 400) {
+			if (res.statusCode === 401 || res.statusCode === 403) {
+				userManager.setServerToken("");
+			}
+			throw new Error(
+				(body && body.message) || `上传失败 (${res.statusCode})`,
+			);
+		}
+
+		return body;
+	} catch (error) {
+		runtimeLogger.error(
+			"ServerRequest",
+			`UPLOAD ${url} 失败`,
+			error?.message || error,
+		);
+		throw error;
+	}
+}
+
+export default { serverGet, serverPost, serverUpload };
