@@ -241,7 +241,7 @@ export default function Index() {
           className={`fav-btn ${isFav ? "fav-btn-active" : ""} ${favLoading ? "fav-btn-disabled" : ""}`}
           onClick={handleFavorite}
         >
-          <AtIcon value={isFav ? "heart-2" : "heart-1"} size={22} color={isFav ? "#e74c3c" : "#000"} />
+          <AtIcon value={isFav ? "heart-2" : "heart"} size={22} color={isFav ? "#e74c3c" : "#000"} />
           <Text className="fav-text">{isFav ? "已收藏" : "收藏"}</Text>
         </View>
         {(book.isPublisher || book.user_id === userManager.getServerUserId()) ? (
