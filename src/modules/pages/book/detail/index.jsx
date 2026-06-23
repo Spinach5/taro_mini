@@ -13,6 +13,7 @@ import {
 } from "../../../../service";
 import { getColorFromName } from "../../../../utils/getHashCode";
 import userManager from "../../../../service/userInfo";
+import cacheManager from "../../../../utils/cache";
 import runtimeLogger from "../../../../utils/runtimeLogger";
 import "./index.css";
 
@@ -57,6 +58,21 @@ export default function Index() {
     setFavLoading(true);
     try {
       await toggleWantBook(id);
+      // 更新本地缓存中的想要数
+      const cached = cacheManager.get("v1_books");
+      if (cached && Array.isArray(cached.books)) {
+        const updated = cached.books.map((b) => {
+          if (b.id === Number(id)) {
+            const delta = isFav ? -1 : 1;
+            return { ...b, wantCount: (b.wantCount || 0) + delta };
+          }
+          return b;
+        });
+        cacheManager.set("v1_books", { ...cached, books: updated });
+      }
+      // 更新收藏状态 + 本地想要数
+      const delta = isFav ? -1 : 1;
+      setBook({ ...book, wantCount: (book.wantCount || 0) + delta });
       if (isFav) {
         removeFavoriteBookId(Number(id));
         setIsFav(false);

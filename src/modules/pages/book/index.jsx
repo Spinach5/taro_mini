@@ -44,10 +44,11 @@ export default function Index() {
   const currentUserId = userManager.getServerUserId();
 
   const fetchList = useCallback(
-    async (p = 1, kw = keyword, cat = activeCategory, srt = sortMode, append = false) => {
+    async (p = 1, kw = keyword, cat = activeCategory, srt = sortMode, append = false, forceRefresh = false) => {
       try {
         const data = await getBookList(
           { page: p, pageSize: 20, keyword: kw, category: cat },
+          forceRefresh,
         );
         const favs = getFavoriteBookIds();
         setFavIds(favs);
@@ -113,7 +114,7 @@ export default function Index() {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchList(1, keyword, activeCategory, sortMode).finally(() => setRefreshing(false));
+    fetchList(1, keyword, activeCategory, sortMode, false, true).finally(() => setRefreshing(false));
   };
 
   const handleLoadMore = () => {
