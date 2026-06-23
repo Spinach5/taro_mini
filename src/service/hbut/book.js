@@ -1,5 +1,5 @@
 // 二手书相关 API（从后端获取，带缓存）
-import { serverGet, serverPost, serverUpload } from "../../utils/serverRequest";
+import { serverGet, serverPost, serverPut, serverDelete, serverUpload } from "../../utils/serverRequest";
 import cacheManager from "../../utils/cache";
 import runtimeLogger from "../../utils/runtimeLogger";
 
@@ -151,7 +151,7 @@ export async function createBook(data) {
     if (res && res.success) {
       cacheManager.remove(CACHE_KEY_BOOKS);
     }
-    return res;
+    return { url: res.data.url, imageId: res.data.imageId };
   } catch (error) {
     runtimeLogger.error("Books", "新增书籍失败", error);
     throw error;
@@ -166,11 +166,11 @@ export async function createBook(data) {
  */
 export async function updateBook(id, data) {
   try {
-    const res = await serverPost(`/api/v1/books/${id}`, data);
+    const res = await serverPut(`/api/v1/books/${id}`, data);
     if (res && res.success) {
       cacheManager.remove(CACHE_KEY_BOOKS);
     }
-    return res;
+    return { url: res.data.url, imageId: res.data.imageId };
   } catch (error) {
     runtimeLogger.error("Books", "更新书籍失败", error);
     throw error;
@@ -185,7 +185,7 @@ export async function updateBook(id, data) {
 export async function toggleWantBook(id) {
   try {
     const res = await serverPost(`/api/v1/books/${id}/want`);
-    return res;
+    return { url: res.data.url, imageId: res.data.imageId };
   } catch (error) {
     runtimeLogger.error("Books", "切换想要状态失败", error);
     throw error;
@@ -200,10 +200,10 @@ export async function toggleWantBook(id) {
 export async function uploadBookImage(filePath) {
   try {
     const res = await serverUpload("/api/v1/books/upload", filePath);
-    if (!res || !res.url) {
+    if (!res || !(res.data && res.data.url)) {
       throw new Error((res && res.message) || "上传失败");
     }
-    return res;
+    return { url: res.data.url, imageId: res.data.imageId };
   } catch (error) {
     runtimeLogger.error("Books", "上传书籍图片失败", error);
     throw error;
@@ -221,7 +221,7 @@ export async function deleteBookImage(bookId, imageId) {
     const endpoint = bookId
       ? `/api/v1/books/${bookId}/images/${imageId}`
       : `/api/v1/books/images/${imageId}`;
-    const res = await serverPost(endpoint, { _method: "DELETE" });
+    const res = await serverDelete(endpoint);
     return res;
   } catch (error) {
     runtimeLogger.error("Books", "删除书籍图片失败", error);

@@ -73,11 +73,11 @@
 
 .sort-label {
   font-size: 26rpx;
-  color: var(--color-text-secondary, #99a);
+  color: #333;
 }
 
 .sort-label-active {
-  color: var(--color-text, #333);
+  color: #000;
   font-weight: bold;
 }
 
@@ -89,7 +89,7 @@
 
 .sort-toggle-text {
   font-size: 24rpx;
-  color: #47a5fd;
+  color: #333;
 }
 
 /* 书籍网格（两列） */

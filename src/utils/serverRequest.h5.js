@@ -71,6 +71,14 @@ export function serverGet(url, params) {
 	return request("GET", url, undefined, params);
 }
 
+export function serverPut(url, data) {
+	return request("PUT", url, data);
+}
+
+export function serverDelete(url) {
+	return request("DELETE", url);
+}
+
 export function serverPost(url, data) {
 	return request("POST", url, data);
 }
@@ -120,4 +128,4 @@ export async function serverUpload(url, filePath, params = {}) {
 	}
 }
 
-export default { serverGet, serverPost, serverUpload };
+export default { serverGet, serverPost, serverPut, serverDelete, serverUpload };

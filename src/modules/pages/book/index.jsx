@@ -161,13 +161,13 @@ export default function Index() {
       {/* 排序切换栏 */}
       <View className="sort-bar">
         <View className="sort-left">
-          <AtIcon value={sortMode === "time" ? "clock" : "heart"} size={16} color={sortMode === "time" ? "#47a5fd" : "#e74c3c"} />
+          <AtIcon value={sortMode === "time" ? "format-list-text" : "fire-circle"} size={16} color="#333" />
           <Text className={`sort-label ${sortMode === "time" ? "sort-label-active" : ""}`}>
             {sortMode === "time" ? "最新书籍" : "最热书籍"}
           </Text>
         </View>
         <View className="sort-right" onClick={() => handleSortChange(sortMode === "time" ? "hot" : "time")}>
-          <AtIcon value="swap" size={14} color="#47a5fd" />
+          <AtIcon value="swap" size={14} color="#333" />
           <Text className="sort-toggle-text">
             {sortMode === "time" ? "按时间排序" : "按热度排序"}
           </Text>

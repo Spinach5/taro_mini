@@ -122,7 +122,7 @@ export default function Index() {
       price: price.trim(),
       condition,
       description: description.trim(),
-      images,
+      images: images.map(img => img.url),
     };
 
     setSubmitting(true);
