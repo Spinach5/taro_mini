@@ -157,13 +157,14 @@ export default function Index() {
 
       {/* 列表 */}
       {loading === "loading" && books.length === 0 ? (
-        <View className="skeleton-list">
-          {[1, 2, 3].map((i) => (
+        <View className="book-grid">
+          {[1, 2, 3, 4].map((i) => (
             <View key={i} className="book-card skeleton-card">
-              <View className="card-thumb skeleton-thumb" />
-              <View className="card-info">
-                <View className="skeleton-line skeleton-line-long" />
+              <View className="card-img skeleton-img" />
+              <View className="card-body">
                 <View className="skeleton-line skeleton-line-short" />
+                <View className="skeleton-line skeleton-line-long" />
+                <View className="skeleton-line skeleton-line-mid" />
               </View>
             </View>
           ))}
@@ -179,7 +180,7 @@ export default function Index() {
       ) : (
         <ScrollView
           scrollY
-          className="book-list"
+          className="book-grid-scroll"
           onScrollToLower={handleLoadMore}
           lowerThreshold={80}
           refresherEnabled
@@ -188,49 +189,57 @@ export default function Index() {
           enhanced
           bounces={false}
         >
-          {books.map((book) => (
-            <View
-              key={book.id}
-              className="book-card"
-              onClick={() =>
-                Taro.navigateTo({
-                  url: `/modules/pages/book/detail/index?id=${book.id}`,
-                })
-              }
-            >
+          <View className="book-grid">
+            {books.map((book) => (
               <View
-                className="card-thumb"
-                style={{
-                  background: getColorFromName(book.name || "书"),
-                }}
+                key={book.id}
+                className="book-card"
+                onClick={() =>
+                  Taro.navigateTo({
+                    url: `/modules/pages/book/detail/index?id=${book.id}`,
+                  })
+                }
               >
-                {book.images && book.images.length > 0 ? (
-                  <Image
-                    className="thumb-img"
-                    src={book.images[0].url}
-                    mode="aspectFill"
-                  />
-                ) : (
-                  <Text className="thumb-placeholder">
-                    {(book.name || "书")[0]}
-                  </Text>
-                )}
-              </View>
-              <View className="card-info">
-                <Text className="card-name">{book.name}</Text>
-                <Text className="card-price">¥{book.price}</Text>
-                <View className="card-meta">
-                  <Text className="card-publisher">{book.publisherName}</Text>
-                  {book.category && (
-                    <>
-                      <Text className="meta-dot">·</Text>
-                      <Text className="meta-tag">{book.category}</Text>
-                    </>
+                <View className="card-img">
+                  {book.images && book.images.length > 0 ? (
+                    <Image
+                      className="card-img-pic"
+                      src={book.images[0].url}
+                      mode="aspectFill"
+                    />
+                  ) : (
+                    <View
+                      className="card-img-placeholder"
+                      style={{ background: getColorFromName(book.name || "书") }}
+                    >
+                      <Text className="placeholder-text">
+                        {(book.name || "书")[0]}
+                      </Text>
+                    </View>
                   )}
                 </View>
+                <View className="card-body">
+                  <Text className="card-category">{book.category || "未分类"}</Text>
+                  <Text className="card-name">{book.name}</Text>
+                  <View className="card-price-row">
+                    <Text className="card-price">¥{book.price}</Text>
+                    <Text className="card-want">{book.wantCount || 0}人想要</Text>
+                  </View>
+                  <View className="card-publisher-row">
+                    <View
+                      className="card-avatar"
+                      style={{ background: getColorFromName(book.publisherName || "?") }}
+                    >
+                      <Text className="card-avatar-text">
+                        {(book.publisherName || "?")[0]}
+                      </Text>
+                    </View>
+                    <Text className="card-publisher">{book.publisherName || "未知"}</Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          ))}
+            ))}
+          </View>
           {books.length >= total && books.length > 0 && (
             <View className="list-footer">
               <Text className="footer-text">— 已加载全部 —</Text>

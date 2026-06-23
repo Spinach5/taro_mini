@@ -18,6 +18,7 @@ function normalizeBook(b) {
     publisherName: b.publisherName || b.nickName || "",
     publishTime: b.publishTime || b.create_time || "",
     images: b.images || (b.image_url ? [{ url: b.image_url }] : []),
+    wantCount: b.wantCount || b.want_count || 0,
   };
 }
 
