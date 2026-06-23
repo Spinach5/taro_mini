@@ -109,6 +109,9 @@ export default function Index() {
     const cached = cacheManager.get("v1_books");
     if (cached && Array.isArray(cached.books)) {
       setAllBooks(cached.books);
+    } else {
+      // 缓存已被清空（新增/删除后），重新从服务器拉取
+      fetchList(1);
     }
   });
 
