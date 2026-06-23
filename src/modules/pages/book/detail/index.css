@@ -5,7 +5,7 @@
 .detail-scroll {
   flex: 1;
   padding: 24rpx 0;
-  overflow-y: auto;
+  min-height: 0;
 }
 
 /* 发布者信息栏 */
@@ -209,6 +209,7 @@
 
 /* 底部固定栏 */
 .bottom-bar {
+  flex-shrink: 0;
   width: 100%;
   padding: 16rpx 24rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
@@ -218,7 +219,6 @@
   align-items: center;
   gap: 20rpx;
   box-sizing: border-box;
-  flex-shrink: 0;
 }
 
 /* 收藏按钮 */
