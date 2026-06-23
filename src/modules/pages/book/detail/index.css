@@ -162,18 +162,18 @@
   flex-shrink: 0;
 }
 
-/* 书籍图片 */
+/* 书籍图片 — 横向滑动，图片贴合无间隙 */
 .detail-images {
-  margin: 24rpx 24rpx 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
+  margin: 24rpx 0 0;
+  width: 100%;
+  white-space: nowrap;
+  height: 480rpx;
 }
 
 .detail-image {
-  width: 100%;
-  border-radius: 12rpx;
-  display: block;
+  height: 480rpx;
+  width: auto;
+  display: inline-block;
 }
 
 .detail-images-empty {

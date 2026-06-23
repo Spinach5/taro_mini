@@ -4,6 +4,14 @@ import cacheManager from "../../utils/cache";
 import runtimeLogger from "../../utils/runtimeLogger";
 
 const CACHE_KEY_BOOKS = "v1_books";
+const IS_DEV = process.env.NODE_ENV === "development";
+const ASSET_BASE = IS_DEV ? "http://localhost:3001" : "";
+
+function resolveImage(path) {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  return ASSET_BASE + path;
+}
 const CACHE_KEY_CATEGORIES = "v1_book_categories";
 const CACHE_KEY_FAVORITES = "v1_favorite_book_ids";
 const CACHE_TTL = 5 * 60 * 1000; // 5 分钟
@@ -40,7 +48,7 @@ function normalizeBook(b) {
     name: b.name || b.title,
     publisherName: b.publisherName || b.nickName || "",
     publishTime: b.publishTime || b.create_time || "",
-    images: b.images || (b.image_url ? [{ url: b.image_url }] : []),
+    images: (b.images && b.images.length > 0 ? b.images.map(function(img) { return { ...img, url: resolveImage(img.url) }; }) : (b.image_url ? [{ url: resolveImage(b.image_url) }] : [])),
     wantCount: b.wantCount || b.want_count || 0,
     isDelivery: b.isDelivery !== undefined ? b.isDelivery : (b.is_delivery !== undefined ? b.is_delivery : 0),
     isPublisher: b.isPublisher !== undefined ? b.isPublisher : false,
@@ -145,7 +153,7 @@ export async function createBook(data) {
     if (res && res.success) {
       cacheManager.remove(CACHE_KEY_BOOKS);
     }
-    return { url: res.data.url, imageId: res.data.imageId };
+    return res;
   } catch (error) {
     runtimeLogger.error("Books", "新增书籍失败", error);
     throw error;
@@ -164,7 +172,7 @@ export async function updateBook(id, data) {
     if (res && res.success) {
       cacheManager.remove(CACHE_KEY_BOOKS);
     }
-    return { url: res.data.url, imageId: res.data.imageId };
+    return res;
   } catch (error) {
     runtimeLogger.error("Books", "更新书籍失败", error);
     throw error;
@@ -179,7 +187,7 @@ export async function updateBook(id, data) {
 export async function toggleWantBook(id) {
   try {
     const res = await serverPost(`/api/v1/books/${id}/want`);
-    return { url: res.data.url, imageId: res.data.imageId };
+    return res;
   } catch (error) {
     runtimeLogger.error("Books", "切换想要状态失败", error);
     throw error;
@@ -197,7 +205,7 @@ export async function uploadBookImage(filePath) {
     if (!res || !(res.data && res.data.url)) {
       throw new Error((res && res.message) || "上传失败");
     }
-    return { url: res.data.url, imageId: res.data.imageId };
+    return { url: resolveImage(res.data.url), imageId: res.data.imageId };
   } catch (error) {
     runtimeLogger.error("Books", "上传书籍图片失败", error);
     throw error;
