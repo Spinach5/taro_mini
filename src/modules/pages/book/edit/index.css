@@ -12,7 +12,8 @@
 .edit-scroll {
   flex: 1;
   min-height: 0;
-  padding: 24rpx 32rpx 0;
+  padding: 24rpx 24rpx 0;
+  box-sizing: border-box;
 }
 
 /* 每个区块 */
@@ -249,7 +250,7 @@
   display: flex;
   align-items: center;
   gap: 16rpx;
-  padding: 16rpx 32rpx;
+  padding: 16rpx 24rpx;
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   background: transparent;
 }
