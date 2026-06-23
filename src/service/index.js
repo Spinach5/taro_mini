@@ -18,6 +18,14 @@ export const getAllClub      = api('getAllClub');
 export const getClubCategories = api('getClubCategories');
 export const getClubDetail    = api('getClubDetail');
 export const addClub          = api('addClub');
+export const getBookList       = api('getBookList');
+export const getBookCategories = api('getBookCategories');
+export const getBookDetail     = api('getBookDetail');
+export const createBook        = api('createBook');
+export const updateBook        = api('updateBook');
+export const toggleWantBook    = api('toggleWantBook');
+export const uploadBookImage   = api('uploadBookImage');
+export const deleteBookImage   = api('deleteBookImage');
 export const getBanner       = api('getBanner');
 
 // auth 直接转发

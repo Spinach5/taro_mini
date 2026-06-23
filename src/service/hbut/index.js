@@ -12,6 +12,11 @@ export { getScores }         from './Scores';
 export { getStuInfo }        from './StuInfo';
 export { getTimeTable }      from './GetTimeTable';
 export { getAllClub, getClubCategories, getClubDetail, addClub } from './clubs';
+export {
+  getBookList, getBookCategories, getBookDetail,
+  createBook, updateBook, toggleWantBook,
+  uploadBookImage, deleteBookImage,
+} from './book';
 export { getExamBatch }      from './getExamBatch';
 export { getTeachBuilding }  from './getTeachBuilding';
 export { getTeachBuildingCategory }  from './getTeachBuilding';
