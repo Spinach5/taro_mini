@@ -18,14 +18,14 @@ export default function Index() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState("loading"); // 'loading'|'error'|'done'|'empty'
   const [refreshing, setRefreshing] = useState(false);
+  const [sortMode, setSortMode] = useState("time"); // 'time' | 'hot'
   const debounceRef = useRef(null);
 
   const fetchList = useCallback(
-    async (p = 1, kw = keyword, cat = activeCategory, append = false) => {
+    async (p = 1, kw = keyword, cat = activeCategory, srt = sortMode, append = false) => {
       try {
         const data = await getBookList(
-          { page: p, pageSize: 20, keyword: kw, category: cat },
-          p === 1 && !kw && cat === "全部", // 仅首页无筛选时 forceRefresh
+          { page: p, pageSize: 20, keyword: kw, category: cat, sort: srt },
         );
         if (append && p > 1) {
           setBooks((prev) => [...prev, ...(data.books || [])]);
@@ -45,7 +45,7 @@ export default function Index() {
         }
       }
     },
-    [keyword, activeCategory, books.length],
+    [keyword, activeCategory, sortMode, books.length],
   );
 
   const fetchCategories = useCallback(async () => {
@@ -70,24 +70,30 @@ export default function Index() {
     setKeyword(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      fetchList(1, value, activeCategory);
+      fetchList(1, value, activeCategory, sortMode);
     }, 300);
   };
 
   const handleCategoryChange = (cat) => {
     setActiveCategory(cat);
     setLoading("loading");
-    fetchList(1, keyword, cat);
+    fetchList(1, keyword, cat, sortMode);
+  };
+
+  const handleSortChange = (mode) => {
+    setSortMode(mode);
+    setLoading("loading");
+    fetchList(1, keyword, activeCategory, mode);
   };
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchList(1).finally(() => setRefreshing(false));
+    fetchList(1, keyword, activeCategory, sortMode).finally(() => setRefreshing(false));
   };
 
   const handleLoadMore = () => {
     if (books.length >= total) return;
-    fetchList(page + 1, keyword, activeCategory, true);
+    fetchList(page + 1, keyword, activeCategory, sortMode, true);
   };
 
   const handleRetry = () => {
@@ -133,6 +139,21 @@ export default function Index() {
           ))}
         </View>
       </ScrollView>
+
+      {/* 排序切换栏 */}
+      <View className="sort-bar">
+        <View className="sort-left">
+          <Text className={`sort-label ${sortMode === "time" ? "sort-label-active" : ""}`}>
+            {sortMode === "time" ? "最新书籍" : "最热书籍"}
+          </Text>
+        </View>
+        <View className="sort-right" onClick={() => handleSortChange(sortMode === "time" ? "hot" : "time")}>
+          <AtIcon value="swap" size={14} color="#47a5fd" />
+          <Text className="sort-toggle-text">
+            {sortMode === "time" ? "按时间排序" : "按热度排序"}
+          </Text>
+        </View>
+      </View>
 
       {/* 列表 */}
       {loading === "loading" && books.length === 0 ? (

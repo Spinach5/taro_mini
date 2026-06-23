@@ -55,6 +55,40 @@
   color: #fff;
 }
 
+/* 排序切换栏 */
+.sort-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8rpx 24rpx;
+  flex-shrink: 0;
+}
+
+.sort-left {
+  flex: 1;
+}
+
+.sort-label {
+  font-size: 26rpx;
+  color: var(--color-text-secondary, #99a);
+}
+
+.sort-label-active {
+  color: var(--color-text, #333);
+  font-weight: bold;
+}
+
+.sort-right {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.sort-toggle-text {
+  font-size: 24rpx;
+  color: #47a5fd;
+}
+
 /* 列表 */
 .book-list {
   flex: 1;

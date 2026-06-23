@@ -22,20 +22,24 @@ function normalizeBook(b) {
 }
 
 /**
- * 获取书籍列表（分页 + 搜索 + 筛选）
+ * 获取书籍列表（分页 + 搜索 + 筛选 + 排序）
  * @param {object} opts
  * @param {number} opts.page
  * @param {number} opts.pageSize
  * @param {string} opts.keyword
  * @param {string} opts.category  "全部" 表示不筛选
+ * @param {string} opts.sort      "time" 按时间 | "hot" 按热度
  * @param {boolean} forceRefresh
  * @returns {Promise<{ books: Array, total: number }>}
  */
 export async function getBookList(
-  { page = 1, pageSize = 20, keyword = "", category = "" } = {},
+  { page = 1, pageSize = 20, keyword = "", category = "", sort = "time" } = {},
   forceRefresh = false,
 ) {
-  if (!forceRefresh) {
+  const hasFilter = !!(keyword || (category && category !== "全部") || sort !== "time");
+
+  // 有筛选条件时跳过缓存
+  if (!forceRefresh && !hasFilter) {
     const cached = cacheManager.get(CACHE_KEY_BOOKS);
     if (cached && Array.isArray(cached.books)) {
       return cached;
@@ -43,7 +47,7 @@ export async function getBookList(
   }
 
   try {
-    const params = { page, pageSize };
+    const params = { page, pageSize, sort };
     if (keyword) params.keyword = keyword;
     if (category && category !== "全部") params.category = category;
 
@@ -56,7 +60,7 @@ export async function getBookList(
     };
 
     // 只在无筛选条件时缓存首页
-    if (!keyword && (!category || category === "全部") && page === 1) {
+    if (!hasFilter && page === 1) {
       cacheManager.set(CACHE_KEY_BOOKS, data, CACHE_TTL);
     }
 
@@ -81,7 +85,9 @@ export async function getBookCategories(forceRefresh = false) {
   try {
     const res = await serverGet("/api/v1/books/categories");
     const data = (res && res.data) || [];
-    const categories = ["全部", ...(Array.isArray(data) ? data : [])];
+    // 过滤掉后端可能返回的"全部"，再在前面添加
+    const cats = Array.isArray(data) ? data.filter((c) => c !== "全部") : [];
+    const categories = ["全部", ...cats];
     cacheManager.set(CACHE_KEY_CATEGORIES, categories, CACHE_TTL);
     return categories;
   } catch (error) {
