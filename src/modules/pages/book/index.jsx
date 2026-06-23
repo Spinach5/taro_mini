@@ -1,7 +1,7 @@
 import { View, Text, Image, Input, ScrollView } from "@tarojs/components";
-import Taro, { useLoad, useDidShow, usePullDownRefresh } from "@tarojs/taro";
+import Taro, { useLoad, useDidShow } from "@tarojs/taro";
 import { useState, useCallback, useRef } from "react";
-import { AtIcon, AtActivityIndicator } from "taro-ui";
+import { AtIcon } from "taro-ui";
 import SafeAreaView from "../../../components/SafeAreaView";
 import HeadStatus from "../../../components/HeadStatus";
 import { getBookList, getBookCategories } from "../../../service";
@@ -16,7 +16,7 @@ export default function Index() {
   const [activeCategory, setActiveCategory] = useState("全部");
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState("loading"); // 'cache'|'loading'|'error'|'done'|'empty'
+  const [loading, setLoading] = useState("loading"); // 'loading'|'error'|'done'|'empty'
   const [refreshing, setRefreshing] = useState(false);
   const debounceRef = useRef(null);
 
@@ -38,6 +38,7 @@ export default function Index() {
         setLoading(hasData ? "done" : "empty");
       } catch (error) {
         runtimeLogger.error("BookList", "加载书籍列表失败", error);
+        Taro.showToast({ title: "加载失败", icon: "none" });
         if (!append) {
           // 保留已有数据不覆盖
           setLoading(books.length === 0 ? "error" : "done");
@@ -63,10 +64,6 @@ export default function Index() {
 
   useDidShow(() => {
     fetchList(1);
-  });
-
-  usePullDownRefresh(() => {
-    fetchList(1).finally(() => Taro.stopPullDownRefresh());
   });
 
   const handleSearch = (value) => {
