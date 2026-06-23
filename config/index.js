@@ -138,36 +138,30 @@ export default defineConfig(async (merge, { command, mode }) => {
 						},
 					},
 					"/server": {
-						target: "https://8.148.69.248/",
+						target: "http://localhost:3001",
 						changeOrigin: true,
+						proxyTimeout: 30000,  // 后端注册接口慢（需解验证码+教务登录），设置充足超时
 						rewrite: (path) => path.replace(/^\/server/, ""),
 						configure: (proxy, options) => {
-							proxy.on("proxyReq", (proxyReq, req, res) => {
-								// 去掉 Origin 避免后端 CORS 403
-								proxyReq.removeHeader("origin");
-								proxyReq.removeHeader("referer");
-							});
 							proxy.on("proxyRes", (proxyRes, req, res) => {
-								console.log("proxyRes触发");
 								if (proxyRes.headers.location) {
 									let location = proxyRes.headers.location;
 									if (location.startsWith("/")) {
-										proxyRes.headers.location =
-											"/server" + location;
-									} else if (
-										location.includes("8.148.69.248")
-									) {
-										const relative = location.replace(
-											/https?:\/\/[^/]+/,
-											"",
-										);
-										proxyRes.headers.location =
-											"/server" + relative;
+										proxyRes.headers.location = "/server" + location;
 									}
-									console.log(
-										"修改后的 location:",
-										proxyRes.headers.location,
-									);
+								}
+							});
+							proxy.on("error", (err, req, res) => {
+								console.error("[Proxy /server] 代理错误:", err.message);
+								if (res && !res.headersSent) {
+									res.writeHead(502, {
+										"Content-Type": "application/json; charset=utf-8",
+										"Access-Control-Allow-Origin": "*",
+									});
+									res.end(JSON.stringify({
+										success: false,
+										message: "后端未启动，请先运行 go run ./cmd/server",
+									}));
 								}
 							});
 						},
