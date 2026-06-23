@@ -3,7 +3,8 @@ import Taro from "@tarojs/taro";
 import userManager from "../service/userInfo";
 import runtimeLogger from "./runtimeLogger";
 
-const SERVER_BASE = "https://spinach.cc.cd";
+const IS_DEV = process.env.NODE_ENV === "development";
+const SERVER_BASE = IS_DEV ? "http://localhost:3001" : "https://spinach.cc.cd";
 
 /**
  * 通过微信云函数转发请求到服务器

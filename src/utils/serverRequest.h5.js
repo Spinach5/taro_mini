@@ -3,7 +3,8 @@ import Taro from "@tarojs/taro";
 import userManager from "../service/userInfo";
 import runtimeLogger from "./runtimeLogger";
 
-const BASE_URL = "/server";
+const IS_DEV = process.env.NODE_ENV === "development";
+const BASE_URL = IS_DEV ? "http://localhost:3001" : "/server";
 
 /**
  * 统一请求函数
