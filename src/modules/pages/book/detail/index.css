@@ -167,7 +167,7 @@
   margin: 24rpx 24rpx 0;
   display: flex;
   flex-direction: column;
-  gap: 12rpx;
+  gap: 0;
 }
 
 .detail-image {
