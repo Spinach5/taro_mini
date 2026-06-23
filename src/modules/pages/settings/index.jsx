@@ -57,6 +57,9 @@ function ToggleSwitch({ value, disabled, onClick }) {
   );
 }
 
+// 全局标记：本次应用生命周期内是否已连接过服务器
+let serverConnected = false;
+
 export default function Index() {
   const { darkMode, toggleDarkMode } = useTheme();
   const [forceUpdate, setForceUpdate] = useState(false);
@@ -138,6 +141,12 @@ export default function Index() {
       return;
     }
 
+    // 本次会话已连接过服务器，直接开启，不重复请求
+    if (serverConnected) {
+      updateFeature("expand", true);
+      return;
+    }
+
     // 打开：前置校验
     const stuId = userManager.stuId;
     const realName = userManager.realName;
@@ -154,12 +163,12 @@ export default function Index() {
         userManager.setEncryptedPassword(encodedPassword);
       } catch (e) {
         Taro.showToast({ title: "密码加密失败，请重试", icon: "none" });
-        setExpandLoading(false);
         return;
       }
     }
 
     setExpandLoading(true);
+    Taro.showLoading({ title: "正在连接远程服务器", mask: true });
 
     try {
       const schoolId = userManager.getSchoolId() || "hbut";
@@ -184,9 +193,14 @@ export default function Index() {
             userManager.setSchoolId(schoolId);
           }
         }
+        serverConnected = true;
         updateFeature("expand", true);
+        Taro.hideLoading();
         return;
       }
+
+      // 先隐藏 loading 再弹窗
+      Taro.hideLoading();
 
       // 2. 未注册，弹窗确认
       const modalRes = await Taro.showModal({
@@ -196,7 +210,12 @@ export default function Index() {
         cancelText: "取消",
       });
 
-      if (!modalRes.confirm) return;
+      if (!modalRes.confirm) {
+        setExpandLoading(false);
+        return;
+      }
+
+      Taro.showLoading({ title: "正在连接远程服务器", mask: true });
 
       // 3. 调用注册接口
       const regRes = await serverPost("/api/v1/auth/register", {
@@ -211,13 +230,14 @@ export default function Index() {
         if (!userManager.getSchoolId()) {
           userManager.setSchoolId(schoolId);
         }
+        serverConnected = true;
         updateFeature("expand", true);
         Taro.showToast({ title: "注册成功", icon: "success" });
       } else {
         Taro.showToast({
           title: regRes.message || "注册失败，请稍后重试",
           icon: "error",
-		  duration: 3000,
+          duration: 3000,
         });
       }
     } catch (error) {
@@ -225,10 +245,11 @@ export default function Index() {
       Taro.showToast({
         title: error.message || "网络连接失败，请稍后重试",
         icon: "error",
-		duration: 3000,
+        duration: 3000,
       });
     } finally {
       setExpandLoading(false);
+      Taro.hideLoading();
     }
   }, [features.expand, updateFeature]);
 
@@ -291,9 +312,6 @@ export default function Index() {
               <Text className="settings-desc">开启后可在首页显示更多功能入口</Text>
             </View>
             <View className="settings-row-right">
-              {expandLoading && (
-                <AtActivityIndicator isOpened size={24} mode="center" />
-              )}
               <ToggleSwitch value={features.expand} disabled={expandLoading} onClick={handleExpandToggle} />
             </View>
           </View>
