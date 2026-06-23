@@ -8,6 +8,20 @@ const CACHE_KEY_CATEGORIES = "v1_book_categories";
 const CACHE_TTL = 5 * 60 * 1000; // 5 分钟
 
 /**
+ * 将后端字段映射为前端使用的字段名
+ */
+function normalizeBook(b) {
+  return {
+    ...b,
+    id: b.id || b.book_id,
+    name: b.name || b.title,
+    publisherName: b.publisherName || b.nickName || "",
+    publishTime: b.publishTime || b.create_time || "",
+    images: b.images || (b.image_url ? [{ url: b.image_url }] : []),
+  };
+}
+
+/**
  * 获取书籍列表（分页 + 搜索 + 筛选）
  * @param {object} opts
  * @param {number} opts.page
@@ -35,7 +49,7 @@ export async function getBookList(
 
     const res = await serverGet("/api/v1/books", params);
     const rawBooks = (res && res.data) || [];
-    const books = rawBooks.map((b) => ({ ...b, id: b.id || b._id }));
+    const books = rawBooks.map(normalizeBook);
     const data = {
       books,
       total: (res && res.total) || 0,
@@ -85,8 +99,7 @@ export async function getBookDetail(id) {
   try {
     const res = await serverGet(`/api/v1/books/${id}`);
     if (res && res.data) {
-      const book = res.data;
-      return { ...book, id: book.id || book._id || id };
+      return normalizeBook(res.data);
     }
     throw new Error("书籍不存在");
   } catch (error) {
