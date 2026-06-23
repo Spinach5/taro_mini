@@ -221,6 +221,28 @@
   white-space: nowrap;
 }
 
+/* 自提/可送标签 */
+.card-delivery-row {
+  margin-top: 4rpx;
+}
+
+.delivery-tag {
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+  display: inline-block;
+}
+
+.delivery-pickup {
+  background: #fff3e0;
+  color: #e67e22;
+}
+
+.delivery-send {
+  background: #e8f5e9;
+  color: #27ae60;
+}
+
 /* Skeleton */
 .skeleton-card .card-img {
   background: #e8e8e8;

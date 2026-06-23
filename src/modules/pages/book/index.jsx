@@ -240,6 +240,11 @@ export default function Index() {
                     </View>
                     <Text className="card-publisher">{book.publisherName || "未知"}</Text>
                   </View>
+                  <View className="card-delivery-row">
+                    <Text className={`delivery-tag ${book.isDelivery === 1 ? "delivery-send" : "delivery-pickup"}`}>
+                      {book.isDelivery === 1 ? "可送" : "自提"}
+                    </Text>
+                  </View>
                 </View>
               </View>
             ))}
