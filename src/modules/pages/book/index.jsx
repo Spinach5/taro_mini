@@ -154,7 +154,7 @@ export default function Index() {
           color="#ffffff"
           onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
         />
-        <HeadStatus text="二手书" />
+        <HeadStatus text="书籍" />
       </View>
 
       {/* 搜索栏 */}
