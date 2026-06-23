@@ -75,8 +75,8 @@ export function serverPut(url, data) {
 	return request("PUT", url, data);
 }
 
-export function serverDelete(url) {
-	return request("DELETE", url);
+export function serverDelete(url, data) {
+	return request("DELETE", url, data);
 }
 
 export function serverPost(url, data) {

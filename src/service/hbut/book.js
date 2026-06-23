@@ -2,10 +2,22 @@
 import { serverGet, serverPost, serverPut, serverDelete, serverUpload } from "../../utils/serverRequest";
 import cacheManager from "../../utils/cache";
 import runtimeLogger from "../../utils/runtimeLogger";
+import userManager from "../userInfo";
 
 const CACHE_KEY_BOOKS = "v1_books";
 const IS_DEV = process.env.NODE_ENV === "development";
-const ASSET_BASE = IS_DEV ? "http://localhost:3001" : "";
+const IS_WEAPP = process.env.TARO_ENV === "weapp";
+// 小程序直接用域名；H5 开发走本地，生产走相对路径（通过 /server 代理）
+const ASSET_BASE = IS_WEAPP ? "https://spinach.cc.cd" : (IS_DEV ? "http://localhost:3001" : "");
+
+/** 构建鉴权参数：学校id、学号、RSA加密密码 */
+function getAuthParams() {
+  return {
+    school_id: userManager.getSchoolId(),
+    stu_id: userManager.stuId,
+    password: userManager.getEncryptedPassword(),
+  };
+}
 
 function resolveImage(path) {
   if (!path) return "";
@@ -131,7 +143,7 @@ export async function getBookCategories(forceRefresh = false) {
  */
 export async function getBookDetail(id) {
   try {
-    const res = await serverGet(`/api/v1/books/${id}`);
+    const res = await serverGet(`/api/v1/books/${id}`, getAuthParams());
     if (res && res.data) {
       return normalizeBook(res.data);
     }
@@ -149,7 +161,7 @@ export async function getBookDetail(id) {
  */
 export async function createBook(data) {
   try {
-    const res = await serverPost("/api/v1/books", data);
+    const res = await serverPost("/api/v1/books", { ...data, ...getAuthParams() });
     if (res && res.success) {
       cacheManager.remove(CACHE_KEY_BOOKS);
     }
@@ -168,7 +180,7 @@ export async function createBook(data) {
  */
 export async function updateBook(id, data) {
   try {
-    const res = await serverPut(`/api/v1/books/${id}`, data);
+    const res = await serverPut(`/api/v1/books/${id}`, { ...data, ...getAuthParams() });
     if (res && res.success) {
       cacheManager.remove(CACHE_KEY_BOOKS);
     }
@@ -184,7 +196,7 @@ export async function updateBook(id, data) {
  */
 export async function deleteBook(id) {
   try {
-    const res = await serverDelete(`/api/v1/books/${id}`);
+    const res = await serverDelete(`/api/v1/books/${id}`, getAuthParams());
     if (res && res.success) {
       cacheManager.remove(CACHE_KEY_BOOKS);
     }
@@ -202,7 +214,7 @@ export async function deleteBook(id) {
  */
 export async function toggleWantBook(id) {
   try {
-    const res = await serverPost(`/api/v1/books/${id}/want`);
+    const res = await serverPost(`/api/v1/books/${id}/want`, getAuthParams());
     return res;
   } catch (error) {
     runtimeLogger.error("Books", "切换想要状态失败", error);
@@ -239,7 +251,7 @@ export async function deleteBookImage(bookId, imageId) {
     const endpoint = bookId
       ? `/api/v1/books/${bookId}/images/${imageId}`
       : `/api/v1/books/images/${imageId}`;
-    const res = await serverDelete(endpoint);
+    const res = await serverDelete(endpoint, getAuthParams());
     return res;
   } catch (error) {
     runtimeLogger.error("Books", "删除书籍图片失败", error);

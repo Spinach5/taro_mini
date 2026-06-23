@@ -46,7 +46,6 @@ export default function Index() {
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState("loading");
-  const [refreshing, setRefreshing] = useState(false);
   const [sortMode, setSortMode] = useState("time");
   const [favIds, setFavIds] = useState([]);
   const debounceRef = useRef(null);
@@ -114,11 +113,6 @@ export default function Index() {
       fetchList(1);
     }
   });
-
-  const handleRefresh = () => {
-    setRefreshing(true);
-    fetchList(1, true).finally(() => setRefreshing(false));
-  };
 
   usePullDownRefresh(() => {
     fetchList(1, true).finally(() => Taro.stopPullDownRefresh());
@@ -233,9 +227,6 @@ export default function Index() {
           className="book-grid-scroll"
           onScrollToLower={handleLoadMore}
           lowerThreshold={80}
-          refresherEnabled
-          refresherTriggered={refreshing}
-          onRefresherRefresh={handleRefresh}
           enhanced
           bounces={false}
         >
