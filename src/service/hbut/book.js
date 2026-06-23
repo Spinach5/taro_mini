@@ -180,6 +180,22 @@ export async function updateBook(id, data) {
 }
 
 /**
+ * 删除书籍
+ */
+export async function deleteBook(id) {
+  try {
+    const res = await serverDelete(`/api/v1/books/${id}`);
+    if (res && res.success) {
+      cacheManager.remove(CACHE_KEY_BOOKS);
+    }
+    return res;
+  } catch (error) {
+    runtimeLogger.error("Books", "删除书籍失败", error);
+    throw error;
+  }
+}
+
+/**
  * 切换"想要"状态
  * @param {string|number} id
  * @returns {Promise<{ success: boolean, isWanted: boolean }>}

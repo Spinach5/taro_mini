@@ -7,6 +7,7 @@ import HeadStatus from "../../../../components/HeadStatus";
 import {
   getBookDetail,
   toggleWantBook,
+  deleteBook,
   addFavoriteBookId,
   removeFavoriteBookId,
   isFavoriteBook,
@@ -85,6 +86,28 @@ export default function Index() {
     } finally {
       setFavLoading(false);
     }
+  };
+
+  const handleDelete = () => {
+    Taro.showModal({
+      title: "确认删除",
+      content: `是否删除《${book.name}》？`,
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            await deleteBook(id);
+            cacheManager.remove("v1_books");
+            Taro.showToast({ title: "已删除", icon: "success" });
+            setTimeout(() => {
+              const pages = Taro.getCurrentPages();
+              pages.length > 1 ? Taro.navigateBack() : Taro.redirectTo({ url: "/modules/pages/book/index" });
+            }, 1000);
+          } catch (error) {
+            Taro.showToast({ title: "删除失败", icon: "none" });
+          }
+        }
+      },
+    });
   };
 
   const formatTime = (t) => {
@@ -222,16 +245,21 @@ export default function Index() {
           <Text className="fav-text">{isFav ? "已收藏" : "收藏"}</Text>
         </View>
         {(book.isPublisher || book.user_id === userManager.getServerUserId()) ? (
-          <View
-            className="edit-btn"
-            onClick={() =>
-              Taro.navigateTo({
-                url: `/modules/pages/book/edit/index?id=${id}`,
-              })
-            }
-          >
-            <Text className="edit-btn-text">编辑</Text>
-          </View>
+          <>
+            <View
+              className="edit-btn"
+              onClick={() =>
+                Taro.navigateTo({
+                  url: `/modules/pages/book/edit/index?id=${id}`,
+                })
+              }
+            >
+              <Text className="edit-btn-text">编辑</Text>
+            </View>
+            <View className="delete-btn" onClick={handleDelete}>
+              <Text className="delete-btn-text">删除</Text>
+            </View>
+          </>
         ) : (
           <View
             className="contact-btn"

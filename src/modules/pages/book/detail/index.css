@@ -271,7 +271,7 @@
 
 /* 编辑按钮 */
 .edit-btn {
-  width: 160rpx;
+  width: 130rpx;
   height: 80rpx;
   border-radius: 40rpx;
   background: #1890FF;
@@ -282,7 +282,25 @@
 }
 
 .edit-btn-text {
-  font-size: 30rpx;
+  font-size: 28rpx;
   color: #fff;
+  font-weight: bold;
+}
+
+/* 删除按钮 */
+.delete-btn {
+  width: 130rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+  background: #e74c3c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.delete-btn-text {
+  font-size: 28rpx;
+  color: #000;
   font-weight: bold;
 }

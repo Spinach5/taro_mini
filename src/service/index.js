@@ -23,6 +23,7 @@ export const getBookCategories = api('getBookCategories');
 export const getBookDetail     = api('getBookDetail');
 export const createBook        = api('createBook');
 export const updateBook        = api('updateBook');
+export const deleteBook        = api('deleteBook');
 export const toggleWantBook    = api('toggleWantBook');
 export const uploadBookImage   = api('uploadBookImage');
 export const deleteBookImage   = api('deleteBookImage');

@@ -14,7 +14,7 @@ export { getTimeTable }      from './GetTimeTable';
 export { getAllClub, getClubCategories, getClubDetail, addClub } from './clubs';
 export {
   getBookList, getBookCategories, getBookDetail,
-  createBook, updateBook, toggleWantBook,
+  createBook, updateBook, deleteBook, toggleWantBook,
   uploadBookImage, deleteBookImage,
   getFavoriteBookIds, addFavoriteBookId, removeFavoriteBookId, isFavoriteBook,
 } from './book';
