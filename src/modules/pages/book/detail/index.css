@@ -173,7 +173,15 @@
 .detail-image {
   width: 100%;
   display: block;
+  height: auto !important;
+  overflow: hidden;
   border-radius: 8rpx;
+}
+
+.detail-image .taro-img__mode-widthfix {
+  display: block;
+  width: 100%;
+  height: auto !important;
 }
 
 .detail-images-empty {
