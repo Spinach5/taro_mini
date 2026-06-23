@@ -1,19 +1,13 @@
-import { View, Text, Image, Swiper, SwiperItem } from "@tarojs/components";
+import { View, Text, Image, ScrollView } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../../components/SafeAreaView";
 import HeadStatus from "../../../../components/HeadStatus";
 import { getBookDetail, toggleWantBook } from "../../../../service";
+import { getColorFromName } from "../../../../utils/getHashCode";
 import runtimeLogger from "../../../../utils/runtimeLogger";
 import "./index.css";
-
-const CONDITION_COLORS = {
-  全新: "#27ae60",
-  几乎全新: "#3498db",
-  有笔记: "#f39c12",
-  较旧: "#95a5a6",
-};
 
 export default function Index() {
   const router = Taro.useRouter();
@@ -64,15 +58,16 @@ export default function Index() {
     }
   };
 
+  const formatTime = (t) => {
+    if (!t) return "";
+    return t.slice(0, 10);
+  };
+
   if (loading) {
     return (
       <SafeAreaView>
         <View className="uniform-page-header">
-          <AtIcon
-            value="arrow-left"
-            color="#ffffff"
-            onClick={() => Taro.navigateBack()}
-          />
+          <AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.navigateBack()} />
           <HeadStatus text="书籍详情" />
         </View>
         <View className="loading-view">
@@ -87,90 +82,87 @@ export default function Index() {
   return (
     <SafeAreaView>
       <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.navigateBack()}
-        />
+        <AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.navigateBack()} />
         <HeadStatus text="书籍详情" />
       </View>
 
-      <View className="detail-scroll">
-        {/* 轮播图 */}
+      <ScrollView scrollY className="detail-scroll" enhanced bounces={false}>
+        {/* 发布者信息 */}
+        <View className="publisher-bar">
+          <View className="publisher-info">
+            <View
+              className="publisher-avatar"
+              style={{ background: getColorFromName(book.publisherName || "?") }}
+            >
+              <Text className="publisher-avatar-text">
+                {(book.publisherName || "?")[0]}
+              </Text>
+            </View>
+            <Text className="publisher-name">{book.publisherName || "未知"}</Text>
+          </View>
+          <Text className="publish-time">发布于 {formatTime(book.publishTime)}</Text>
+        </View>
+
+        {/* 书名 */}
+        <Text className="book-title">{book.name}</Text>
+
+        {/* 价格 + 新旧程度 */}
+        <View className="price-condition-row">
+          <Text className="book-price">
+            <Text className="price-symbol">¥</Text>
+            <Text className="price-number">{book.price}</Text>
+          </Text>
+          <Text className="book-condition">{book.condition || "未知"}</Text>
+        </View>
+
+        {/* 描述 */}
+        {book.description ? (
+          <Text className="book-description">{book.description}</Text>
+        ) : null}
+
+        {/* 属性横向滑动条 */}
+        <View className="info-slider">
+          <ScrollView scrollX className="info-scroll" enhanced bounces={false}>
+            <View className="info-scroll-inner">
+              <View className="info-item">
+                <Text className="info-label">种类</Text>
+                <Text className="info-value">{book.category || "未分类"}</Text>
+              </View>
+              <View className="info-divider" />
+              <View className="info-item">
+                <Text className="info-label">成色</Text>
+                <Text className="info-value">{book.condition || "未知"}</Text>
+              </View>
+              <View className="info-divider" />
+              <View className="info-item">
+                <Text className="info-label">ISBN</Text>
+                <Text className="info-value">{book.isbn || "暂无"}</Text>
+              </View>
+            </View>
+          </ScrollView>
+        </View>
+
+        {/* 书籍图片 */}
         {images.length > 0 ? (
-          <Swiper
-            className="detail-swiper"
-            indicatorDots
-            indicatorColor="rgba(255,255,255,0.5)"
-            indicatorActiveColor="#fff"
-            circular
-          >
+          <View className="detail-images">
             {images.map((img, idx) => (
-              <SwiperItem key={idx}>
-                <Image
-                  className="swiper-img"
-                  src={img.url}
-                  mode="aspectFill"
-                />
-              </SwiperItem>
+              <Image
+                key={idx}
+                className="detail-image"
+                src={img.url}
+                mode="widthFix"
+              />
             ))}
-          </Swiper>
+          </View>
         ) : (
-          <View className="detail-swiper detail-swiper-empty">
-            <Text className="swiper-empty-text">暂无图片</Text>
+          <View className="detail-images-empty">
+            <Text className="images-empty-text">暂无图片</Text>
           </View>
         )}
 
-        {/* 信息区 */}
-        <View className="detail-section">
-          <Text className="detail-name">{book.name}</Text>
-          <Text className="detail-price">¥{book.price}</Text>
-        </View>
-
-        <View className="detail-section">
-          <View className="detail-row">
-            <Text className="detail-label">ISBN</Text>
-            <Text className="detail-value">{book.isbn || "暂无"}</Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">类别</Text>
-            <Text className="detail-value">{book.category || "未分类"}</Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">发布人</Text>
-            <Text className="detail-value">
-              {book.publisherName || "未知"}
-            </Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">发布时间</Text>
-            <Text className="detail-value">
-              {book.publishTime || "未知"}
-            </Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">新旧程度</Text>
-            <Text
-              className="condition-tag"
-              style={{
-                background: CONDITION_COLORS[book.condition] || "#95a5a6",
-              }}
-            >
-              {book.condition || "未知"}
-            </Text>
-          </View>
-        </View>
-
-        {book.description ? (
-          <View className="detail-section">
-            <Text className="detail-section-title">描述</Text>
-            <Text className="detail-section-content">{book.description}</Text>
-          </View>
-        ) : null}
-
-        {/* 底部留白给固定栏 */}
+        {/* 底部留白 */}
         <View style={{ height: "120rpx" }} />
-      </View>
+      </ScrollView>
 
       {/* 底部固定栏 */}
       <View className="bottom-bar">

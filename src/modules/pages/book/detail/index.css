@@ -1,117 +1,175 @@
 .detail-scroll {
   flex: 1;
+  padding: 24rpx;
   overflow-y: auto;
 }
 
-/* 轮播图 */
-.detail-swiper {
-  width: 100%;
-  height: 480rpx;
-  background: #e8e8e8;
+/* 发布者信息栏 */
+.publisher-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.detail-swiper-empty {
+.publisher-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.publisher-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 320rpx;
 }
 
-.swiper-img {
-  width: 100%;
-  height: 100%;
+.publisher-avatar-text {
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: bold;
 }
 
-.swiper-empty-text {
+.publisher-name {
   font-size: 30rpx;
-  color: #999;
+  color: var(--color-text, #333);
+  font-weight: bold;
 }
 
-/* 信息区 */
-.detail-section {
-  margin: 24rpx 24rpx 0;
+.publish-time {
+  font-size: 24rpx;
+  color: var(--color-text-secondary, #999);
+}
+
+/* 书名 */
+.book-title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: var(--color-text, #2c3e50);
+  margin-top: 28rpx;
+  line-height: 1.3;
+}
+
+/* 价格 + 新旧程度 */
+.price-condition-row {
+  display: flex;
+  align-items: baseline;
+  gap: 24rpx;
+  margin-top: 20rpx;
+}
+
+.book-price {
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.price-symbol {
+  font-size: 28rpx;
+}
+
+.price-number {
+  font-size: 44rpx;
+}
+
+.book-condition {
+  font-size: 30rpx;
+  font-weight: bold;
+  font-style: italic;
+  color: #333;
+}
+
+/* 描述 */
+.book-description {
+  display: block;
+  font-size: 28rpx;
+  color: var(--color-text-secondary, #666);
+  line-height: 1.7;
+  margin-top: 24rpx;
+}
+
+/* 属性横向滑动条 */
+.info-slider {
+  margin-top: 32rpx;
   background: var(--color-bg-card, #fff);
   border-radius: 16rpx;
   padding: 24rpx;
 }
 
-.detail-name {
-  font-size: 38rpx;
-  font-weight: bold;
-  color: var(--color-text, #2c3e50);
-  display: block;
+.info-scroll {
+  width: 100%;
+  white-space: nowrap;
 }
 
-.detail-price {
-  font-size: 36rpx;
-  color: #e74c3c;
-  font-weight: bold;
-  display: block;
-  margin-top: 12rpx;
-}
-
-.detail-row {
+.info-scroll-inner {
   display: flex;
   align-items: center;
-  margin-bottom: 16rpx;
 }
 
-.detail-row:last-child {
-  margin-bottom: 0;
-}
-
-.detail-label {
-  font-size: 28rpx;
-  color: var(--color-text-secondary, #888);
-  width: 150rpx;
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  padding: 0 32rpx;
   flex-shrink: 0;
 }
 
-.detail-value {
+.info-label {
+  font-size: 22rpx;
+  color: var(--color-text-secondary, #999);
+}
+
+.info-value {
   font-size: 28rpx;
   color: var(--color-text, #333);
-  flex: 1;
-}
-
-.condition-tag {
-  font-size: 24rpx;
-  color: #fff;
-  padding: 6rpx 16rpx;
-  border-radius: 8rpx;
-  display: inline-block;
-}
-
-.detail-section-title {
-  display: block;
-  font-size: 30rpx;
   font-weight: bold;
-  color: var(--color-text, #333);
-  margin-bottom: 12rpx;
-  border-left: 6rpx solid #47a5fd;
-  padding-left: 16rpx;
 }
 
-.detail-section-content {
+.info-divider {
+  width: 2rpx;
+  height: 48rpx;
+  background: #eee;
+  flex-shrink: 0;
+}
+
+/* 书籍图片 */
+.detail-images {
+  margin-top: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.detail-image {
+  width: 100%;
+  border-radius: 12rpx;
+  display: block;
+}
+
+.detail-images-empty {
+  margin-top: 24rpx;
+  height: 300rpx;
+  background: var(--color-bg-card, #f5f5f5);
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.images-empty-text {
   font-size: 28rpx;
-  color: var(--color-text-secondary, #555);
-  line-height: 1.7;
+  color: #999;
 }
 
-/* Loading / Empty */
+/* Loading */
 .loading-view {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.empty-view {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-  font-size: 28rpx;
 }
 
 /* 底部固定栏 */
@@ -142,10 +200,6 @@
   background: #e74c3c;
 }
 
-.want-btn-disabled {
-  opacity: 0.5;
-}
-
 .want-btn-text {
   font-size: 30rpx;
   color: #e74c3c;
@@ -154,6 +208,10 @@
 
 .want-btn-active .want-btn-text {
   color: #fff;
+}
+
+.want-btn-disabled {
+  opacity: 0.5;
 }
 
 .edit-btn {
