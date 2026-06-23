@@ -1,5 +1,5 @@
 import { View, Text, Input, Textarea, ScrollView, Image } from "@tarojs/components";
-import Taro, { useLoad, useUnload } from "@tarojs/taro";
+import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
@@ -51,8 +51,6 @@ export default function Index() {
   };
 
   const clearDraft = () => cacheManager.remove(DRAFT_KEY);
-
-  useUnload(() => clearDraft());
 
   useLoad(() => {
     (async () => {
