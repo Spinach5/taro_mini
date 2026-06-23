@@ -19,6 +19,7 @@
   flex: 1;
   margin-left: 12rpx;
   font-size: 28rpx;
+  line-height: 68rpx;
   color: var(--color-text, #333);
   height: 100%;
 }
