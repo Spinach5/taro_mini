@@ -98,8 +98,9 @@ export default function Index() {
         Taro.showToast({ title: "发起会话失败", icon: "none" });
         return;
       }
+      const coverUrl = (book.images && book.images.length > 0) ? book.images[0].url : "";
       Taro.navigateTo({
-        url: `/modules/pages/book/chat/detail/index?conversationId=${convId}`,
+        url: `/modules/pages/chat/detail/index?conversationId=${convId}&name=${encodeURIComponent(book.publisherName || "")}&bookName=${encodeURIComponent(book.name || "")}&bookImage=${encodeURIComponent(coverUrl)}&bookPrice=${encodeURIComponent(String(book.price || ""))}&isDelivery=${book.isDelivery || 0}`,
       });
     } catch (error) {
       runtimeLogger.error("BookDetail", "发起会话失败", error);
@@ -191,8 +192,15 @@ export default function Index() {
           <Text className="publish-time">发布于 {formatTime(book.publishTime)}</Text>
         </View>
 
-        {/* 书名 */}
-        <Text className="book-title">{book.name}</Text>
+        {/* 书名 + 状态 */}
+        <View className="book-title-row">
+          <Text className="book-title">{book.name}</Text>
+          {book.status != null && (
+            <Text className="publish-status">
+              交易状态：{book.status === 0 ? "发布中" : book.status === 1 ? "交易中" : book.status === 2 ? "已下架" : "未知"}
+            </Text>
+          )}
+        </View>
 
         {/* 价格 + 配送方式 */}
         <View className="price-condition-row">
@@ -305,7 +313,7 @@ export default function Index() {
           </>
         ) : (
           <View className="contact-btn" onClick={handleTalk}>
-            <Text className="contact-btn-text">购买</Text>
+            <Text className="contact-btn-text">联系</Text>
           </View>
         )}
       </View>

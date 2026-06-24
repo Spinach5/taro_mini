@@ -1,21 +1,27 @@
-import { View, Text, Input, ScrollView } from "@tarojs/components";
+import { View, Text, Input, ScrollView, Image } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState, useCallback, useRef, useEffect } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
-import SafeAreaView from "../../../../../components/SafeAreaView";
-import HeadStatus from "../../../../../components/HeadStatus";
-import { getMessages, sendMessage } from "../../../../../service/hbut/chat";
-import { getColorFromName } from "../../../../../utils/getHashCode";
-import userManager from "../../../../../service/userInfo";
-import runtimeLogger from "../../../../../utils/runtimeLogger";
+import SafeAreaView from "../../../../components/SafeAreaView";
+import HeadStatus from "../../../../components/HeadStatus";
+import { getMessages, sendMessage } from "../../../../service/hbut/chat";
+import { getColorFromName } from "../../../../utils/getHashCode";
+import userManager from "../../../../service/userInfo";
+import runtimeLogger from "../../../../utils/runtimeLogger";
 import "./index.css";
 
 const PAGE_SIZE = 20;
+const DEAL_REQUEST = "__DEAL_REQUEST__";
+const DEAL_ACCEPT = "__DEAL_ACCEPT__";
 
 export default function Index() {
   const router = Taro.useRouter();
   const conversationId = Number(router.params.conversationId);
   const otherName = decodeURIComponent(router.params.name || "");
+  const bookName = decodeURIComponent(router.params.bookName || "");
+  const bookImage = decodeURIComponent(router.params.bookImage || "");
+  const bookPrice = decodeURIComponent(router.params.bookPrice || "");
+  const isDelivery = Number(router.params.isDelivery || 0);
 
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -88,6 +94,50 @@ export default function Index() {
     }
   }, [messages.length, loading]);
 
+  // 发送成交请求
+  const handleMakeDeal = () => {
+    Taro.showModal({
+      title: "确认成交",
+      content: `是否与 ${otherName || "对方"} 就以 ¥${bookPrice || "?"} 成交《${bookName || "书籍"}》？`,
+      success: async (res) => {
+        if (!res.confirm) return;
+        try {
+          await sendMessage(conversationId, DEAL_REQUEST);
+          setMessages((prev) => [...prev, {
+            id: Date.now(),
+            content: DEAL_REQUEST,
+            sender_id: currentUserId,
+            create_time: new Date().toISOString(),
+          }]);
+        } catch (error) {
+          Taro.showToast({ title: "发送失败", icon: "none" });
+        }
+      },
+    });
+  };
+
+  // 对方点击同意成交
+  const handleAcceptDeal = () => {
+    Taro.showModal({
+      title: "同意成交",
+      content: `确认与对方就以 ¥${bookPrice || "?"} 成交《${bookName || "书籍"}》？`,
+      success: async (res) => {
+        if (!res.confirm) return;
+        try {
+          await sendMessage(conversationId, DEAL_ACCEPT);
+          setMessages((prev) => [...prev, {
+            id: Date.now(),
+            content: DEAL_ACCEPT,
+            sender_id: currentUserId,
+            create_time: new Date().toISOString(),
+          }]);
+        } catch (error) {
+          Taro.showToast({ title: "发送失败", icon: "none" });
+        }
+      },
+    });
+  };
+
   const handleSend = async () => {
     const text = inputValue.trim();
     if (!text || sending) return;
@@ -102,7 +152,6 @@ export default function Index() {
         create_time: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, newMsg]);
-      // 滚动到底部
       setTimeout(() => {
         Taro.pageScrollTo({ scrollTop: 999999, duration: 100 });
       }, 150);
@@ -116,6 +165,41 @@ export default function Index() {
 
   const handleBack = () => {
     Taro.navigateBack();
+  };
+
+  // 判断消息是否为成交卡片
+  const isDealMsg = (content) => content === DEAL_REQUEST || content === DEAL_ACCEPT;
+
+  const renderMsgBubble = (msg, isSelf) => {
+    const content = msg.content || "";
+    if (content === DEAL_REQUEST) {
+      return (
+        <View className={`chat-deal-card ${isSelf ? "chat-deal-card-done" : "chat-deal-card-bg"}`}>
+          <Text className="chat-deal-card-icon">{isSelf ? "✅" : "🤝"}</Text>
+          <Text className="chat-deal-card-title">
+            {isSelf ? "已发送成交请求" : "对方请求成交"}
+          </Text>
+          {!isSelf && (
+            <>
+              <Text className="chat-deal-card-desc">点击下方按钮同意成交</Text>
+              <View className="chat-deal-card-btn" onClick={(e) => { e.stopPropagation(); handleAcceptDeal(); }}>
+                <Text className="chat-deal-card-btn-text">同意成交</Text>
+              </View>
+            </>
+          )}
+        </View>
+      );
+    }
+    if (content === DEAL_ACCEPT) {
+      return (
+        <View className="chat-deal-card chat-deal-card-done">
+          <Text className="chat-deal-card-icon">🎉</Text>
+          <Text className="chat-deal-card-title">已同意成交</Text>
+          <Text className="chat-deal-card-desc">双方已达成交易</Text>
+        </View>
+      );
+    }
+    return <Text>{content}</Text>;
   };
 
   if (loading) {
@@ -144,6 +228,30 @@ export default function Index() {
       </View>
 
       <View className="chat-detail-page">
+        {/* 顶部书籍信息栏 */}
+        <View className="chat-book-bar">
+          {bookImage ? (
+            <Image className="chat-book-cover" src={bookImage} mode="aspectFill" />
+          ) : (
+            <View className="chat-book-cover-placeholder">
+              <Text className="chat-book-cover-placeholder-text">暂无</Text>
+            </View>
+          )}
+          <View className="chat-book-info">
+            <Text className="chat-book-price">
+              <Text style={{ fontSize: "22rpx" }}>¥</Text>
+              {bookPrice || "?"}
+            </Text>
+            <Text className="chat-book-name">书名：{bookName || "未知书籍"}</Text>
+            <Text className={`chat-book-delivery ${isDelivery === 1 ? "chat-delivery-send" : ""}`}>
+              配送方式：{isDelivery === 1 ? "可送" : "自提"}
+            </Text>
+          </View>
+          <View className="chat-deal-btn" onClick={handleMakeDeal}>
+            <Text className="chat-deal-btn-text">成交</Text>
+          </View>
+        </View>
+
         <ScrollView
           ref={scrollRef}
           scrollY
@@ -152,7 +260,6 @@ export default function Index() {
           bounces={false}
           scrollWithAnimation
         >
-          {/* 加载更多 */}
           {hasMore && messages.length >= PAGE_SIZE && (
             <View className="chat-loading-more" onClick={() => fetchMessages(page + 1)}>
               <Text className="chat-loading-text">点击加载更多</Text>
@@ -162,6 +269,7 @@ export default function Index() {
           {messages.map((msg, idx) => {
             const isSelf = String(msg.sender_id || msg.senderId) === String(currentUserId);
             const senderName = isSelf ? "我" : (otherName || "对方");
+            const isDeal = isDealMsg(msg.content || "");
 
             return (
               <View key={msg.id || idx}>
@@ -178,8 +286,8 @@ export default function Index() {
                     <Text className="chat-msg-avatar-text">{senderName[0]}</Text>
                   </View>
                   <View className="chat-msg-body">
-                    <View className="chat-msg-bubble">
-                      <Text>{msg.content}</Text>
+                    <View className={`chat-msg-bubble ${isDeal ? "chat-deal-card-wrap" : ""}`}>
+                      {renderMsgBubble(msg, isSelf)}
                     </View>
                   </View>
                 </View>

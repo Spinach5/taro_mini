@@ -366,7 +366,7 @@ export default function Index() {
       {/* FAB 悬浮按钮 — 消息图标 */}
       <View
         className="fab-btn"
-        onClick={() => Taro.navigateTo({ url: "/modules/pages/book/chat/list/index" })}
+        onClick={() => Taro.navigateTo({ url: "/modules/pages/chat/list/index" })}
       >
         <MaterialCommunityIcons name="message-text-outline" size={40} color="#fff" />
       </View>

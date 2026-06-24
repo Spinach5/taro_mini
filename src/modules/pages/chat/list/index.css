@@ -2,15 +2,44 @@
   padding: 8rpx;
 }
 
-.chat-list-page {
-  display: flex;
-  flex-direction: column;
+/* Loading */
+.chat-list-loading {
   flex: 1;
-  min-height: 0;
-  background: #f5f6f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* 错误 */
+.chat-error-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24rpx;
+}
+
+.chat-error-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.chat-retry-btn {
+  padding: 12rpx 48rpx;
+  border-radius: 32rpx;
+  background: #47a5fd;
+}
+
+.chat-retry-btn-text {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* 列表滚动 */
 .chat-list-scroll {
+  height: 0;
   flex: 1;
   min-height: 0;
 }
@@ -19,12 +48,11 @@
   display: flex;
   align-items: center;
   padding: 24rpx;
-  background: #fff;
   gap: 20rpx;
 }
 
 .chat-item:active {
-  background: #f0f0f0;
+  background: #f5f5f5;
 }
 
 .chat-avatar-wrap {
@@ -101,7 +129,7 @@
 
 .chat-item-time {
   font-size: 22rpx;
-  color: #bbb;
+  color: #999;
   flex-shrink: 0;
 }
 
@@ -135,11 +163,11 @@
 
 /* 空状态 */
 .chat-empty {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 280rpx;
   gap: 16rpx;
 }
 
