@@ -54,6 +54,9 @@ export function isFavoriteBook(bookId) {
  * 将后端字段映射为前端使用的字段名
  */
 function normalizeBook(b) {
+  const currentUserId = userManager.getServerUserId();
+  // 书籍的 user_id 与当前账户的 userId 一致，则为本人发布
+  const isOwner = !!(currentUserId && String(b.user_id) === String(currentUserId));
   return {
     ...b,
     id: b.id || b.book_id,
@@ -63,7 +66,7 @@ function normalizeBook(b) {
     images: (b.images && b.images.length > 0 ? b.images.map(function(img) { return { ...img, url: resolveImage(img.url) }; }) : (b.image_url ? [{ url: resolveImage(b.image_url) }] : [])),
     wantCount: b.wantCount || b.want_count || 0,
     isDelivery: b.isDelivery !== undefined ? b.isDelivery : (b.is_delivery !== undefined ? b.is_delivery : 0),
-    isPublisher: b.isPublisher !== undefined ? b.isPublisher : false,
+    isPublisher: isOwner,
   };
 }
 

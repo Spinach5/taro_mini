@@ -168,6 +168,7 @@ export default function Index() {
     }
 
     setExpandLoading(true);
+    let loadingVisible = true;
     Taro.showLoading({ title: "正在连接远程服务器", mask: true });
 
     try {
@@ -195,12 +196,12 @@ export default function Index() {
         }
         serverConnected = true;
         updateFeature("expand", true);
-        Taro.hideLoading();
         return;
       }
 
       // 先隐藏 loading 再弹窗
       Taro.hideLoading();
+      loadingVisible = false;
 
       // 2. 未注册，弹窗确认
       const modalRes = await Taro.showModal({
@@ -211,11 +212,11 @@ export default function Index() {
       });
 
       if (!modalRes.confirm) {
-        setExpandLoading(false);
         return;
       }
 
       Taro.showLoading({ title: "正在连接远程服务器", mask: true });
+      loadingVisible = true;
 
       // 3. 调用注册接口
       const regRes = await serverPost("/api/v1/auth/register", {
@@ -249,7 +250,7 @@ export default function Index() {
       });
     } finally {
       setExpandLoading(false);
-      Taro.hideLoading();
+      if (loadingVisible) Taro.hideLoading();
     }
   }, [features.expand, updateFeature]);
 

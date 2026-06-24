@@ -4,6 +4,24 @@ import cacheManager from "../utils/cache";
 import { cleanH5Cookies } from "../utils/cleanH5Cookies";
 import { hbutCookies, opendiffCookies, giteeCookies } from "../utils/request";
 
+/** 手写 Base64 解码，兼容微信小程序（没有 atob） */
+function base64Decode(str) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+  let output = "";
+  let i = 0;
+  str = str.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+  while (i < str.length) {
+    const a = chars.indexOf(str.charAt(i++));
+    const b = chars.indexOf(str.charAt(i++));
+    const c = chars.indexOf(str.charAt(i++));
+    const d = chars.indexOf(str.charAt(i++));
+    output += String.fromCharCode((a << 2) | (b >> 4));
+    if (c !== 64) output += String.fromCharCode(((b & 15) << 4) | (c >> 2));
+    if (d !== 64) output += String.fromCharCode(((c & 3) << 6) | d);
+  }
+  return output;
+}
+
 class UserManager {
 	constructor() {
 		// 用户信息字段
@@ -109,7 +127,7 @@ class UserManager {
 			const token = this.serverToken;
 			if (!token) return 0;
 			const payload = token.split(".")[1];
-			const decoded = JSON.parse(atob(payload));
+			const decoded = JSON.parse(base64Decode(payload));
 			return decoded.userId || decoded.user_id || decoded.id || 0;
 		} catch {
 			return 0;

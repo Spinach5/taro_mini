@@ -48,6 +48,7 @@ export default function Index() {
   const [loading, setLoading] = useState("loading");
   const [sortMode, setSortMode] = useState("time");
   const [favIds, setFavIds] = useState([]);
+  const [imgErrors, setImgErrors] = useState({});
   const debounceRef = useRef(null);
   const currentUserId = userManager.getServerUserId();
 
@@ -242,11 +243,12 @@ export default function Index() {
                 }
               >
                 <View className="card-img">
-                  {book.images && book.images.length > 0 ? (
+                  {book.images && book.images.length > 0 && !imgErrors[book.id] ? (
                     <Image
                       className="card-img-pic"
                       src={book.images[0].url}
                       mode="aspectFill"
+                      onError={() => setImgErrors((prev) => ({ ...prev, [book.id]: true }))}
                     />
                   ) : (
                     <View
@@ -284,7 +286,7 @@ export default function Index() {
                     <Text className={`delivery-tag ${book.isDelivery === 1 ? "delivery-send" : "delivery-pickup"}`}>
                       {book.isDelivery === 1 ? "可送" : "自提"}
                     </Text>
-                    {book.user_id === currentUserId ? (
+                    {book.isPublisher ? (
                       <Text className="owner-tag">自己</Text>
                     ) : favIds.includes(book.id) ? (
                       <Text className="fav-tag">已收藏</Text>

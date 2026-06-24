@@ -26,6 +26,7 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
   const [favLoading, setFavLoading] = useState(false);
   const [isFav, setIsFav] = useState(false);
+  const [imgErrors, setImgErrors] = useState({});
 
   useLoad(() => {
     if (!id) {
@@ -217,13 +218,21 @@ export default function Index() {
         {images.length > 0 ? (
           <View className="detail-images">
             {images.map((img, idx) => (
-              <Image
-                key={idx}
-                className="detail-image"
-                src={img.url}
-                mode="widthFix"
-              />
+              imgErrors[idx] ? null : (
+                <Image
+                  key={idx}
+                  className="detail-image"
+                  src={img.url}
+                  mode="widthFix"
+                  onError={() => setImgErrors((prev) => ({ ...prev, [idx]: true }))}
+                />
+              )
             ))}
+            {Object.keys(imgErrors).length >= images.length && (
+              <View className="detail-images-empty">
+                <Text className="images-empty-text">图片加载失败</Text>
+              </View>
+            )}
           </View>
         ) : (
           <View className="detail-images-empty">
@@ -244,7 +253,7 @@ export default function Index() {
           <AtIcon value={isFav ? "heart-2" : "heart"} size={22} color={isFav ? "#e74c3c" : "#000"} />
           <Text className="fav-text">{isFav ? "已收藏" : "收藏"}</Text>
         </View>
-        {(book.isPublisher || book.user_id === userManager.getServerUserId()) ? (
+        {book.isPublisher ? (
           <>
             <View
               className="edit-btn"
