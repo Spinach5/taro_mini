@@ -167,7 +167,7 @@ export default function Index() {
 
   const handleScan = () => {
     Taro.scanCode({
-      onlyFromCamera: true,
+     //onlyFromCamera: true,从相机和相册获取
       scanType: ["barCode"],
       success: (res) => {
         const scanned = res.result;
