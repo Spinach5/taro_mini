@@ -1,7 +1,40 @@
+/* 卖书/买书 双按钮 */
+.trade-btn-row {
+  display: flex;
+  gap: 20rpx;
+  padding: 16rpx 24rpx 0;
+  flex-shrink: 0;
+}
+
+.trade-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+.trade-btn-sell {
+  background: linear-gradient(135deg, #f09819 0%, #ff6a00 100%);
+}
+
+.trade-btn-buy {
+  background: linear-gradient(135deg, #47a5fd 0%, #6db9ff 100%);
+}
+
+.trade-btn-text {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
 /* 搜索栏 */
 .search-bar {
   padding: 0 24rpx;
-  margin-top: 12rpx;
+  margin-top: 16rpx;
   flex-shrink: 0;
 }
 
@@ -24,12 +57,52 @@
   height: 100%;
 }
 
-/* 类别筛选 */
+/* 出售/求购/全部 三按钮筛选 */
+.book-type-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 16rpx 24rpx 0;
+  flex-shrink: 0;
+}
+
+.book-type-tag {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #666;
+  background: #f0f1f4;
+  transition: all 0.2s;
+}
+
+.book-type-tag:first-child {
+  border-radius: 30rpx 0 0 30rpx;
+}
+
+.book-type-tag:last-child {
+  border-radius: 0 30rpx 30rpx 0;
+}
+
+.book-type-tag-active {
+  background: #47a5fd;
+  color: #fff;
+}
+
+/* 分割线 */
+.filter-divider {
+  height: 1px;
+  background: #e8e8e8;
+  margin: 16rpx 24rpx 0;
+  flex-shrink: 0;
+}
+
+/* 种类多选 */
 .category-scroll {
   width: 100%;
   white-space: nowrap;
-  padding: 16rpx 0;
-  margin-top: 8rpx;
+  padding: 12rpx 0;
   flex-shrink: 0;
 }
 
@@ -118,6 +191,7 @@
   width: 100%;
   height: 340rpx;
   overflow: hidden;
+  position: relative;
 }
 
 .card-img-pic {
@@ -137,6 +211,29 @@
   font-size: 80rpx;
   color: #fff;
   font-weight: bold;
+}
+
+/* 出售/求购 图片角标 */
+.card-type-tag {
+  position: absolute;
+  top: 12rpx;
+  left: 12rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 8rpx;
+}
+
+.card-type-tag-text {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.tag-sell {
+  background: rgba(240, 152, 25, 0.9);
+}
+
+.tag-buy {
+  background: rgba(71, 165, 253, 0.9);
 }
 
 /* 文字信息区 */
@@ -337,10 +434,4 @@
   justify-content: center;
   box-shadow: 0 6rpx 24rpx rgba(71, 165, 253, 0.35);
   z-index: 100;
-}
-
-.fab-text {
-  font-size: 56rpx;
-  color: #fff;
-  line-height: 1;
 }

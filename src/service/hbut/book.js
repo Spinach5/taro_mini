@@ -61,6 +61,8 @@ function normalizeBook(b) {
     ...b,
     id: b.id || b.book_id,
     name: b.name || b.title,
+    author: b.author || "",
+    publisher: b.publisher || "",
     publisherName: b.publisherName || b.nickName || "",
     publishTime: b.publishTime || b.create_time || "",
     images: (b.images && b.images.length > 0 ? b.images.map(function(img) { return { ...img, url: resolveImage(img.url) }; }) : (b.image_url ? [{ url: resolveImage(b.image_url) }] : [])),

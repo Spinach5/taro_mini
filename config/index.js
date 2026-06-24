@@ -54,6 +54,9 @@ export default defineConfig(async (merge, { command, mode }) => {
 			"process.env.VITE_CLOUDBASE_ACCESS_KEY": JSON.stringify(
 				process.env.VITE_CLOUDBASE_ACCESS_KEY || "",
 			),
+			"process.env.ISBN_KEY": JSON.stringify(
+				process.env.ISBN_KEY || "",
+			),
 		},
 		copy: {
 			patterns: [],
@@ -367,6 +370,11 @@ export default defineConfig(async (merge, { command, mode }) => {
 								);
 							}
 						});
+					},
+					"/isbn": {
+						target: "https://data.isbn.work",
+						changeOrigin: true,
+						rewrite: (path) => path.replace(/^\/isbn/, ""),
 					},
 				},
 				},

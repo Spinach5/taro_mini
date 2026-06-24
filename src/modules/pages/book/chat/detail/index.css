@@ -1,0 +1,152 @@
+.back-btn {
+  padding: 8rpx;
+}
+
+.chat-detail-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* 消息列表 */
+.chat-msg-scroll {
+  flex: 1;
+  min-height: 0;
+  padding-top: 20rpx;
+}
+
+.chat-loading-more {
+  text-align: center;
+  padding: 16rpx 0;
+}
+
+.chat-loading-text {
+  font-size: 24rpx;
+  color: #bbb;
+}
+
+/* 单条消息 */
+.chat-msg-row {
+  display: flex;
+  margin-bottom: 28rpx;
+  padding: 0 24rpx;
+}
+
+.chat-msg-row.msg-self {
+  flex-direction: row-reverse;
+}
+
+.chat-msg-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chat-msg-avatar-text {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+.chat-msg-body {
+  max-width: 68%;
+  margin: 0 16rpx;
+}
+
+.chat-msg-bubble {
+  padding: 18rpx 24rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.msg-other .chat-msg-bubble {
+  background: #fff;
+  color: #333;
+  border-top-left-radius: 4rpx;
+}
+
+.msg-self .chat-msg-bubble {
+  background: #95ec69;
+  color: #000;
+  border-top-right-radius: 4rpx;
+}
+
+.chat-msg-time {
+  font-size: 20rpx;
+  color: #bbb;
+  margin-top: 6rpx;
+}
+
+.msg-self .chat-msg-time {
+  text-align: right;
+}
+
+/* 每条消息上方的时间 */
+.chat-msg-time-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6rpx;
+  padding: 0 24rpx;
+}
+
+.chat-msg-time-text {
+  font-size: 20rpx;
+  color: #bbb;
+}
+
+/* 底部输入栏 */
+.chat-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx 24rpx;
+  flex-shrink: 0;
+}
+
+.chat-input-field {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  background: #f5f6f7;
+  border-radius: 36rpx;
+  padding: 0 28rpx;
+  font-size: 28rpx;
+  color: #333;
+  box-sizing: border-box;
+}
+
+.chat-send-btn {
+  width: 120rpx;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background: #47a5fd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chat-send-btn-disabled {
+  background: #ccc;
+}
+
+.chat-send-text {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Loading */
+.chat-detail-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

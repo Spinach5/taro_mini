@@ -6,32 +6,24 @@ import { MaterialCommunityIcons } from "taro-icons";
 import SafeAreaView from "../../../../components/SafeAreaView";
 import HeadStatus from "../../../../components/HeadStatus";
 import {
-  getBookDetail,
   getBookCategories,
   createBook,
-  updateBook,
   uploadBookImage,
 } from "../../../../service";
 import cacheManager from "../../../../utils/cache";
 import runtimeLogger from "../../../../utils/runtimeLogger";
-import "./index.css";
+import "../edit/index.css";
 
-const CONDITION_OPTIONS = ["全新", "几乎全新", "有笔记", "较旧"];
-const DRAFT_KEY = "v1_book_draft";
+const DRAFT_KEY = "v1_buy_draft";
 
 export default function Index() {
-  const router = Taro.useRouter();
-  const editId = router.params.id || "";
-  const isEdit = !!editId;
-
-  const draftCache = isEdit ? null : cacheManager.get(DRAFT_KEY);
+  const draftCache = cacheManager.get(DRAFT_KEY);
 
   const [name, setName] = useState(draftCache?.name || "");
   const [isbn, setIsbn] = useState(draftCache?.isbn || "");
   const [category, setCategory] = useState(draftCache?.category || "");
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [price, setPrice] = useState(draftCache?.price || "");
-  const [condition, setCondition] = useState(draftCache?.condition || "几乎全新");
   const [contact, setContact] = useState(draftCache?.contact || "");
   const [description, setDescription] = useState(draftCache?.description || "");
   const [images, setImages] = useState(draftCache?.images || []);
@@ -44,12 +36,10 @@ export default function Index() {
   const [isbnFetching, setIsbnFetching] = useState(false);
   const [author, setAuthor] = useState(draftCache?.author || "");
   const [publisher, setPublisher] = useState(draftCache?.publisher || "");
-  const [isDelivery, setIsDelivery] = useState(draftCache?.isDelivery != null ? draftCache.isDelivery : 1);
 
   // 保存草稿
   const saveDraft = (silent = false) => {
-    if (isEdit) return;
-    const draft = { name, isbn, category, price, condition, contact, description, images, author, publisher, isDelivery };
+    const draft = { name, isbn, category, price, contact, description, images, author, publisher };
     if (name || isbn || price || contact || images.length > 0) {
       cacheManager.set(DRAFT_KEY, draft);
       if (!silent) Taro.showToast({ title: "已保存为草稿", icon: "success" });
@@ -64,27 +54,6 @@ export default function Index() {
         const cats = await getBookCategories();
         setCategoryOptions((cats || []).filter((c) => c !== "全部"));
       } catch {}
-      if (isEdit) {
-        try {
-          const data = await getBookDetail(editId);
-          if (data) {
-            setName(data.name || "");
-            setIsbn(data.isbn || "");
-            setAuthor(data.author || "");
-            setPublisher(data.publisher || "");
-            setCategory(data.category || "");
-            setPrice(data.price != null ? String(data.price) : "");
-            setCondition(data.condition || "几乎全新");
-            setContact(data.contact || "");
-            setDescription(data.description || "");
-            setImages((data.images || []).map((img) => ({ tempFilePath: img.url })));
-            setIsDelivery(data.isDelivery != null ? data.isDelivery : 1);
-          }
-        } catch (error) {
-          runtimeLogger.error("BookEdit", "获取详情失败", error);
-          Taro.showToast({ title: "加载失败", icon: "none" });
-        }
-      }
       setFetched(true);
     })();
   });
@@ -106,19 +75,13 @@ export default function Index() {
     setImages(images.filter((_, i) => i !== idx));
   };
 
-  // ISBN 格式校验：10位或13位数字（10位末位可为X），不含"-"
   const validateIsbn = (raw) => {
     const cleaned = raw.replace(/-/g, "").trim();
-    if (cleaned.length === 10) {
-      return /^\d{9}[\dXx]$/.test(cleaned);
-    }
-    if (cleaned.length === 13) {
-      return /^\d{13}$/.test(cleaned);
-    }
+    if (cleaned.length === 10) return /^\d{9}[\dXx]$/.test(cleaned);
+    if (cleaned.length === 13) return /^\d{13}$/.test(cleaned);
     return false;
   };
 
-  // 调用 ISBN API 获取书籍信息
   const fetchIsbnInfo = async (isbnCode) => {
     setIsbnFetching(true);
     const isH5 = process.env.TARO_ENV === "h5";
@@ -158,7 +121,7 @@ export default function Index() {
         Taro.showToast({ title: json.msg || "查询失败", icon: "none" });
       }
     } catch (error) {
-      runtimeLogger.error("BookEdit", "ISBN查询失败", error);
+      runtimeLogger.error("BookBuy", "ISBN查询失败", error);
       Taro.showToast({ title: "查询失败，请重试", icon: "none" });
     } finally {
       setIsbnFetching(false);
@@ -198,13 +161,12 @@ export default function Index() {
 
   const handleSubmit = async () => {
     if (!name.trim()) { Taro.showToast({ title: "请输入书籍名称", icon: "none" }); return; }
-    if (!price.trim()) { Taro.showToast({ title: "请输入售价", icon: "none" }); return; }
+    if (!price.trim()) { Taro.showToast({ title: "请输入求购价", icon: "none" }); return; }
     if (!contact.trim()) { Taro.showToast({ title: "请输入联系方式", icon: "none" }); return; }
     if (submitting || uploading) return;
 
     setSubmitting(true);
     try {
-      // 上传图片
       setUploading(true);
       const uploadedUrls = [];
       for (const img of images) {
@@ -224,20 +186,19 @@ export default function Index() {
         isbn: isbn.trim(),
         category,
         price: price.trim(),
-        condition,
         contact: contact.trim(),
         description: description.trim(),
         images: uploadedUrls,
-        is_delivery: isDelivery,
-        book_type: 1,
+        is_delivery: 0,
+        book_type: 2,
       };
 
-      await (isEdit ? updateBook(editId, data) : createBook(data));
+      await createBook(data);
       clearDraft();
-      Taro.showToast({ title: "发布成功", icon: "success" });
+      Taro.showToast({ title: "发布求购成功", icon: "success" });
       setTimeout(() => Taro.navigateBack(), 1500);
     } catch (error) {
-      runtimeLogger.error("BookEdit", "发布失败", error);
+      runtimeLogger.error("BookBuy", "发布失败", error);
       Taro.showToast({ title: error.message || "发布失败", icon: "none" });
     } finally {
       setSubmitting(false);
@@ -257,7 +218,7 @@ export default function Index() {
           <View className="back-btn" onClick={handleBack}>
             <AtIcon value="arrow-left" color="#ffffff" size={20} />
           </View>
-          <HeadStatus text={isEdit ? "编辑书籍" : "发布书籍"} />
+          <HeadStatus text="发布求购" />
         </View>
         <View className="edit-loading">
           <AtActivityIndicator isOpened size={32} mode="center" />
@@ -272,7 +233,7 @@ export default function Index() {
         <View className="back-btn" onClick={handleBack}>
           <AtIcon value="arrow-left" color="#ffffff" size={20} />
         </View>
-        <HeadStatus text={isEdit ? "编辑书籍" : "发布书籍"} />
+        <HeadStatus text="发布求购" />
       </View>
 
       <ScrollView scrollY className="edit-scroll" enhanced bounces={false}>
@@ -300,7 +261,7 @@ export default function Index() {
             ) : (
               <View className="upload-placeholder">
                 <MaterialCommunityIcons name="camera-plus-outline" size={48} color="#bbb" />
-                <Text className="upload-hint">上传书籍图片</Text>
+                <Text className="upload-hint">上传参考图片</Text>
                 <Text className="upload-sub">最多3张，点击选择</Text>
               </View>
             )}
@@ -310,7 +271,7 @@ export default function Index() {
         {/* 2. 书籍名称 */}
         <View className="edit-section">
           <View className="field-label">书籍名称</View>
-          <Input className="field-input" placeholder="请输入书籍名称" value={name} onInput={(e) => setName(e.detail.value)} maxlength={100} />
+          <Input className="field-input" placeholder="请输入想要的书籍名称" value={name} onInput={(e) => setName(e.detail.value)} maxlength={100} />
         </View>
 
         {/* 2.5 作者 + 出版社 */}
@@ -327,7 +288,7 @@ export default function Index() {
           </View>
         </View>
 
-        {/* 3. ISBN — 手动输入 + 扫码获取 */}
+        {/* 3. ISBN */}
         <View className="edit-section">
           <View className="field-label">ISBN</View>
           <View className="isbn-btn-row">
@@ -379,51 +340,16 @@ export default function Index() {
           </View>
         )}
 
-        {/* 4. 价格 */}
+        {/* 4. 求购价 */}
         <View className="edit-section">
-          <View className="field-label">价格</View>
+          <View className="field-label">求购价</View>
           <View className="field-row">
             <Text className="price-prefix">¥</Text>
-            <Input className="field-input flex-1" type="digit" placeholder="请输入售价" value={price} onInput={(e) => setPrice(e.detail.value)} />
+            <Input className="field-input flex-1" type="digit" placeholder="请输入求购价" value={price} onInput={(e) => setPrice(e.detail.value)} />
           </View>
         </View>
 
-        {/* 4.5 配送方式 */}
-        <View className="edit-section">
-          <View className="field-label">配送方式</View>
-          <View className="pill-row">
-            {[
-              { label: "可送", value: 1 },
-              { label: "仅自提", value: 0 },
-            ].map((opt) => (
-              <View
-                key={opt.value}
-                className={`pill-item ${isDelivery === opt.value ? "pill-active" : ""}`}
-                onClick={() => setIsDelivery(opt.value)}
-              >
-                <Text className="pill-text">{opt.label}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* 5. 成色 — 胶囊单选 */}
-        <View className="edit-section">
-          <View className="field-label">成色</View>
-          <View className="pill-row">
-            {CONDITION_OPTIONS.map((opt) => (
-              <View
-                key={opt}
-                className={`pill-item ${condition === opt ? "pill-active" : ""}`}
-                onClick={() => setCondition(opt)}
-              >
-                <Text className="pill-text">{opt}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        {/* 6. 种类 — 下拉 */}
+        {/* 5. 种类 */}
         <View className="edit-section">
           <View className="field-label">种类</View>
           <View className="field-picker" onClick={() => setShowCatPicker(!showCatPicker)}>
@@ -445,19 +371,19 @@ export default function Index() {
           )}
         </View>
 
-        {/* 7. 联系方式 */}
+        {/* 6. 联系方式 */}
         <View className="edit-section">
           <View className="field-label">联系方式</View>
           <Input className="field-input" placeholder="请输入微信号或手机号" value={contact} onInput={(e) => setContact(e.detail.value)} maxlength={50} />
           <Text className="field-hint">仅对登录用户可见</Text>
         </View>
 
-        {/* 8. 详细描述 */}
+        {/* 7. 详细描述 */}
         <View className="edit-section">
-          <View className="field-label">详细描述</View>
+          <View className="field-label">求购说明</View>
           <Textarea
             className="field-textarea"
-            placeholder="请描述书籍的新旧程度、使用情况、出售原因等..."
+            placeholder="请描述你想要的具体版本、新旧程度等..."
             value={description}
             onInput={(e) => setDescription(e.detail.value)}
             maxlength={500}
@@ -476,7 +402,7 @@ export default function Index() {
         </View>
         <View className={`publish-btn ${(!name.trim() || !price.trim() || !contact.trim() || submitting) ? "publish-disabled" : ""}`} onClick={handleSubmit}>
           <MaterialCommunityIcons name="send" size={20} color={(!name.trim() || !price.trim() || !contact.trim()) ? "#ccc" : "#000"} />
-          <Text className="publish-text">{uploading ? "上传中..." : submitting ? "发布中..." : "发布"}</Text>
+          <Text className="publish-text">{uploading ? "上传中..." : submitting ? "发布中..." : "发布求购"}</Text>
         </View>
       </View>
     </SafeAreaView>

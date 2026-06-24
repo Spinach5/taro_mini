@@ -12,6 +12,7 @@ import {
   removeFavoriteBookId,
   isFavoriteBook,
 } from "../../../../service";
+import { createConversation } from "../../../../service/hbut/chat";
 import { getColorFromName } from "../../../../utils/getHashCode";
 import userManager from "../../../../service/userInfo";
 import cacheManager from "../../../../utils/cache";
@@ -89,6 +90,22 @@ export default function Index() {
     }
   };
 
+  const handleTalk = async () => {
+    try {
+      const res = await createConversation(Number(id));
+      const convId = res && res.data ? res.data.id || res.data.conversation_id : null;
+      if (!convId) {
+        Taro.showToast({ title: "发起会话失败", icon: "none" });
+        return;
+      }
+      Taro.navigateTo({
+        url: `/modules/pages/book/chat/detail/index?conversationId=${convId}`,
+      });
+    } catch (error) {
+      runtimeLogger.error("BookDetail", "发起会话失败", error);
+      Taro.showToast({ title: "请先登录", icon: "none" });
+    }
+  };
   const handleDelete = () => {
     Taro.showModal({
       title: "确认删除",
@@ -138,6 +155,7 @@ export default function Index() {
   }
 
   const images = book.images || [];
+  const isBuy = String(book.book_type) === "2";
 
   return (
     <SafeAreaView>
@@ -166,6 +184,9 @@ export default function Index() {
               </Text>
             </View>
             <Text className="publisher-name">{book.publisherName || "未知"}</Text>
+            <Text className={`detail-type-tag ${isBuy ? "detail-type-buy" : "detail-type-sell"}`}>
+              {isBuy ? "求购" : "出售"}
+            </Text>
           </View>
           <Text className="publish-time">发布于 {formatTime(book.publishTime)}</Text>
         </View>
@@ -176,11 +197,14 @@ export default function Index() {
         {/* 价格 + 配送方式 */}
         <View className="price-condition-row">
           <View className="price-left">
+            <Text className="price-label">{isBuy ? "期望价格" : "预估售价"}</Text>
             <Text className="book-price">
               <Text className="price-symbol">¥</Text>
               <Text className="price-number">{book.price}</Text>
             </Text>
-            <Text className="want-count-text">{book.wantCount || 0}人想要</Text>
+            <Text className="want-count-text">
+              {isBuy ? `${book.wantCount || 0}人想卖` : `${book.wantCount || 0}人想要`}
+            </Text>
           </View>
           <Text className={`delivery-badge ${book.isDelivery === 1 ? "delivery-send" : "delivery-pickup"}`}>
             {book.isDelivery === 1 ? "可送" : "自提"}
@@ -204,6 +228,16 @@ export default function Index() {
               <View className="info-item">
                 <Text className="info-label">成色</Text>
                 <Text className="info-value">{book.condition || "未知"}</Text>
+              </View>
+              <View className="info-divider" />
+              <View className="info-item">
+                <Text className="info-label">作者</Text>
+                <Text className="info-value">{book.author || "无"}</Text>
+              </View>
+              <View className="info-divider" />
+              <View className="info-item">
+                <Text className="info-label">出版社</Text>
+                <Text className="info-value">{book.publisher || "无"}</Text>
               </View>
               <View className="info-divider" />
               <View className="info-item">
@@ -270,18 +304,8 @@ export default function Index() {
             </View>
           </>
         ) : (
-          <View
-            className="contact-btn"
-            onClick={() => {
-              if (book.contact) {
-                Taro.setClipboardData({ data: book.contact });
-                Taro.showToast({ title: "联系方式已复制", icon: "success" });
-              } else {
-                Taro.showToast({ title: "暂无联系方式", icon: "none" });
-              }
-            }}
-          >
-            <Text className="contact-btn-text">联系</Text>
+          <View className="contact-btn" onClick={handleTalk}>
+            <Text className="contact-btn-text">购买</Text>
           </View>
         )}
       </View>

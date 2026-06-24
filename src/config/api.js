@@ -11,4 +11,5 @@ export const API_BASE = {
 	open_meteo:  isH5 ? "/open_meteo" : "https://api.open-meteo.com/",
     server: isH5 ? "server" : "https://spinach.cc.cd/",
 	captcha: isH5 ? "/captcha" : "https://captcha.chaoxing.com/captcha",
+	isbn: isH5 ? "/isbn" : "https://data.isbn.work",
 };

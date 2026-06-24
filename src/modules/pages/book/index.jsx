@@ -12,6 +12,12 @@ import cacheManager from "../../../utils/cache";
 import runtimeLogger from "../../../utils/runtimeLogger";
 import "./index.css";
 
+const BOOK_TYPE_OPTIONS = [
+  { label: "全部", value: "" },
+  { label: "出售", value: "1" },
+  { label: "求购", value: "2" },
+];
+
 /** 排序：自己的书 > 已收藏 > 其他，组内按时/按热度 */
 function sortBooks(list, currentUserId, favIds, sort) {
   return [...list].sort((a, b) => {
@@ -39,10 +45,11 @@ function filterBooks(list, kw) {
 }
 
 export default function Index() {
-  const [allBooks, setAllBooks] = useState([]);       // 服务端拉取的全部数据
+  const [allBooks, setAllBooks] = useState([]);
   const [total, setTotal] = useState(0);
-  const [categories, setCategories] = useState(["全部"]);
-  const [activeCategory, setActiveCategory] = useState("全部");
+  const [categories, setCategories] = useState([]);
+  const [selectedCats, setSelectedCats] = useState([]); // 多选种类，空=全部
+  const [bookType, setBookType] = useState(""); // ""全部 "1"出售 "2"求购
   const [keyword, setKeyword] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState("loading");
@@ -82,18 +89,22 @@ export default function Index() {
   // 本地筛选 + 排序
   const books = useMemo(() => {
     let list = filterBooks(allBooks, keyword);
-    if (activeCategory !== "全部") {
-      list = list.filter((b) => b.category === activeCategory);
+    // bookType 筛选
+    if (bookType) {
+      list = list.filter((b) => String(b.book_type) === bookType);
+    }
+    // 多选种类筛选（空=全部）
+    if (selectedCats.length > 0) {
+      list = list.filter((b) => selectedCats.includes(b.category));
     }
     return sortBooks(list, currentUserId, favIds, sortMode);
-  }, [allBooks, keyword, activeCategory, sortMode, favIds, currentUserId]);
+  }, [allBooks, keyword, bookType, selectedCats, sortMode, favIds, currentUserId]);
 
   const fetchCategories = useCallback(async () => {
     try {
       const cats = await getBookCategories();
-      setCategories(cats || ["全部"]);
-    } catch {
-    }
+      setCategories((cats || []).filter((c) => c !== "全部"));
+    } catch {}
   }, []);
 
   useLoad(() => {
@@ -102,15 +113,12 @@ export default function Index() {
   });
 
   useDidShow(() => {
-    // 从缓存同步收藏状态
     const favs = getFavoriteBookIds();
     setFavIds(favs);
-    // 从缓存同步书籍数据（详情页可能已更新 wantCount）
     const cached = cacheManager.get("v1_books");
     if (cached && Array.isArray(cached.books)) {
       setAllBooks(cached.books);
     } else {
-      // 缓存已被清空（新增/删除后），重新从服务器拉取
       fetchList(1);
     }
   });
@@ -123,8 +131,13 @@ export default function Index() {
     setKeyword(value);
   };
 
-  const handleCategoryChange = (cat) => {
-    setActiveCategory(cat);
+  const handleCatToggle = (cat) => {
+    setSelectedCats((prev) => {
+      if (prev.includes(cat)) {
+        return prev.filter((c) => c !== cat);
+      }
+      return [...prev, cat];
+    });
   };
 
   const handleSortChange = (mode) => {
@@ -141,6 +154,11 @@ export default function Index() {
     fetchList(1);
   };
 
+  const getBookTypeTag = (type) => {
+    if (String(type) === "2") return { label: "求购", cls: "tag-buy" };
+    return { label: "出售", cls: "tag-sell" };
+  };
+
   return (
     <SafeAreaView>
       <View className="uniform-page-header">
@@ -150,6 +168,24 @@ export default function Index() {
           onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
         />
         <HeadStatus text="书籍" />
+      </View>
+
+      {/* 卖书/买书 双按钮 */}
+      <View className="trade-btn-row">
+        <View
+          className="trade-btn trade-btn-sell"
+          onClick={() => Taro.navigateTo({ url: "/modules/pages/book/edit/index" })}
+        >
+          <MaterialCommunityIcons name="book-plus-multiple" size={22} color="#fff" />
+          <Text className="trade-btn-text">我要卖书</Text>
+        </View>
+        <View
+          className="trade-btn trade-btn-buy"
+          onClick={() => Taro.navigateTo({ url: "/modules/pages/book/buy/index" })}
+        >
+          <MaterialCommunityIcons name="cart" size={22} color="#fff" />
+          <Text className="trade-btn-text">我要买书</Text>
+        </View>
       </View>
 
       {/* 搜索栏 */}
@@ -165,14 +201,30 @@ export default function Index() {
         </View>
       </View>
 
-      {/* 类别筛选 */}
+      {/* 出售/求购/全部 筛选 */}
+      <View className="book-type-bar">
+        {BOOK_TYPE_OPTIONS.map((opt) => (
+          <View
+            key={opt.value}
+            className={`book-type-tag ${bookType === opt.value ? "book-type-tag-active" : ""}`}
+            onClick={() => setBookType(opt.value)}
+          >
+            <Text>{opt.label}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* 分割线 */}
+      <View className="filter-divider" />
+
+      {/* 种类多选 */}
       <ScrollView scrollX className="category-scroll" enhanced bounces={false}>
         <View className="category-list">
           {categories.map((cat) => (
             <View
               key={cat}
-              className={`category-tag ${activeCategory === cat ? "category-tag-active" : ""}`}
-              onClick={() => handleCategoryChange(cat)}
+              className={`category-tag ${selectedCats.includes(cat) ? "category-tag-active" : ""}`}
+              onClick={() => handleCatToggle(cat)}
             >
               <Text>{cat}</Text>
             </View>
@@ -184,7 +236,7 @@ export default function Index() {
       <View className="sort-bar">
         <View className="sort-left">
           <MaterialCommunityIcons name={sortMode === "time" ? "clock" : "fire"} size={18} color="#333" />
-          <Text className='sort-label'>
+          <Text className="sort-label">
             {sortMode === "time" ? "最新书籍" : "最热书籍"}
           </Text>
         </View>
@@ -232,69 +284,76 @@ export default function Index() {
           bounces={false}
         >
           <View className="book-grid">
-            {books.map((book) => (
-              <View
-                key={book.id}
-                className="book-card"
-                onClick={() =>
-                  Taro.navigateTo({
-                    url: `/modules/pages/book/detail/index?id=${book.id}`,
-                  })
-                }
-              >
-                <View className="card-img">
-                  {book.images && book.images.length > 0 && !imgErrors[book.id] ? (
-                    <Image
-                      className="card-img-pic"
-                      src={book.images[0].url}
-                      mode="aspectFill"
-                      onError={() => setImgErrors((prev) => ({ ...prev, [book.id]: true }))}
-                    />
-                  ) : (
-                    <View
-                      className="card-img-placeholder"
-                      style={{ background: getColorFromName(book.name || "书") }}
-                    >
-                      <Text className="placeholder-text">
-                        {(book.name || "书")[0]}
-                      </Text>
+            {books.map((book) => {
+              const typeTag = getBookTypeTag(book.book_type);
+              return (
+                <View
+                  key={book.id}
+                  className="book-card"
+                  onClick={() =>
+                    Taro.navigateTo({
+                      url: `/modules/pages/book/detail/index?id=${book.id}`,
+                    })
+                  }
+                >
+                  <View className="card-img">
+                    {book.images && book.images.length > 0 && !imgErrors[book.id] ? (
+                      <Image
+                        className="card-img-pic"
+                        src={book.images[0].url}
+                        mode="aspectFill"
+                        onError={() => setImgErrors((prev) => ({ ...prev, [book.id]: true }))}
+                      />
+                    ) : (
+                      <View
+                        className="card-img-placeholder"
+                        style={{ background: getColorFromName(book.name || "书") }}
+                      >
+                        <Text className="placeholder-text">
+                          {(book.name || "书")[0]}
+                        </Text>
+                      </View>
+                    )}
+                    {/* 出售/求购标签 */}
+                    <View className={`card-type-tag ${typeTag.cls}`}>
+                      <Text className="card-type-tag-text">{typeTag.label}</Text>
                     </View>
-                  )}
-                </View>
-                <View className="card-body">
-                  <Text className="card-name">{book.name}</Text>
-                  <Text className="card-category">{book.category || "未分类"}</Text>
-                  <View className="card-price-row">
-                    <Text className="card-price">
-                      <Text className="price-symbol">¥</Text>
-                      <Text className="price-number">{book.price}</Text>
-                    </Text>
-                    <Text className="card-want">{book.wantCount || 0}人想要</Text>
                   </View>
-                  <View className="card-publisher-row">
-                    <View
-                      className="card-avatar"
-                      style={{ background: getColorFromName(book.publisherName || "?") }}
-                    >
-                      <Text className="card-avatar-text">
-                        {(book.publisherName || "?")[0]}
+                  <View className="card-body">
+                    <Text className="card-name">{book.name}</Text>
+                    <Text className="card-category">{book.category || "未分类"}</Text>
+                    <View className="card-price-row">
+                      <Text className="card-price">
+                        <Text className="price-symbol">¥</Text>
+                        <Text className="price-number">{book.price}</Text>
                       </Text>
+                      <Text className="card-want">{book.wantCount || 0}人想要</Text>
                     </View>
-                    <Text className="card-publisher">{book.publisherName || "未知"}</Text>
-                  </View>
-                  <View className="card-delivery-row">
-                    <Text className={`delivery-tag ${book.isDelivery === 1 ? "delivery-send" : "delivery-pickup"}`}>
-                      {book.isDelivery === 1 ? "可送" : "自提"}
-                    </Text>
-                    {book.isPublisher ? (
-                      <Text className="owner-tag">自己</Text>
-                    ) : favIds.includes(book.id) ? (
-                      <Text className="fav-tag">已收藏</Text>
-                    ) : null}
+                    <View className="card-publisher-row">
+                      <View
+                        className="card-avatar"
+                        style={{ background: getColorFromName(book.publisherName || "?") }}
+                      >
+                        <Text className="card-avatar-text">
+                          {(book.publisherName || "?")[0]}
+                        </Text>
+                      </View>
+                      <Text className="card-publisher">{book.publisherName || "未知"}</Text>
+                    </View>
+                    <View className="card-delivery-row">
+                      <Text className={`delivery-tag ${book.isDelivery === 1 ? "delivery-send" : "delivery-pickup"}`}>
+                        {book.isDelivery === 1 ? "可送" : "自提"}
+                      </Text>
+                      {book.isPublisher ? (
+                        <Text className="owner-tag">自己</Text>
+                      ) : favIds.includes(book.id) ? (
+                        <Text className="fav-tag">已收藏</Text>
+                      ) : null}
+                    </View>
                   </View>
                 </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
           {allBooks.length >= total && allBooks.length > 0 && (
             <View className="list-footer">
@@ -304,14 +363,12 @@ export default function Index() {
         </ScrollView>
       )}
 
-      {/* FAB 悬浮按钮 */}
+      {/* FAB 悬浮按钮 — 消息图标 */}
       <View
         className="fab-btn"
-        onClick={() =>
-          Taro.navigateTo({ url: "/modules/pages/book/edit/index" })
-        }
+        onClick={() => Taro.navigateTo({ url: "/modules/pages/book/chat/list/index" })}
       >
-        <Text className="fab-text">+</Text>
+        <MaterialCommunityIcons name="message-text-outline" size={40} color="#fff" />
       </View>
     </SafeAreaView>
   );

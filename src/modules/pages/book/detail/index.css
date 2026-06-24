@@ -43,6 +43,25 @@
   font-weight: bold;
 }
 
+/* 出售/求购 小标签 */
+.detail-type-tag {
+  font-size: 22rpx;
+  font-weight: bold;
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+  margin-left: 8rpx;
+}
+
+.detail-type-sell {
+  background: #fff3e0;
+  color: #e67e22;
+}
+
+.detail-type-buy {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
 .publish-time {
   font-size: 24rpx;
   color: #333;
@@ -70,6 +89,12 @@
 .price-left {
   display: flex;
   flex-direction: column;
+}
+
+.price-label {
+  font-size: 22rpx;
+  color: var(--color-text-secondary, #999);
+  margin-bottom: 2rpx;
 }
 
 .want-count-text {
