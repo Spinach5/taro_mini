@@ -1,0 +1,69 @@
+//https://jwxt.hbut.edu.cn/admin/api/getZclistByXnxq?xnxq=2025-2026-2&role=&userId=&xqid=1
+//获取时间作息数组
+import { getSortedClassTimes } from "../../../utils/business/hbut/timeHelper";
+import cacheManager from "../../../utils/common/cache";
+import { hbutRequest } from "../../../utils/platform/request";
+import { AutoRetry } from "./autoRetry";
+import runtimeLogger from "../../../utils/common/runtimeLogger";
+
+const CACHE_KEY = "timetable";
+
+export async function getTimeTable(semester) {
+	// 1. 优先从缓存获取
+	const cached = cacheManager.get(CACHE_KEY);
+	if (cached) {
+		return cached;
+	}
+	const fetchTimeTable = async () => {
+		const loginConfig = {
+			headers: {
+				"Content-Type":
+					"application/x-www-form-urlencoded; charset=UTF-8",
+				Referer: "https://jwxt.hbut.edu.cn",
+				Origin: "https://jwxt.hbut.edu.cn",
+			},
+			withCredentials: true,
+		};
+		const response = await hbutRequest.get(
+			"admin/api/getZclistByXnxq?xnxq=" + semester,
+			loginConfig,
+		);
+		return response;
+	};
+	try {
+		// 2. 缓存未命中，发起请求
+		const response = await AutoRetry(fetchTimeTable, { maxRetry: 1 });
+		if (response.status !== 200) {
+			console.log("[getXhid] 网络请求失败");
+			console.warn("获取时间表失败：网络请求失败");
+		}
+		if (response.status === 300) {
+			console.log("[getXhid] 登录失效，请重新登录");
+			console.warn("获取时间表失败：登录失效，请重新登录");
+		}
+		if (response.data.ret !== 0) {
+			console.log("[getCurrentWeek] 接口返回异常:", response.data);
+			console.warn("获取时间表失败：接口返回 ret 不为 0");
+		}
+		if (!response.data.data.jcsjszList) {
+			console.warn("获取 时间表 失败：响应数据中无 jcsjszList 字段");
+		}
+
+		// 清洗时间表
+		const timetable = getSortedClassTimes(response.data.data.jcsjszList);
+
+		// 3. 存入缓存（永不过期）
+		cacheManager.set(CACHE_KEY, timetable);
+		console.log("[timetable] 已缓存 xhid:");
+
+		return timetable;
+	} catch (error) {
+		// 如果错误已经是 Error 对象，直接抛出；否则包装一下
+		runtimeLogger.error("GetTimeTable", "获取时间作息失败", error);
+		if (error instanceof Error) {
+			throw error;
+		}
+		console.warn("获取排课周次失败：" + error);
+		throw new Error(String(error));
+	}
+}

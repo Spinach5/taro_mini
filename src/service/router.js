@@ -1,5 +1,5 @@
 // src/service/router.js
-import * as hbut from './hbut';
+import * as hbut from './schools/hbut';
 import userManager from './userInfo';
 
 const SCHOOL_MAP = {

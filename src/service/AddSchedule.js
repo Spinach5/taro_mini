@@ -1,5 +1,5 @@
 //src/service/AddSchedule.js
-import cacheManager from "../utils/cache";
+import cacheManager from "../utils/common/cache";
 /**添加课程
  *@param {object} schedule
  */

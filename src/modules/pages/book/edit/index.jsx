@@ -3,8 +3,8 @@ import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
-import SafeAreaView from "../../../../components/SafeAreaView";
-import HeadStatus from "../../../../components/HeadStatus";
+import SafeAreaView from "../../../../components/base/SafeAreaView";
+import HeadStatus from "../../../../components/layout/HeadStatus";
 import {
   getBookDetail,
   getBookCategories,
@@ -12,8 +12,8 @@ import {
   updateBook,
   uploadBookImage,
 } from "../../../../service";
-import cacheManager from "../../../../utils/cache";
-import runtimeLogger from "../../../../utils/runtimeLogger";
+import cacheManager from "../../../../utils/common/cache";
+import runtimeLogger from "../../../../utils/common/runtimeLogger";
 import "./index.css";
 
 const CONDITION_OPTIONS = ["全新", "几乎全新", "有笔记", "较旧"];

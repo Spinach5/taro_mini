@@ -2,11 +2,11 @@ import { View, Text, ScrollView } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState, useCallback } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
-import SafeAreaView from "../../../../components/SafeAreaView";
-import HeadStatus from "../../../../components/HeadStatus";
-import { getConversations } from "../../../../service/hbut/chat";
-import { getColorFromName } from "../../../../utils/getHashCode";
-import runtimeLogger from "../../../../utils/runtimeLogger";
+import SafeAreaView from "../../../../components/base/SafeAreaView";
+import HeadStatus from "../../../../components/layout/HeadStatus";
+import { getConversations } from "../../../../service/schools/hbut/chat";
+import { getColorFromName } from "../../../../utils/common/getHashCode";
+import runtimeLogger from "../../../../utils/common/runtimeLogger";
 import "./index.css";
 
 export default function Index() {

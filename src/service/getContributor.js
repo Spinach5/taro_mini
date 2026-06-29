@@ -1,6 +1,6 @@
-import { giteeRequest } from "../utils/request";
-import cacheManager from "../utils/cache";
-import { cleanContributors } from "../utils/contributorHelp";
+import { giteeRequest } from "../utils/platform/request";
+import cacheManager from "../utils/common/cache";
+import { cleanContributors } from "../utils/business/contributorHelp";
 
 const CACHE_KEY = "Contributor"; // 定义缓存key
 

@@ -3,9 +3,9 @@ import { View, Text, ScrollView } from "@tarojs/components";
 import Taro, { useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import { AtIcon } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
-import SafeAreaView from "../../../components/SafeAreaView";
-import Loading from "../../../components/Loading";
-import HeadStatus from "../../../components/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
+import Loading from "../../../components/base/Loading";
+import HeadStatus from "../../../components/layout/HeadStatus";
 import weatherManager from "../../../service/weatherInfo";
 import "./index.scss";
 

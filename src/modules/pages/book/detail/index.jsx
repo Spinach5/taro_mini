@@ -2,8 +2,8 @@ import { View, Text, Image, ScrollView } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
-import SafeAreaView from "../../../../components/SafeAreaView";
-import HeadStatus from "../../../../components/HeadStatus";
+import SafeAreaView from "../../../../components/base/SafeAreaView";
+import HeadStatus from "../../../../components/layout/HeadStatus";
 import {
   getBookDetail,
   toggleWantBook,
@@ -12,11 +12,11 @@ import {
   removeFavoriteBookId,
   isFavoriteBook,
 } from "../../../../service";
-import { createConversation } from "../../../../service/hbut/chat";
-import { getColorFromName } from "../../../../utils/getHashCode";
+import { createConversation } from "../../../../service/schools/hbut/chat";
+import { getColorFromName } from "../../../../utils/common/getHashCode";
 import userManager from "../../../../service/userInfo";
-import cacheManager from "../../../../utils/cache";
-import runtimeLogger from "../../../../utils/runtimeLogger";
+import cacheManager from "../../../../utils/common/cache";
+import runtimeLogger from "../../../../utils/common/runtimeLogger";
 import "./index.css";
 
 export default function Index() {

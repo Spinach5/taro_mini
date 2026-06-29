@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { View, Swiper, SwiperItem, ScrollView, Text } from "@tarojs/components";
 import Taro, { useRouter, useDidShow, usePullDownRefresh } from "@tarojs/taro";
-import SafeAreaView from "../../components/SafeAreaView";
-import CourseHeader from "../../components/CourseHeader";
-import WeekHeader from "../../components/WeekHeader";
-import TimeColumn from "../../components/TimeColumn";
-import CourseGrid from "../../components/CourseGrid";
-import Loading from "../../components/Loading";
-import CourseInfoModal from "../../components/CourseInfoModal";
-import PracticeCard from "../../components/PracticeCard";
+import SafeAreaView from "../../components/base/SafeAreaView";
+import CourseHeader from "../../components/feature/CourseHeader";
+import WeekHeader from "../../components/feature/WeekHeader";
+import TimeColumn from "../../components/feature/TimeColumn";
+import CourseGrid from "../../components/feature/CourseGrid";
+import Loading from "../../components/base/Loading";
+import CourseInfoModal from "../../components/feature/CourseInfoModal";
+import PracticeCard from "../../components/feature/PracticeCard";
 import {
 	getCurrentWeek,
 	getAllWeek,
@@ -17,10 +17,10 @@ import {
 	getSemesterList,
 	getExtroInfo,
 } from "../../service";
-import { getColorFromName } from "../../utils/getHashCode";
+import { getColorFromName } from "../../utils/common/getHashCode";
 import { addSchedule } from "../../service/AddSchedule";
 import userManager from "../../service/userInfo";
-import runtimeLogger from "../../utils/runtimeLogger";
+import runtimeLogger from "../../utils/common/runtimeLogger";
 import "./index.css";
 
 export default function Index() {

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import "./index.css";
-import HeadStatus from "../../../components/HeadStatus";
-import SafeAreaView from "../../../components/SafeAreaView";
+import HeadStatus from "../../../components/layout/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
 import { getContributor } from "../../../service/getContributor";
 import { getRepos } from "../../../service/getRepos";
 import { getLatestCommit } from "../../../service/getLatestCommit";
-import { getHashCode } from "../../../utils/getHashCode";
+import { getHashCode } from "../../../utils/common/getHashCode";
 import Taro, { usePullDownRefresh } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
 import { AtIcon } from "taro-ui";

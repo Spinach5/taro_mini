@@ -1,8 +1,8 @@
 import Taro,{ useLaunch,useLoad} from "@tarojs/taro";
 import "./app.css";
 import "taro-ui/lib/style/index.scss";
-import runtimeLogger from "./utils/runtimeLogger";
-import { ThemeProvider } from "./utils/theme";
+import runtimeLogger from "./utils/common/runtimeLogger";
+import { ThemeProvider } from "./utils/react/theme";
 import "taro-icons/scss/MaterialCommunityIcons.scss";
 
 function App({ children }) {

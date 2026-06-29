@@ -1,9 +1,9 @@
 // login.js
 import Taro from "@tarojs/taro";
-import { checkStuID } from "../utils/checkStuID";
+import { checkStuID } from "../utils/common/checkStuID";
 import userManager from "./userInfo";
 import { getSchool } from "./router";
-import runtimeLogger from "../utils/runtimeLogger";
+import runtimeLogger from "../utils/common/runtimeLogger";
 
 const SUPPORTED_UNIVERSITIES = ["湖北工业大学", ""];
 

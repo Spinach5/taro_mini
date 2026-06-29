@@ -1,7 +1,7 @@
 import { View, Text, Image} from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import HeadStatus from "../../../components/HeadStatus";
-import SafeAreaView from "../../../components/SafeAreaView";
+import HeadStatus from "../../../components/layout/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
 import { AtIcon } from "taro-ui";
 import "./index.css";
 

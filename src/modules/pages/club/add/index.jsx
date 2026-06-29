@@ -2,11 +2,11 @@ import { View, Text, Input, Textarea, ScrollView } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon } from "taro-ui";
-import SafeAreaView from "../../../../components/SafeAreaView";
-import HeadStatus from "../../../../components/HeadStatus";
+import SafeAreaView from "../../../../components/base/SafeAreaView";
+import HeadStatus from "../../../../components/layout/HeadStatus";
 import userManager from "../../../../service/userInfo";
 import { addClub } from "../../../../service";
-import runtimeLogger from "../../../../utils/runtimeLogger";
+import runtimeLogger from "../../../../utils/common/runtimeLogger";
 import "./index.css";
 
 const ALL_CATEGORIES = [

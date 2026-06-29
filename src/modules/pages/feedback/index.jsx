@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { View, Text, Textarea, Input } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import HeadStatus from "../../../components/HeadStatus";
-import SafeAreaView from "../../../components/SafeAreaView";
+import HeadStatus from "../../../components/layout/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
 import { sendFeedback } from "../../../service/sendFeedback";
 import { AtIcon } from "taro-ui";
 import "./index.css";

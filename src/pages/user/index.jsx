@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { View, Text, Image } from "@tarojs/components";
 import Taro, { useDidShow, useRouter, usePullDownRefresh } from "@tarojs/taro";
-import HeadStatus from "../../components/HeadStatus";
-import SafeAreaView from "../../components/SafeAreaView";
-import UserCard from "../../components/UserCard";
+import HeadStatus from "../../components/layout/HeadStatus";
+import SafeAreaView from "../../components/base/SafeAreaView";
+import UserCard from "../../components/feature/UserCard";
 import userManager from "../../service/userInfo";
-import runtimeLogger from "../../utils/runtimeLogger";
+import runtimeLogger from "../../utils/common/runtimeLogger";
 import { AtIcon } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
 

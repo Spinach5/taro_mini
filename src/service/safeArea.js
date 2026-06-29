@@ -1,5 +1,5 @@
 import Taro from "@tarojs/taro";
-import cacheManager from "../utils/cache"; // 导入 CacheManager 实例（默认无前缀，或自定义）
+import cacheManager from "../utils/common/cache"; // 导入 CacheManager 实例（默认无前缀，或自定义）
 
 class SafeAreaManager {
 	constructor() {

@@ -1,6 +1,6 @@
-import { giteeRequest } from "../utils/request";
-import cacheManager from "../utils/cache";
-import { cleanLatestCommit } from "../utils/cleanLatestCommit";
+import { giteeRequest } from "../utils/platform/request";
+import cacheManager from "../utils/common/cache";
+import { cleanLatestCommit } from "../utils/platform/cleanLatestCommit";
 
 const CACHE_KEY = "LatestCommit"; // 定义缓存key
 

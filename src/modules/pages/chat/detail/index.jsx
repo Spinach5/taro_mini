@@ -2,12 +2,12 @@ import { View, Text, Input, ScrollView, Image } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState, useCallback, useRef, useEffect } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
-import SafeAreaView from "../../../../components/SafeAreaView";
-import HeadStatus from "../../../../components/HeadStatus";
-import { getMessages, sendMessage } from "../../../../service/hbut/chat";
-import { getColorFromName } from "../../../../utils/getHashCode";
+import SafeAreaView from "../../../../components/base/SafeAreaView";
+import HeadStatus from "../../../../components/layout/HeadStatus";
+import { getMessages, sendMessage } from "../../../../service/schools/hbut/chat";
+import { getColorFromName } from "../../../../utils/common/getHashCode";
 import userManager from "../../../../service/userInfo";
-import runtimeLogger from "../../../../utils/runtimeLogger";
+import runtimeLogger from "../../../../utils/common/runtimeLogger";
 import "./index.css";
 
 const PAGE_SIZE = 20;

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { View, Text, Input, Button, Picker } from "@tarojs/components";
 import "./index.css";
-import HeadStatus from "../../../components/HeadStatus";
-import SafeAreaView from "../../../components/SafeAreaView";
+import HeadStatus from "../../../components/layout/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
 import Taro from "@tarojs/taro";
-import { checkStuID } from "../../../utils/checkStuID";
+import { checkStuID } from "../../../utils/common/checkStuID";
 import { login } from "../../../service";
-import runtimeLogger from "../../../utils/runtimeLogger";
+import runtimeLogger from "../../../utils/common/runtimeLogger";
 import { AtIcon } from "taro-ui";
 
 const AGREEMENT_TEXT = `

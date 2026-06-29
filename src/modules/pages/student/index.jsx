@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { View, Text, ScrollView, Picker } from "@tarojs/components";
 import Taro, { useDidShow, usePullDownRefresh } from "@tarojs/taro";
-import SafeAreaView from "../../../components/SafeAreaView";
-import Loading from "../../../components/Loading";
-import HeadStatus from "../../../components/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
+import Loading from "../../../components/base/Loading";
+import HeadStatus from "../../../components/layout/HeadStatus";
 import { AtIcon } from "taro-ui";
-import { getScores } from "../../../service/hbut/getScores";
-import { getSemesterList } from "../../../service/hbut/CurrentSemester";
+import { getScores } from "../../../service/schools/hbut/getScores";
+import { getSemesterList } from "../../../service/schools/hbut/CurrentSemester";
 import userManager from "../../../service/userInfo";
 import "./index.scss";
 

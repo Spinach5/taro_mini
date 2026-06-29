@@ -1,4 +1,4 @@
-import { giteeRequest } from "../utils/request";
+import { giteeRequest } from "../utils/platform/request";
 
 /**
  * 提交反馈到 Gitee Issue

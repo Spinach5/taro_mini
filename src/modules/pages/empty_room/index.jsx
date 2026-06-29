@@ -1,18 +1,18 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { View, Text, ScrollView, Picker } from "@tarojs/components";
 import Taro, { useDidShow } from "@tarojs/taro";
-import SafeAreaView from "../../../components/SafeAreaView";
-import Loading from "../../../components/Loading";
-import { getTeachBuilding, getTeachBuildingCategory } from "../../../service/hbut/getTeachBuilding";
-import { getAllWeek } from "../../../service/hbut/GetAllWeek";
-import { getTimeTable } from "../../../service/hbut/GetTimeTable";
-import { getEmptyRoom } from "../../../service/hbut/getEmptyClassRoom";
-import { getCurrentWeek } from "../../../service/hbut/CurrentWeek";
-import { getSemesterList } from "../../../service/hbut/CurrentSemester";
-import { getColorFromName } from "../../../utils/getHashCode";
+import SafeAreaView from "../../../components/base/SafeAreaView";
+import Loading from "../../../components/base/Loading";
+import { getTeachBuilding, getTeachBuildingCategory } from "../../../service/schools/hbut/getTeachBuilding";
+import { getAllWeek } from "../../../service/schools/hbut/GetAllWeek";
+import { getTimeTable } from "../../../service/schools/hbut/GetTimeTable";
+import { getEmptyRoom } from "../../../service/schools/hbut/getEmptyClassRoom";
+import { getCurrentWeek } from "../../../service/schools/hbut/CurrentWeek";
+import { getSemesterList } from "../../../service/schools/hbut/CurrentSemester";
+import { getColorFromName } from "../../../utils/common/getHashCode";
 import userManager from "../../../service/userInfo";
 import { AtIcon } from "taro-ui";
-import HeadStatus from "../../../components/HeadStatus"
+import HeadStatus from "../../../components/layout/HeadStatus"
 import "./index.scss";
 
 const WEEKDAY_OPTIONS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];

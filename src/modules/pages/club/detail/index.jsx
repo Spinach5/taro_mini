@@ -2,10 +2,10 @@ import { View, Text } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
-import SafeAreaView from "../../../../components/SafeAreaView";
-import HeadStatus from "../../../../components/HeadStatus";
+import SafeAreaView from "../../../../components/base/SafeAreaView";
+import HeadStatus from "../../../../components/layout/HeadStatus";
 import { getClubDetail } from "../../../../service";
-import runtimeLogger from "../../../../utils/runtimeLogger";
+import runtimeLogger from "../../../../utils/common/runtimeLogger";
 import "./index.css";
 
 const NATURE_MAP = ["社团", "学生会", "其他"];

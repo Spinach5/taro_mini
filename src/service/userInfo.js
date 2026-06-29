@@ -1,250 +1,169 @@
-// src/utils/userManager.js
+// src/service/userInfo.js — 向后兼容层，内部委托给 useUserStore
 import Taro from "@tarojs/taro";
-import cacheManager from "../utils/cache";
-import { cleanH5Cookies } from "../utils/cleanH5Cookies";
-import { hbutCookies, opendiffCookies, giteeCookies } from "../utils/request";
+import { cleanH5Cookies } from "../utils/platform/cleanH5Cookies";
+import { hbutCookies, opendiffCookies, giteeCookies } from "../utils/platform/request";
+import useUserStore from "../store/useUserStore";
 
-/** 手写 Base64 解码，兼容微信小程序（没有 atob） */
-function base64Decode(str) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-  let output = "";
-  let i = 0;
-  str = str.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-  while (i < str.length) {
-    const a = chars.indexOf(str.charAt(i++));
-    const b = chars.indexOf(str.charAt(i++));
-    const c = chars.indexOf(str.charAt(i++));
-    const d = chars.indexOf(str.charAt(i++));
-    output += String.fromCharCode((a << 2) | (b >> 4));
-    if (c !== 64) output += String.fromCharCode(((b & 15) << 4) | (c >> 2));
-    if (d !== 64) output += String.fromCharCode(((c & 3) << 6) | d);
-  }
-  return output;
-}
-
+/**
+ * UserManager 向后兼容包装器
+ * 所有状态读写委托给 zustand useUserStore
+ * 保持原有 API 不变，现有代码无需修改
+ */
 class UserManager {
-	constructor() {
-		// 用户信息字段
-		this.university = "?"; // 大学
-		this.realName = "帅哥"; // 真实姓名
-		this.stuId = ""; // 学号
-		this.password = ""; // 密码
-		this.encryptedPassword = ""; // 加密后的密码（缓存复用，避免重复加密）
-		this.grade = "0"; // 入学年份
-		this.majority = ""; // 专业
-		this.class = "?"; // 班级
-		this.college = "?"; // 学院
-		this.schoolId = ""; // 学校代码 (用于服务器注册)
-		this.serverToken = ""; // 服务器 JWT token
+  constructor() {
+    this.password = ""; // 明文密码仅存内存，不持久化
+    this.cacheKey = "userInfo"; // 保留用于旧缓存迁移
+  }
 
-		this.isLoggedIn = false; // 登录状态
-		this.cacheKey = "userInfo"; // 缓存 key
-		this._syncCache = null; // 同步缓存
-	}
+  // 从 zustand store 读取状态
+  get _state() {
+    return useUserStore.getState();
+  }
 
-	// 保存到缓存（永不过期）
-	saveToCache() {
-		const userData = {
-			university: this.university,
-			realName: this.realName,
-			stuId: this.stuId,
-			// password 不存入缓存，仅保留在内存中
-			encryptedPassword: this.encryptedPassword,
-			grade: this.grade,
-			majority: this.majority,
-			class: this.class,
-			college: this.college,
-			schoolId: this.schoolId,
-			serverToken: this.serverToken,
-			isLoggedIn: this.isLoggedIn,
-		};
-		cacheManager.set(this.cacheKey, userData, null);
-	}
+  // 同步获取用户信息
+  getUserInfoSync() {
+    const state = this._state;
+    return {
+      university: state.university,
+      realName: state.realName,
+      stuId: state.stuId,
+      grade: state.grade,
+      majority: state.majority,
+      college: state.college,
+      class: state.class,
+      schoolId: state.schoolId,
+      isLoggedIn: state.isLoggedIn,
+    };
+  }
 
-	// 从缓存读取
-	getFromCache() {
-		return cacheManager.get(this.cacheKey);
-	}
+  // 获取/设置服务器 token
+  getServerToken() {
+    return this._state.serverToken;
+  }
+  setServerToken(token) {
+    useUserStore.setState({ serverToken: token });
+  }
 
-	// 同步获取用户信息（优先内存，其次缓存）
-	getUserInfoSync() {
-		if (this._syncCache) {
-			return this._syncCache;
-		}
-		const cached = cacheManager.get(this.cacheKey);
-		if (cached && typeof cached === "object") {
-			this.applyValues(cached);
-			this._syncCache = this.getValues();
-			return this._syncCache;
-		}
-		return this.getValues();
-	}
+  // 从 JWT 中解析服务器用户 ID
+  getServerUserId() {
+    return this._state.getServerUserId();
+  }
 
-	// 应用数值到实例属性
-	applyValues(values) {
-		this.university = values.university || "";
-		this.realName = values.realName || "帅哥";
-		this.stuId = values.stuId || "";
-		this.password = values.password || "";
-		this.encryptedPassword = values.encryptedPassword || "";
-		this.grade = values.grade || 0;
-		this.majority = values.majority || "";
-		this.class = values.class || "";
-		this.college = values.college || "";
-		this.schoolId = values.schoolId || "";
-		this.serverToken = values.serverToken || "";
-		this.isLoggedIn = values.isLoggedIn || false;
-	}
+  // 获取/设置加密后的密码
+  getEncryptedPassword() {
+    return this._state.encryptedPassword;
+  }
+  setEncryptedPassword(encryptedPwd) {
+    useUserStore.setState({ encryptedPassword: encryptedPwd });
+  }
 
-	// 获取当前所有值的副本
-	getValues() {
-		return {
-			university: this.university,
-			realName: this.realName,
-			stuId: this.stuId,
-			grade: this.grade,
-			majority: this.majority,
-			college: this.college,
-			class: this.class,
-			schoolId: this.schoolId,
-			isLoggedIn: this.isLoggedIn,
-		};
-	}
+  // 获取/设置学校代码
+  getSchoolId() {
+    return this._state.schoolId;
+  }
+  setSchoolId(id) {
+    useUserStore.setState({ schoolId: id });
+  }
 
-	// 获取/设置服务器 token
-	getServerToken() {
-		return this.serverToken;
-	}
-	setServerToken(token) {
-		this.serverToken = token;
-		this.saveToCache();
-		this._syncCache = this.getValues();
-	}
+  // 修改单个字段
+  setField(key, value) {
+    useUserStore.setState({ [key]: value });
+  }
 
-	// 从 JWT 中解析服务器用户 ID
-	getServerUserId() {
-		try {
-			const token = this.serverToken;
-			if (!token) return 0;
-			const payload = token.split(".")[1];
-			const decoded = JSON.parse(base64Decode(payload));
-			return decoded.userId || decoded.user_id || decoded.id || 0;
-		} catch {
-			return 0;
-		}
-	}
+  // 批量修改字段
+  setFields(fields) {
+    useUserStore.setState(fields);
+  }
 
-	// 获取/设置加密后的密码（缓存复用，避免重复加密）
-	getEncryptedPassword() {
-		return this.encryptedPassword;
-	}
-	setEncryptedPassword(encryptedPwd) {
-		this.encryptedPassword = encryptedPwd;
-		this.saveToCache();
-		this._syncCache = this.getValues();
-	}
+  // 从缓存加载用户信息（zustand persist 自动处理，这里仅做兼容）
+  async loadFromCache() {
+    // zustand persist 在 store 创建时自动加载
+    // 这里检查是否有旧格式缓存需要迁移
+    try {
+      const Taro = require("@tarojs/taro").default;
+      const oldCache = Taro.getStorageSync(this.cacheKey);
+      if (oldCache && oldCache.isLoggedIn && !this._state.isLoggedIn) {
+        // 迁移旧缓存到 zustand
+        useUserStore.setState({
+          university: oldCache.university || "",
+          realName: oldCache.realName || "帅哥",
+          stuId: oldCache.stuId || "",
+          encryptedPassword: oldCache.encryptedPassword || "",
+          grade: oldCache.grade || "0",
+          majority: oldCache.majority || "",
+          class: oldCache.class || "",
+          college: oldCache.college || "",
+          schoolId: oldCache.schoolId || "",
+          serverToken: oldCache.serverToken || "",
+          isLoggedIn: oldCache.isLoggedIn || false,
+        });
+        console.log("[UserManager] 旧缓存已迁移到 zustand store");
+        return true;
+      }
+    } catch (e) {
+      // ignore
+    }
+    return this._state.isLoggedIn;
+  }
 
-	// 获取/设置学校代码
-	getSchoolId() {
-		return this.schoolId;
-	}
-	setSchoolId(id) {
-		this.schoolId = id;
-		this.saveToCache();
-		this._syncCache = this.getValues();
-	}
+  // 注销
+  logout() {
+    // 清除内存中的密码
+    this.password = "";
 
-	// 修改单个字段
-	setField(key, value) {
-		if (this.hasOwnProperty(key)) {
-			this[key] = value;
-			this.saveToCache();
-			this._syncCache = this.getValues();
-		} else {
-			console.warn(`用户信息中不存在字段: ${key}`);
-		}
-	}
+    // 清除 Cookie
+    hbutCookies.clear();
+    opendiffCookies.clear();
+    giteeCookies.clear();
 
-	// 批量修改字段
-	setFields(fields) {
-		Object.keys(fields).forEach((key) => {
-			if (this.hasOwnProperty(key)) {
-				this[key] = fields[key];
-			}
-		});
-		this.saveToCache();
-		this._syncCache = this.getValues();
-	}
+    // 通过 zustand 清除用户状态
+    useUserStore.getState().logout();
 
-	// 从缓存加载用户信息（应用启动时调用）
-	async loadFromCache() {
-		const cached = this.getFromCache();
-		if (cached && cached.isLoggedIn) {
-			this.applyValues(cached);
-			this._syncCache = this.getValues();
-			this.isLoggedIn = true;
-			console.log("从缓存加载用户信息成功");
-			return true;
-		}
-		console.log("无有效用户缓存");
-		return false;
-	}
+    // 清除所有持久化存储
+    Taro.clearStorage();
+    if (process.env.TARO_ENV === "h5") {
+      cleanH5Cookies();
+    }
+    console.log("用户已注销，所有信息已清空");
+  }
 
-	// 注销，清空所有状态
-	logout() {
-		this.university = "";
-		this.realName = "帅哥";
-		this.stuId = "";
-		this.grade = 0;
-		this.majority = "";
-		this.college = "";
-		this.schoolId = "";
-		this.serverToken = "";
-		this.isLoggedIn = false;
-		this.password = "";
-		this.encryptedPassword = "";
-		this.class = "";
-		this._syncCache = null;
+  // 检查是否登录
+  checkLogin() {
+    return this._state.isLoggedIn;
+  }
 
-		// 清除内存中的 Cookie 状态（防止注销后请求仍携带旧会话）
-		hbutCookies.clear();
-		opendiffCookies.clear();
-		giteeCookies.clear();
+  // 获取当前大学
+  getUniversity() {
+    return this._state.university;
+  }
 
-		// 清除持久化缓存
-		cacheManager.remove(this.cacheKey);
-		cacheManager.clear();
-		Taro.clearStorage();
-		if (process.env.TARO_ENV === "h5") {
-			cleanH5Cookies();
-		}
-		console.log("用户已注销，所有信息已清空");
-	}
+  getGrade() {
+    return this._state.grade;
+  }
 
-	// 检查是否登录
-	checkLogin() {
-		return this.isLoggedIn;
-	}
+  // 获取学号和密码
+  getAccount() {
+    return { stuId: this._state.stuId, password: this.password };
+  }
 
-	// 获取当前大学
-	getUniversity() {
-		return this.university;
-	}
-
-	getGrade() {
-		return this.grade;
-	}
-
-	// 获取学号和密码
-	getAccount() {
-		return { stuId: this.stuId, password: this.password };
-	}
+  // 属性访问器（兼容直接访问 userManager.stuId 等）
+  get stuId() { return this._state.stuId; }
+  get realName() { return this._state.realName; }
+  get university() { return this._state.university; }
+  get grade() { return this._state.grade; }
+  get majority() { return this._state.majority; }
+  get class() { return this._state.class; }
+  get college() { return this._state.college; }
+  get schoolId() { return this._state.schoolId; }
+  get serverToken() { return this._state.serverToken; }
+  get isLoggedIn() { return this._state.isLoggedIn; }
+  get encryptedPassword() { return this._state.encryptedPassword; }
 }
 
 // 导出全局唯一实例
 const userManager = new UserManager();
 
-// 初始化：从缓存加载用户信息
+// 初始化：从缓存加载（zustand persist 自动处理）
 userManager.loadFromCache();
 
 export default userManager;

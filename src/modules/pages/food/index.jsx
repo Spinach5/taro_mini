@@ -1,4 +1,4 @@
-import StaticListPage from "../../../components/StaticListPage";
+import StaticListPage from "../../../components/feature/StaticListPage";
 import { foodGroups } from "../../data/staticPages";
 
 export default function Index() {

@@ -1,6 +1,6 @@
 import Taro from "@tarojs/taro";
-import cacheManager from "../utils/cache";
-import runtimeLogger from "../utils/runtimeLogger";
+import cacheManager from "../utils/common/cache";
+import runtimeLogger from "../utils/common/runtimeLogger";
 import audio_muyu from "../assets/audio/muyu.mp3";
 import audio_moo from "../assets/audio/moo.mp3";
 

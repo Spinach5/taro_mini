@@ -3,13 +3,13 @@ import Taro, { useLoad, useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import { useState, useCallback, useMemo, useRef } from "react";
 import { AtIcon } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
-import SafeAreaView from "../../../components/SafeAreaView";
-import HeadStatus from "../../../components/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
+import HeadStatus from "../../../components/layout/HeadStatus";
 import { getBookList, getBookCategories, getFavoriteBookIds } from "../../../service";
-import { getColorFromName } from "../../../utils/getHashCode";
+import { getColorFromName } from "../../../utils/common/getHashCode";
 import userManager from "../../../service/userInfo";
-import cacheManager from "../../../utils/cache";
-import runtimeLogger from "../../../utils/runtimeLogger";
+import cacheManager from "../../../utils/common/cache";
+import runtimeLogger from "../../../utils/common/runtimeLogger";
 import "./index.css";
 
 const BOOK_TYPE_OPTIONS = [

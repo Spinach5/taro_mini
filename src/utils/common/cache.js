@@ -1,0 +1,186 @@
+import Taro from '@tarojs/taro'
+
+class CacheManager {
+  constructor(prefix = '') {//默认不加前缀
+    this.prefix = prefix
+  }
+
+  // 生成完整 key
+  getKey(key) {
+    return `${this.prefix}${key}`
+  }
+
+  // 设置缓存（同步）
+  set(key, value, expireTime = null) {
+    try {
+      const cacheData = {
+        data: value,
+        timestamp: Date.now(),
+        expireTime: expireTime
+      }
+      Taro.setStorageSync(this.getKey(key), cacheData)
+      return true
+    } catch (error) {
+      console.error('设置缓存失败:', error)
+      return false
+    }
+  }
+
+  // 获取缓存（同步）
+  get(key) {
+    try {
+      const cacheData = Taro.getStorageSync(this.getKey(key))
+      
+      if (!cacheData) return null
+      
+      // 检查是否过期
+      if (cacheData.expireTime) {
+        const now = Date.now()
+        if (now - cacheData.timestamp > cacheData.expireTime) {
+          this.remove(key)
+          return null
+        }
+      }
+      
+      return cacheData.data
+      
+    } catch (error) {
+      console.error('获取缓存失败:', error)
+      return null
+    }
+  }
+
+  // 异步设置
+  async setAsync(key, value, expireTime = null) {
+    try {
+      const cacheData = {
+        data: value,
+        timestamp: Date.now(),
+        expireTime: expireTime
+      }
+      await Taro.setStorage({ key: this.getKey(key), data: cacheData })
+      return true
+    } catch (error) {
+      console.error('异步设置缓存失败:', error)
+      return false
+    }
+  }
+
+  // 异步获取
+  async getAsync(key) {
+    try {
+      const res = await Taro.getStorage({ key: this.getKey(key) })
+      const cacheData = res.data
+      
+      if (!cacheData) return null
+      
+      // 检查是否过期
+      if (cacheData.expireTime) {
+        const now = Date.now()
+        if (now - cacheData.timestamp > cacheData.expireTime) {
+          await this.removeAsync(key)
+          return null
+        }
+      }
+      
+      return cacheData.data
+      
+    } catch (error) {
+      console.error('异步获取缓存失败:', error)
+      return null
+    }
+  }
+
+  // 删除缓存
+  remove(key) {
+    try {
+      Taro.removeStorageSync(this.getKey(key))
+      return true
+    } catch (error) {
+      console.error('删除缓存失败:', error)
+      return false
+    }
+  }
+
+  // 异步删除
+  async removeAsync(key) {
+    try {
+      await Taro.removeStorage({ key: this.getKey(key) })
+      return true
+    } catch (error) {
+      console.error('异步删除缓存失败:', error)
+      return false
+    }
+  }
+
+  // 清空所有缓存
+  clear() {
+    try {
+      Taro.clearStorageSync()
+      console.log('清空缓存成功')
+      return true
+    } catch (error) {
+      console.error('清空缓存失败:', error)
+      return false
+    }
+  }
+
+  /** 按前缀删除缓存 */
+  removeByPrefix(prefix) {
+    try {
+      const fullPrefix = this.getKey(prefix);
+      const res = Taro.getStorageInfoSync();
+      const keys = res.keys || [];
+      let count = 0;
+      for (const key of keys) {
+        if (key.startsWith(fullPrefix)) {
+          Taro.removeStorageSync(key);
+          count++;
+        }
+      }
+      return count > 0;
+    } catch (error) {
+      console.error('按前缀删除缓存失败:', error);
+      return false;
+    }
+  }
+
+  /** 检查缓存是否存在（未过期） */
+  has(key) {
+    return this.get(key) !== null;
+  }
+
+  /** 获取缓存剩余时间（ms），不存在返回 -1，永不过期返回 Infinity */
+  getRemainingTime(key) {
+    try {
+      const cacheData = Taro.getStorageSync(this.getKey(key));
+      if (!cacheData) return -1;
+      if (!cacheData.expireTime) return Infinity;
+      const elapsed = Date.now() - cacheData.timestamp;
+      const remaining = cacheData.expireTime - elapsed;
+      return remaining > 0 ? remaining : -1;
+    } catch {
+      return -1;
+    }
+  }
+
+  /** 批量设置缓存 */
+  mset(entries) {
+    try {
+      for (const { key, value, expireTime } of entries) {
+        this.set(key, value, expireTime || null);
+      }
+      return true;
+    } catch (error) {
+      console.error('批量设置缓存失败:', error);
+      return false;
+    }
+  }
+
+  /** 批量获取缓存 */
+  mget(keys) {
+    return keys.map((key) => this.get(key));
+  }
+}
+
+export default new CacheManager()

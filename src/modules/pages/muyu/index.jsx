@@ -1,8 +1,8 @@
 import { useState } from "react";
-import MuYu from "../../../components/MuYu";
+import MuYu from "../../../components/feature/MuYu";
 import "./index.css";
-import HeadStatus from "../../../components/HeadStatus";
-import SafeAreaView from "../../../components/SafeAreaView";
+import HeadStatus from "../../../components/layout/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
 import Taro from "@tarojs/taro";
 import { View } from "@tarojs/components";
 import { AtIcon } from "taro-ui";

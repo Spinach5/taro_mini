@@ -1,10 +1,10 @@
 import { useState, useCallback } from "react";
 import { View, Text, ScrollView } from "@tarojs/components";
 import Taro, { useDidShow } from "@tarojs/taro";
-import SafeAreaView from "../../../components/SafeAreaView";
-import HeadStatus from "../../../components/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
+import HeadStatus from "../../../components/layout/HeadStatus";
 import { AtIcon } from "taro-ui";
-import runtimeLogger, { RUNTIME_LOGS_CACHE_KEY } from "../../../utils/runtimeLogger";
+import runtimeLogger, { RUNTIME_LOGS_CACHE_KEY } from "../../../utils/common/runtimeLogger";
 import "./index.css";
 
 export default function Index() {

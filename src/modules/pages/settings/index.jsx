@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import HeadStatus from "../../../components/HeadStatus";
-import SafeAreaView from "../../../components/SafeAreaView";
+import HeadStatus from "../../../components/layout/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
 import userManager from "../../../service/userInfo";
-import encryptPassword from "../../../utils/hbut/loginEncrypt";
-import { useTheme } from "../../../utils/theme";
-import { serverGet, serverPost } from "../../../utils/serverRequest";
+import encryptPassword from "../../../utils/business/hbut/loginEncrypt";
+import { useTheme } from "../../../utils/react/theme";
+import { serverGet, serverPost } from "../../../utils/platform/serverRequest";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import "./index.css";
 

@@ -1,0 +1,18 @@
+.search-bar {
+  padding: 16rpx 24rpx;
+}
+
+.search-bar__wrap {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 24rpx;
+  background: var(--color-bg, #f2f5f9);
+  border-radius: var(--radius-lg, 20rpx);
+}
+
+.search-bar__input {
+  flex: 1;
+  font-size: var(--font-size-md, 28rpx);
+  color: var(--color-text, #2c3e50);
+}

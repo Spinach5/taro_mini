@@ -1,5 +1,5 @@
-import { giteeRequest } from "../utils/request";
-import cacheManager from "../utils/cache";
+import { giteeRequest } from "../utils/platform/request";
+import cacheManager from "../utils/common/cache";
 
 const CACHE_KEY = "GiteeRepos";
 const PER_PAGE = 100;

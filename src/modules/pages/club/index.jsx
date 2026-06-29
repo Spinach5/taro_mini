@@ -2,12 +2,12 @@ import { View, Text, ScrollView, Swiper, SwiperItem, Input } from "@tarojs/compo
 import Taro, { useLoad, useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import { useState, useCallback } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
-import SafeAreaView from "../../../components/SafeAreaView";
-import HeadStatus from "../../../components/HeadStatus";
+import SafeAreaView from "../../../components/base/SafeAreaView";
+import HeadStatus from "../../../components/layout/HeadStatus";
 import userManager from "../../../service/userInfo";
 import { getAllClub } from "../../../service";
-import { getColorFromName } from "../../../utils/getHashCode";
-import runtimeLogger from "../../../utils/runtimeLogger";
+import { getColorFromName } from "../../../utils/common/getHashCode";
+import runtimeLogger from "../../../utils/common/runtimeLogger";
 import "./index.css";
 
 const NATURE_MAP = ["社团", "学生会", "其他"];
