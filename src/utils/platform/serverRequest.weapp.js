@@ -1,7 +1,7 @@
 // utils/serverRequest.weapp.js
 import Taro from "@tarojs/taro";
-import userManager from "../service/userInfo";
-import runtimeLogger from "./runtimeLogger";
+import userManager from '../../service/userInfo';
+import runtimeLogger from '../common/runtimeLogger';
 
 const SERVER_BASE = "https://spinach.cc.cd";
 

@@ -1,8 +1,8 @@
 // h5端根据 ip 获取经纬度
 import Taro from "@tarojs/taro";
-import { API_BASE } from "../config/api";
+import { API_BASE } from '../../config/api';
 import createRequest from "./request";
-import runtimeLogger from "./runtimeLogger";
+import runtimeLogger from '../common/runtimeLogger';
 
 /**
  * 通过 IP 定位获取当前大致经纬度（使用 ipapi.co）

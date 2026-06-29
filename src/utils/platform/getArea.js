@@ -1,8 +1,8 @@
 // h5端根据经纬度逆地理编码（获取城市、区县等信息）
 import Taro from "@tarojs/taro";
-import { API_BASE } from "../config/api";
+import { API_BASE } from '../../config/api';
 import createRequest from "./request";        // 默认导入已配置好的请求实例
-import runtimeLogger from "./runtimeLogger";
+import runtimeLogger from '../common/runtimeLogger';
 
 
 /**

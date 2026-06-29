@@ -1,8 +1,8 @@
 // utils/request.weapp.js
 import Taro from '@tarojs/taro'
-import { API_BASE } from '../config/api'
-import CookiesManager from './cookies'
-import runtimeLogger from './runtimeLogger'
+import { API_BASE } from '../../config/api'
+import CookiesManager from '../common/cookies'
+import runtimeLogger from '../common/runtimeLogger'
 
 /**
  * 拼接完整 URL

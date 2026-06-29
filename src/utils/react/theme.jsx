@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import useThemeStore from "../store/useThemeStore";
+import useThemeStore from "../../store/useThemeStore";
 
 /**
  * 向后兼容的 ThemeProvider

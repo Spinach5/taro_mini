@@ -1,9 +1,9 @@
 // utils/request.js
 import axios from "axios";
 import TaroAdapter from "taro-axios-adapter";
-import CookiesManager from "./cookies"; // 导入 CookiesManager 类
-import { API_BASE } from "../config/api";
-import runtimeLogger from "./runtimeLogger";
+import CookiesManager from '../common/cookies'; // 导入 CookiesManager 类
+import { API_BASE } from '../../config/api';
+import runtimeLogger from '../common/runtimeLogger';
 
 /**
  * 创建带有 Cookie 自动管理的请求实例

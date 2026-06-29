@@ -1,7 +1,7 @@
 import Taro from "@tarojs/taro";
-import { API_BASE } from "../config/api";
+import { API_BASE } from '../../config/api';
 import createRequest from "./request"; // 默认导入已配置好的请求实例
-import runtimeLogger from "./runtimeLogger";
+import runtimeLogger from '../common/runtimeLogger';
 
 export default async function getWeather(latitude, longitude) {
 	const loginConfig = {

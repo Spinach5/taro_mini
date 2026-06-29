@@ -1,7 +1,7 @@
 // utils/serverRequest.h5.js
 import Taro from "@tarojs/taro";
-import userManager from "../service/userInfo";
-import runtimeLogger from "./runtimeLogger";
+import userManager from '../../service/userInfo';
+import runtimeLogger from '../common/runtimeLogger';
 
 const IS_DEV = process.env.NODE_ENV === "development";
 const BASE_URL = IS_DEV ? "http://localhost:3001" : "/server";
