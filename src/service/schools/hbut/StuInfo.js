@@ -1,23 +1,32 @@
 import { hbutRequest } from "../../../utils/platform/request";
-import withCache from "../../../utils/common/withCache";
+import cacheManager from "../../../utils/common/cache";
 import { getXhid } from "./GetXhid";
 import { AutoRetry } from "./autoRetry";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 
-const _cachedStuInfo = withCache("v1_stu_info", 24 * 60 * 60 * 1000, async () => {
-	const loginConfig = {
-		headers: {
-			"Content-Type":
-				"application/x-www-form-urlencoded; charset=UTF-8",
-			Referer: "https://jwxt.hbut.edu.cn",
-			Origin: "https://jwxt.hbut.edu.cn",
-		},
-		withCredentials: true,
-	};
+const CACHE_KEY = "StuInfo";
 
-	// 获取 xhid
-	const xhid = await getXhid();
+export async function getStuInfo() {
+	// 1. 优先从缓存获取
+	const cached = cacheManager.get(CACHE_KEY);
+	if (cached) {
+		console.log("[getStuInfo] 从缓存获取个人信息");
+		return cached;
+	}
+
 	const fetchStuInfo = async () => {
+		const loginConfig = {
+			headers: {
+				"Content-Type":
+					"application/x-www-form-urlencoded; charset=UTF-8",
+				Referer: "https://jwxt.hbut.edu.cn",
+				Origin: "https://jwxt.hbut.edu.cn",
+			},
+			withCredentials: true,
+		};
+
+		// 获取 xhid
+		const xhid = await getXhid();
 		const response = await hbutRequest.get(
 			`/admin/xsd/xskp/xskp?xhid=${xhid}`,
 			loginConfig,
@@ -52,7 +61,6 @@ const _cachedStuInfo = withCache("v1_stu_info", 24 * 60 * 60 * 1000, async () =>
 			console.warn("获取个人信息失败：响应数据中无个人信息");
 		}
 
-		// 可选：进一步验证 scoresData 的结构是否符合预期
 		if (typeof stuInfo !== "object") {
 			console.log("[getStuInfo] 响应数据格式异常");
 			console.warn("获取成绩数据失败：响应数据格式异常");
@@ -66,6 +74,9 @@ const _cachedStuInfo = withCache("v1_stu_info", 24 * 60 * 60 * 1000, async () =>
 			class: stuInfo.bjmc,
 			college: stuInfo.skyx,
 		};
+		// 存入缓存（永不过期）
+		cacheManager.set(CACHE_KEY, cleanInfo);
+		console.log("[getStuInfo] 已缓存个人信息");
 
 		return cleanInfo;
 	} catch (error) {
@@ -75,8 +86,4 @@ const _cachedStuInfo = withCache("v1_stu_info", 24 * 60 * 60 * 1000, async () =>
 		}
 		throw new Error(String(error));
 	}
-});
-
-export async function getStuInfo() {
-	return _cachedStuInfo();
 }

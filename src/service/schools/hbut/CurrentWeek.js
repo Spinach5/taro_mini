@@ -21,6 +21,7 @@ const _cachedCurrentWeek = withCache("v1_current_week", 60 * 60 * 1000, async ()
 	const fetchCurrentWeek = async () => {
 		const response = await hbutRequest.post(
 			"/admin/api/getXlzc",
+			{},
 			loginConfig,
 		);
 		return response; // 返回完整响应对象

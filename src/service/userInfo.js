@@ -67,6 +67,9 @@ class UserManager {
 
   // 修改单个字段
   setField(key, value) {
+    if (key === "password") {
+      this.password = value; // 密码存为实例属性，不经过 zustand 持久化
+    }
     useUserStore.setState({ [key]: value });
   }
 
@@ -80,8 +83,8 @@ class UserManager {
     // zustand persist 在 store 创建时自动加载
     // 这里检查是否有旧格式缓存需要迁移
     try {
-      const Taro = require("@tarojs/taro").default;
-      const oldCache = Taro.getStorageSync(this.cacheKey);
+      const TaroMod = require("@tarojs/taro").default;
+      const oldCache = TaroMod.getStorageSync(this.cacheKey);
       if (oldCache && oldCache.isLoggedIn && !this._state.isLoggedIn) {
         // 迁移旧缓存到 zustand
         useUserStore.setState({
