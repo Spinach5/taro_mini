@@ -48,13 +48,38 @@ async function requestCore(url, method, data, headers, baseURL, cookieManager, r
     redirect: 'manual',
   })
 
-  // 保存 Set-Cookie
+  // 保存 Set-Cookie（方式1：从响应头解析）
+  let cookieSaved = false
   const setCookieHeader = res.header['Set-Cookie'] || res.header['set-cookie']
   if (setCookieHeader) {
     const cookieHeaders = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader]
     cookieHeaders.forEach(header => {
       cookieManager.parseAndMerge(header)
     })
+    cookieSaved = true
+  }
+
+  // 保存 Cookie（方式2：Taro 4.x 的 res.cookies，包含重定向链中所有 cookie）
+  if (res.cookies && Array.isArray(res.cookies)) {
+    const cookieObj = {}
+    res.cookies.forEach(c => {
+      if (c.name && c.value) {
+        cookieObj[c.name] = c.value
+      }
+    })
+    if (Object.keys(cookieObj).length > 0) {
+      cookieManager.setAll(cookieObj)
+      cookieSaved = true
+    }
+  }
+
+  // 调试：打印登录流程中的 cookie 状态
+  if (url.indexOf('/admin/login') !== -1 || url.indexOf('/admin/xsd') !== -1) {
+    console.log(`[Request] ${method} ${url} | status=${res.statusCode} | cookieSaved=${cookieSaved}`)
+    console.log(`[Request] res.header keys:`, Object.keys(res.header || {}).join(', '))
+    console.log(`[Request] res.cookies:`, JSON.stringify(res.cookies || []))
+    console.log(`[Request] set-cookie header:`, setCookieHeader || '(none)')
+    console.log(`[Request] cookies in manager:`, JSON.stringify(cookieManager.getAll()))
   }
 
   // 手动处理重定向（仅 GET 请求跟随，POST 的 302 返回给调用方处理）

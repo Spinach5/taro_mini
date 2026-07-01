@@ -1,7 +1,7 @@
 // auth.js —— 客户端教务登录（每次先解滑块验证码 → 再登录）
 import Taro from "@tarojs/taro";
 import CryptoJS from "crypto-js";
-import { hbutRequest } from "../../../utils/platform/request";
+import { hbutRequest, hbutCookies } from "../../../utils/platform/request";
 import { API_BASE } from "../../../config/api";
 import encryptPassword from "../../../utils/business/hbut/loginEncrypt";
 import userManager from "../../userInfo";
@@ -157,8 +157,34 @@ async function solveCaptchaClient() {
   return { success: false };
 }
 
+// ─── 将 cookie 数组解析为键值对对象 ─────────────────────────
+function parseResCookies(cookiesArray) {
+  const obj = {};
+  if (!cookiesArray || !Array.isArray(cookiesArray)) return obj;
+  cookiesArray.forEach(c => {
+    if (c.name) obj[c.name] = c.value || "";
+  });
+  return obj;
+}
+
+// ─── 从响应中提取并保存 cookie ───────────────────────────
+function saveCookiesFromRes(res, cookieManager) {
+  // 方式1：res.cookies（Taro 4.x，包含重定向链所有 cookie）
+  const cookieObj = parseResCookies(res.cookies);
+  // 方式2：res.header["set-cookie"]
+  const setCookieHeader = res.header["set-cookie"] || res.header["Set-Cookie"];
+  if (setCookieHeader) {
+    const headers = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
+    headers.forEach(h => cookieManager.parseAndMerge(h));
+  }
+  // 方式1 再合并一次（确保 res.cookies 的覆盖 header 解析的）
+  if (Object.keys(cookieObj).length > 0) {
+    cookieManager.setAll(cookieObj);
+  }
+}
+
 // ─── 登录 ────────────────────────────────────────────────
-// 每次登录都先解滑块，再提交（保险起见）
+// 流程：GET 登录页获取初始 cookie → POST 登录（跟随重定向）
 export async function auth() {
   const { stuId, password } = userManager.getAccount();
 
@@ -188,53 +214,72 @@ export async function auth() {
   if (validate) params.append("jcaptchaCode", validate);
   params.append("rememberMe", "1");
 
-  const loginConfig = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-      Referer: REFERER,
-      Origin: REFERER,
-    },
-    withCredentials: true,
+  const baseHeaders = {
+    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    Referer: REFERER,
+    Origin: REFERER,
   };
 
   try {
-    const response = await hbutRequest.post("/admin/login", params, loginConfig);
-    const httpStatus = response.status;
+    // ── 第1步：GET 登录页面，获取初始 cookie（uid、route），模拟浏览器行为 ──
+    console.log("[Auth] 第1步：获取登录页面初始 cookie...");
+    await hbutRequest.get("/admin/login", {
+      headers: baseHeaders,
+    });
+    console.log("[Auth] 登录页 cookies:", JSON.stringify(hbutCookies.getAll()));
 
-    // weapp: POST 返回 302 → 登录成功（Cookie 已由 requestCore 保存）
-    if (!IS_H5 && httpStatus >= 300 && httpStatus < 400) {
+    // ── 第2步：POST 登录（用 Taro.request 直发，不设 redirect: 'manual'，让重定向自然跟随） ──
+    console.log("[Auth] 第2步：POST 登录...");
+    const fullUrl = `${REFERER}/admin/login`;
+    const cookieStr = hbutCookies.toString();
+
+    const postHeaders = { ...baseHeaders };
+    if (cookieStr) {
+      postHeaders["Cookie"] = cookieStr;
+    }
+
+    const postRes = await Taro.request({
+      url: fullUrl,
+      method: "POST",
+      data: params.toString(),
+      header: postHeaders,
+    });
+
+    const httpStatus = postRes.statusCode;
+
+    // 保存重定向链中所有 cookie
+    saveCookiesFromRes(postRes, hbutCookies);
+
+    console.log(`[Auth] POST /admin/login → status=${httpStatus}`);
+    console.log("[Auth] 登录后 cookies:", JSON.stringify(hbutCookies.getAll()));
+
+    // 检查是否有认证 cookie（puid/username/jw_uf 等登录成功才有的字段）
+    const allCookies = hbutCookies.getAll();
+    const hasAuthCookie = allCookies.puid && allCookies.username;
+    console.log("[Auth] 是否有认证 cookie:", hasAuthCookie, "keys:", Object.keys(allCookies).join(", "));
+
+    if (hasAuthCookie) {
       return { success: true, message: "登录成功" };
     }
 
-    // JSON 响应处理
-    const responseData = response.data;
-    if (typeof responseData === "object" || (typeof responseData === "string" && (responseData.startsWith("{") || responseData.startsWith("[")))) {
-      try {
-        const jsonData = typeof responseData === "object" ? responseData : JSON.parse(responseData);
-
-        // ret ≠ "0" → 登录失败（密码错误）
-        if (jsonData.ret !== undefined && String(jsonData.ret) !== "0") {
-          return { success: false, message: "密码输入错误" };
-        }
-
-        const codeVal = jsonData.code !== undefined ? jsonData.code : jsonData.ret;
-        if (codeVal !== undefined && codeVal !== 0 && codeVal !== 200 && String(codeVal) !== "0") {
-          return { success: false, message: jsonData.message || jsonData.msg || "登录失败" };
-        }
-      } catch (_) {}
+    // 如果回到了登录页面（检查是否包含登录表单，而非简单的页面标题）
+    if (typeof postRes.data === "string") {
+      const isLoginForm = /<form[^>]*login/i.test(postRes.data)
+        || /<input[^>]*type=["']password["']/i.test(postRes.data);
+      if (isLoginForm) {
+        console.warn("[Auth] 最终页面包含登录表单，登录失败");
+        return { success: false, message: "登录失败，账号或密码错误" };
+      }
     }
 
-    if (httpStatus !== 200 && !(httpStatus >= 300 && httpStatus < 400)) {
-      return { success: false, message: `HTTP 错误: ${httpStatus}` };
+    // 兜底：http 状态码判断
+    if (httpStatus >= 200 && httpStatus < 400) {
+      return { success: true, message: "登录成功" };
     }
 
-    return { success: true, message: "登录成功" };
+    return { success: false, message: `服务器返回 ${httpStatus}` };
   } catch (error) {
     runtimeLogger.error("Auth", "登录请求失败", error);
-    if (error.response) {
-      const d = error.response.data;
-      if (typeof d === "object") return { success: false, message: d.message || d.msg || "请求失败" };
-    }
     return { success: false, message: error.message || "网络请求失败" };
   }
 }
