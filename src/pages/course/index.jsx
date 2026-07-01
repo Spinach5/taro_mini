@@ -44,7 +44,20 @@ export default function Index() {
 	const [weeksDataReady, setWeeksDataReady] = useState(false);
 	const [practiceData, setPracticeData] = useState([]);
 	const [isTimeout, setIsTimeout] = useState(false);
+
+	// Error states for sequential flow
+	const [semesterError, setSemesterError] = useState(false);
+	const [weekTimeError, setWeekTimeError] = useState(false);
+	const [scheduleError, setScheduleError] = useState(false);
+
 	const timeoutRef = useRef(null);
+	const loadIdRef = useRef(0);
+	const semesterListRef = useRef([]);
+
+	// 同步 ref
+	useEffect(() => {
+		semesterListRef.current = semesterList;
+	}, [semesterList]);
 
 	// 学期选择器显示控制
 
@@ -61,14 +74,6 @@ export default function Index() {
 		setPracticeData([]);
 	}, []);
 
-	const handleSemesterChange = useCallback(
-		(selectedSemester) => {
-			if (selectedSemester && selectedSemester !== currentSemester) {
-				setCurrentSemester(selectedSemester);
-			}
-		},
-		[currentSemester],
-	);
 	// 重置课程数据
 	const resetCourseData = useCallback(() => {
 		setCurrentSemester(null);
@@ -83,55 +88,127 @@ export default function Index() {
 		setWeekDataList([]);
 		setModalVisible(false);
 		setCurrentCourse(null);
+		setSemesterError(false);
+		setWeekTimeError(false);
+		setScheduleError(false);
 	}, []);
 
-	// 刷新课表
+	// 步骤3-5: 顺序加载周次/节次 → 课表数据 → 定位当前周
+	const loadSemesterData = useCallback(
+		async (semester, forceRefresh = false, isCurrent = true) => {
+			if (!semester) return;
+
+			const loadId = ++loadIdRef.current;
+			setLoading(true);
+			setWeekTimeError(false);
+			setScheduleError(false);
+
+			// ---- 步骤3: 获取周次与节次时间 ----
+			runtimeLogger.info("Course", "步骤3: 开始获取周次和节次时间", { semester });
+			try {
+				const [week, weeks, timeData] = await Promise.all([
+					getCurrentWeek(),
+					getAllWeek(semester),
+					getTimeTable(semester),
+				]);
+				if (loadId !== loadIdRef.current) return;
+
+				const weeksNum = weeks.map((w) => parseInt(w.zc, 10));
+				const weekNum = parseInt(week, 10);
+				let validWeek = weekNum;
+				if (!weeksNum.includes(weekNum)) {
+					validWeek = weeksNum[0] || 1;
+				}
+
+				setWeekDataList(weeks);
+				setWeekList(weeksNum);
+				setTimeTable(timeData || []);
+				setWeekTimeError(false);
+
+				// ---- 步骤5: 定位到当前周 ----
+				const targetWeek = isCurrent ? validWeek : (weeksNum[0] || 1);
+				setCurrentWeek(targetWeek);
+				setActualWeek(validWeek);
+				const idx = weeksNum.indexOf(targetWeek);
+				setCurrentIndex(idx >= 0 ? idx : 0);
+
+				runtimeLogger.info("Course", "步骤3+5: 周次和节次获取成功", {
+					weekCount: weeksNum.length,
+					timeSlots: (timeData || []).length,
+					targetWeek,
+					isCurrentSemester: isCurrent,
+				});
+			} catch (err) {
+				if (loadId !== loadIdRef.current) return;
+				runtimeLogger.error("Course", "步骤3: 获取周次或节次失败", err);
+				setWeekTimeError(true);
+				setWeekList([]);
+				setTimeTable([]);
+				setLoading(false);
+				return; // 终止步骤4
+			}
+
+			// ---- 步骤4: 获取课表数据 ----
+			runtimeLogger.info("Course", "步骤4: 开始获取课表数据", { semester });
+			try {
+				const scheduleData = await getAllSchedule(forceRefresh, semester);
+				if (loadId !== loadIdRef.current) return;
+				setCourses(scheduleData || []);
+				setScheduleError(false);
+				runtimeLogger.info("Course", "步骤4: 课表数据获取成功", {
+					courseCount: (scheduleData || []).length,
+				});
+			} catch (err) {
+				if (loadId !== loadIdRef.current) return;
+				runtimeLogger.error("Course", "步骤4: 课表数据获取失败", err);
+				setCourses([]);
+				setScheduleError(true);
+				runtimeLogger.info("Course", "步骤4: 课表未公布，保留课表框架");
+			}
+
+			if (loadId !== loadIdRef.current) return;
+			setLoading(false);
+
+			// 获取实践信息（非阻塞，独立于主流程）
+			getExtroInfo(semester, forceRefresh)
+				.then((data) => {
+					if (loadIdRef.current === loadId) setPracticeData(data || []);
+				})
+				.catch(() => {
+					if (loadIdRef.current === loadId) setPracticeData([]);
+				});
+		},
+		[],
+	);
+
+	// 学期切换：重新触发步骤3-5
+	const handleSemesterChange = useCallback(
+		(selectedSemester) => {
+			if (selectedSemester && selectedSemester !== currentSemester) {
+				setCurrentSemester(selectedSemester);
+				const semesters = semesterListRef.current;
+				const isCurrent =
+					semesters.length > 0 && selectedSemester === semesters[semesters.length - 1];
+				loadSemesterData(selectedSemester, false, isCurrent);
+			}
+		},
+		[currentSemester, loadSemesterData],
+	);
+
+	// 刷新课表（下拉刷新触发）
 	const refreshCourseData = useCallback(
 		async (forceRefresh = false) => {
-			if (!isLoggedIn || !currentSemester) {
+			const semester = currentSemester;
+			if (!isLoggedIn || !semester) {
 				Taro.showToast({ title: "请先登录", icon: "none" });
 				return;
 			}
-			setLoading(true);
-			let hasError = false;
-			try {
-				const [scheduleResult, timeResult, extroResult] = await Promise.allSettled([
-					getAllSchedule(forceRefresh, currentSemester),
-					getTimeTable(currentSemester),
-					getExtroInfo(currentSemester, forceRefresh),
-				]);
+			const semesters = semesterListRef.current;
+			const isCurrent =
+				semesters.length > 0 && semester === semesters[semesters.length - 1];
+			await loadSemesterData(semester, forceRefresh, isCurrent);
 
-				if (scheduleResult.status === "fulfilled") {
-					setCourses(scheduleResult.value || []);
-				} else {
-					runtimeLogger.error("Course", "刷新课表失败", scheduleResult.reason);
-					hasError = true;
-				}
-
-				if (timeResult.status === "fulfilled") {
-					setTimeTable(timeResult.value || []);
-				} else {
-					runtimeLogger.error("Course", "刷新时间表失败", timeResult.reason);
-					hasError = true;
-				}
-
-				if (extroResult.status === "fulfilled") {
-					setPracticeData(extroResult.value || []);
-				} else {
-					runtimeLogger.error("Course", "刷新备注信息失败", extroResult.reason);
-					hasError = true;
-				}
-
-				if (hasError) {
-					Taro.showToast({ title: "部分数据刷新失败", icon: "none" });
-				}
-			} catch (err) {
-				runtimeLogger.error("Course", "刷新课表失败", err);
-				Taro.showToast({ title: "刷新失败", icon: "none" });
-			} finally {
-				setLoading(false);
-			}
-			if (forceRefresh && !hasError) {
+			if (forceRefresh) {
 				// 等 React 重新渲染、Loading 组件消失后再弹出 toast
 				await new Promise((resolve) => setTimeout(resolve, 300));
 				Taro.showToast({
@@ -141,7 +218,7 @@ export default function Index() {
 				});
 			}
 		},
-		[isLoggedIn, currentSemester],
+		[isLoggedIn, currentSemester, loadSemesterData],
 	);
 
 	// 添加课程回调（传递给 CourseHeader）
@@ -189,21 +266,53 @@ export default function Index() {
 		checkLoginStatus();
 	});
 
-	// 获取学期列表
+	// 步骤2: 获取学年学期列表 → 成功后顺序执行步骤3-5
 	useEffect(() => {
 		if (!isLoggedIn) return;
-		getSemesterList()
-			.then((list) => {
+
+		let cancelled = false;
+		const loadId = ++loadIdRef.current;
+
+		const doStep2 = async () => {
+			runtimeLogger.info("Course", "步骤2: 开始获取学年学期列表");
+			setLoading(true);
+			setSemesterError(false);
+
+			try {
+				const list = await getSemesterList();
+				if (cancelled || loadId !== loadIdRef.current) return;
+
 				setSemesterList(list);
-				if (list && list.length) {
-					setCurrentSemester(list[list.length - 1]);
+				const latestSemester = list && list.length ? list[list.length - 1] : null;
+
+				if (!latestSemester) {
+					runtimeLogger.error("Course", "步骤2: 学期列表为空");
+					setSemesterError(true);
+					setLoading(false);
+					return; // 终止后续流程
 				}
-			})
-			.catch((err) => {
-				console.error("获取学期列表失败", err);
-				Taro.showToast({ title: "获取学期失败", icon: "none" });
-			});
-	}, [isLoggedIn]);
+
+				setCurrentSemester(latestSemester);
+				runtimeLogger.info("Course", "步骤2: 学年学期获取成功", { currentSemester: latestSemester });
+
+				// 步骤2成功 → 继续执行步骤3-5
+				const semesters = list || [];
+				const isCurrent = semesters.length > 0 && latestSemester === semesters[semesters.length - 1];
+				await loadSemesterData(latestSemester, false, isCurrent);
+			} catch (err) {
+				if (cancelled || loadId !== loadIdRef.current) return;
+				runtimeLogger.error("Course", "步骤2: 获取学年学期列表失败", err);
+				setSemesterError(true);
+				setLoading(false);
+			}
+		};
+
+		doStep2();
+
+		return () => {
+			cancelled = true;
+		};
+	}, [isLoggedIn, loadSemesterData]);
 
 	// 周数据就绪判断
 	useEffect(() => {
@@ -216,60 +325,6 @@ export default function Index() {
 			setWeeksDataReady(false);
 		}
 	}, [weekList, weeksData]);
-
-	// 获取周次列表
-	useEffect(() => {
-		if (!isLoggedIn || !currentSemester) return;
-		Promise.all([getCurrentWeek(), getAllWeek(currentSemester)])
-			.then(([week, weeks]) => {
-				// 从对象数组中提取 zc 数字
-				const weeksNum = weeks.map((w) => parseInt(w.zc, 10));
-				setWeekDataList(weeks);
-				const weekNum = parseInt(week, 10);
-				let validWeek = weekNum;
-				if (!weeksNum.includes(weekNum)) {
-					validWeek = weeksNum[0] || 1;
-				}
-				setWeekList(weeksNum);
-				const isCurrentSemester = semesterList.length > 0 && currentSemester === semesterList[semesterList.length - 1];
-				setCurrentWeek(isCurrentSemester ? validWeek : (weeksNum[0] || 1));
-				setActualWeek(validWeek);
-				const idx = weeksNum.indexOf(validWeek);
-				setCurrentIndex(idx >= 0 ? idx : 0);
-			})
-			.catch((err) => {
-				console.error("获取周次失败", err);
-				setWeekList([]);
-			});
-	}, [isLoggedIn, currentSemester]);
-
-	// 加载课程和时间表
-	useEffect(() => {
-		if (!isLoggedIn || !currentSemester) return;
-		setLoading(true);
-		Promise.all([
-			getAllSchedule(false, currentSemester),
-			getTimeTable(currentSemester),
-		])
-			.then(([scheduleData, timeData]) => {
-				setCourses(scheduleData || []);
-				setTimeTable(timeData || []);
-			})
-			.catch((err) => {
-				console.error("获取课表失败", err);
-				setCourses([]);
-				setTimeTable([]);
-			})
-			.finally(() => setLoading(false));
-	}, [isLoggedIn, currentSemester]);
-
-	// 获取实践信息（备注）
-	useEffect(() => {
-		if (!isLoggedIn || !currentSemester) return;
-		getExtroInfo(currentSemester)
-			.then((data) => setPracticeData(data || []))
-			.catch(() => setPracticeData([]));
-	}, [isLoggedIn, currentSemester, weekList.length]);
 
 	// 同步 Swiper 索引
 	useEffect(() => {
@@ -428,6 +483,28 @@ export default function Index() {
 		);
 	}
 
+	// 步骤2失败：获取学期失败
+	if (semesterError) {
+		return (
+			<SafeAreaView currentPath={currentPath}>
+				<View className="notLoginView">
+					<Text className="notLoginText">获取学期失败</Text>
+				</View>
+			</SafeAreaView>
+		);
+	}
+
+	// 步骤3失败：获取排课周数或节次失败
+	if (weekTimeError) {
+		return (
+			<SafeAreaView currentPath={currentPath}>
+				<View className="notLoginView">
+					<Text className="notLoginText">获取排课周数或节次失败</Text>
+				</View>
+			</SafeAreaView>
+		);
+	}
+
 	const isLoading =
 		loading ||
 		!currentSemester ||
@@ -439,6 +516,64 @@ export default function Index() {
 		return (
 			<SafeAreaView currentPath={currentPath}>
 				<Loading />
+			</SafeAreaView>
+		);
+	}
+
+	// 步骤4失败：课表未公布，显示框架但替换网格区域为错误提示
+	if (scheduleError || (!weeksDataReady && courses.length === 0 && !loading)) {
+		const swiperHeight = timeTable.length * 150;
+		return (
+			<SafeAreaView currentPath={currentPath}>
+				<CourseHeader
+					currentSemester={currentSemester}
+					currentWeek={currentWeek}
+					onWeekChange={handleWeekChange}
+					onRefresh={() => refreshCourseData(true)}
+					onAddCourseConfirm={handleAddCourseConfirm}
+					semesterList={semesterList}
+					onSemesterChange={handleSemesterChange}
+				/>
+
+				<WeekHeader currentWeek={currentWeek} weekDataList={weekDataList} />
+				<ScrollView
+					scrollY
+					className="outer-scroll"
+					showScrollbar={false}
+					enhanced
+					bounces={false}
+				>
+					<View className="schedule-row">
+						<TimeColumn timeTable={timeTable} />
+						<View
+							className="swiper-col"
+							style={{ height: `${swiperHeight}rpx` }}
+						>
+							<View className="notLoginView">
+								<Text className="notLoginText">该学年学期课表还未公布</Text>
+							</View>
+						</View>
+					</View>
+					{practiceData.length > 0 && (
+						<>
+							<View className="remark-divider" />
+							<View className="remark-row">
+								<View className="remark-label">
+									<Text>备注</Text>
+								</View>
+								<View className="remark-content">
+									<PracticeCard data={practiceData} />
+								</View>
+							</View>
+						</>
+					)}
+				</ScrollView>
+
+				{actualWeek && currentWeek !== actualWeek && semesterList.length > 0 && currentSemester === semesterList[semesterList.length - 1] && (
+					<View className="gobacktoday bora" onClick={handleBackToCurrentWeek}>
+						返回本周
+					</View>
+				)}
 			</SafeAreaView>
 		);
 	}
