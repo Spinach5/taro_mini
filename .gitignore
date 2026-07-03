@@ -10,3 +10,5 @@ node_modules/
 /.playwright-mcp
 /.superpowers
 /cloudfunctions
+/.env.production
+/.env.development
