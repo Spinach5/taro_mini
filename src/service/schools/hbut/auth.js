@@ -228,27 +228,46 @@ export async function auth() {
     });
     console.log("[Auth] 登录页 cookies:", JSON.stringify(hbutCookies.getAll()));
 
-    // ── 第2步：POST 登录（用 Taro.request 直发，不设 redirect: 'manual'，让重定向自然跟随） ──
+    // ── 第2步：POST 登录 ──
+    // H5 通过代理（/hbut → Vite proxy → jwxt.hbut.edu.cn）避免 CORS
+    // 微信小程序直接请求（无 CORS 限制）
     console.log("[Auth] 第2步：POST 登录...");
-    const fullUrl = `${REFERER}/admin/login`;
     const cookieStr = hbutCookies.toString();
 
     const postHeaders = { ...baseHeaders };
-    if (cookieStr) {
+    // H5 使用 hbutRequest (axios) 时，其请求拦截器会自动注入 Cookie，
+    // 此处不在 postHeaders 中手动添加，避免重复
+    if (!IS_H5 && cookieStr) {
       postHeaders["Cookie"] = cookieStr;
     }
 
-    const postRes = await Taro.request({
-      url: fullUrl,
-      method: "POST",
-      data: params.toString(),
-      header: postHeaders,
-    });
+    let postRes;
+    if (IS_H5) {
+      // H5: 通过 proxy 请求，hbutRequest baseURL 为 /hbut
+      const axiosRes = await hbutRequest.post("/admin/login", params.toString(), {
+        headers: postHeaders,
+      });
+      // 归一化为 Taro 响应格式，供后续代码使用
+      postRes = {
+        data: axiosRes.data,
+        statusCode: axiosRes.status,
+        header: axiosRes.headers,
+      };
+      // H5 的 axios 响应拦截器已在内部保存 Set-Cookie，无需额外调用 saveCookiesFromRes
+    } else {
+      // 微信小程序：直接请求教务系统
+      const fullUrl = `${REFERER}/admin/login`;
+      postRes = await Taro.request({
+        url: fullUrl,
+        method: "POST",
+        data: params.toString(),
+        header: postHeaders,
+      });
+      // 保存重定向链中所有 cookie
+      saveCookiesFromRes(postRes, hbutCookies);
+    }
 
     const httpStatus = postRes.statusCode;
-
-    // 保存重定向链中所有 cookie
-    saveCookiesFromRes(postRes, hbutCookies);
 
     console.log(`[Auth] POST /admin/login → status=${httpStatus}`);
     console.log("[Auth] 登录后 cookies:", JSON.stringify(hbutCookies.getAll()));

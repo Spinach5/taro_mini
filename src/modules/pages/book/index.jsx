@@ -170,6 +170,26 @@ export default function Index() {
         <HeadStatus text="书籍" />
       </View>
 
+      {/* 卖书/买书 双按钮（环境变量控制） */}
+      {process.env.TARO_APP_ENABLE_BOOK_TRADE === "true" && (
+        <View className="trade-btn-row">
+          <View
+            className="trade-btn trade-btn-sell"
+            onClick={() => Taro.navigateTo({ url: "/modules/pages/book/edit/index" })}
+          >
+            <MaterialCommunityIcons name="book-plus-multiple" size={22} color="#fff" />
+            <Text className="trade-btn-text">我要卖书</Text>
+          </View>
+          <View
+            className="trade-btn trade-btn-buy"
+            onClick={() => Taro.navigateTo({ url: "/modules/pages/book/buy/index" })}
+          >
+            <MaterialCommunityIcons name="cart" size={22} color="#fff" />
+            <Text className="trade-btn-text">我要买书</Text>
+          </View>
+        </View>
+      )}
+
       {/* 搜索栏 */}
       <View className="search-bar">
         <View className="search-input-wrap">
@@ -343,6 +363,16 @@ export default function Index() {
             </View>
           )}
         </ScrollView>
+      )}
+
+      {/* FAB 悬浮按钮 — 消息图标（环境变量控制） */}
+      {process.env.TARO_APP_ENABLE_BOOK_TRADE === "true" && (
+        <View
+          className="fab-btn"
+          onClick={() => Taro.navigateTo({ url: "/modules/pages/chat/list/index" })}
+        >
+          <MaterialCommunityIcons name="message-text-outline" size={40} color="#fff" />
+        </View>
       )}
 
     </SafeAreaView>

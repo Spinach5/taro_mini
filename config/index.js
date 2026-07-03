@@ -57,6 +57,9 @@ export default defineConfig(async (merge, { command, mode }) => {
 			"process.env.ISBN_KEY": JSON.stringify(
 				process.env.ISBN_KEY || "",
 			),
+			"process.env.TARO_APP_ENABLE_BOOK_TRADE": JSON.stringify(
+				process.env.TARO_APP_ENABLE_BOOK_TRADE || "false",
+			),
 		},
 		copy: {
 			patterns: [],

@@ -40,25 +40,38 @@ export default defineAppConfig({
   subPackages: [
   {
     root: "modules",
-    pages: [
-    "pages/login/index",
-    "pages/club/index",
-    "pages/club/detail/index",
-    "pages/club/add/index",
-    "pages/muyu/index",
-    "pages/affair/index",
-    "pages/student/index",
-    "pages/food/index",
-    "pages/exam/index",
-    "pages/empty_room/index",
-    "pages/book/index",
-    "pages/book/detail/index",
-    "pages/runtimeLog/index",
-    "pages/repo/index",
-    "pages/settings/index",
-    "pages/join/index",
-    "pages/feedback/index",
-    "pages/weather/index"]
+    pages: (() => {
+      const base = [
+        "pages/login/index",
+        "pages/club/index",
+        "pages/club/detail/index",
+        "pages/club/add/index",
+        "pages/muyu/index",
+        "pages/affair/index",
+        "pages/student/index",
+        "pages/food/index",
+        "pages/exam/index",
+        "pages/empty_room/index",
+        "pages/book/index",
+        "pages/book/detail/index",
+        "pages/runtimeLog/index",
+        "pages/repo/index",
+        "pages/settings/index",
+        "pages/join/index",
+        "pages/feedback/index",
+        "pages/weather/index",
+      ];
+      // 二手书交易 + 聊天界面：由环境变量控制是否打包
+      if (process.env.TARO_APP_ENABLE_BOOK_TRADE === "true") {
+        base.push(
+          "pages/book/edit/index",
+          "pages/book/buy/index",
+          "pages/chat/list/index",
+          "pages/chat/detail/index",
+        );
+      }
+      return base;
+    })(),
   }
 ]
 

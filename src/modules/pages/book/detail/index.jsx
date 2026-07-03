@@ -7,11 +7,14 @@ import HeadStatus from "../../../../components/layout/HeadStatus";
 import {
   getBookDetail,
   toggleWantBook,
+  deleteBook,
   addFavoriteBookId,
   removeFavoriteBookId,
   isFavoriteBook,
 } from "../../../../service";
+import { createConversation } from "../../../../service/schools/hbut/chat";
 import { getColorFromName } from "../../../../utils/common/getHashCode";
+import userManager from "../../../../service/userInfo";
 import cacheManager from "../../../../utils/common/cache";
 import runtimeLogger from "../../../../utils/common/runtimeLogger";
 import "./index.css";
@@ -85,6 +88,46 @@ export default function Index() {
     } finally {
       setFavLoading(false);
     }
+  };
+
+  const handleTalk = async () => {
+    try {
+      const res = await createConversation(Number(id));
+      const convId = res && res.data ? res.data.id || res.data.conversation_id : null;
+      if (!convId) {
+        Taro.showToast({ title: "发起会话失败", icon: "none" });
+        return;
+      }
+      const coverUrl = (book.images && book.images.length > 0) ? book.images[0].url : "";
+      Taro.navigateTo({
+        url: `/modules/pages/chat/detail/index?conversationId=${convId}&name=${encodeURIComponent(book.publisherName || "")}&bookName=${encodeURIComponent(book.name || "")}&bookImage=${encodeURIComponent(coverUrl)}&bookPrice=${encodeURIComponent(String(book.price || ""))}&isDelivery=${book.isDelivery || 0}`,
+      });
+    } catch (error) {
+      runtimeLogger.error("BookDetail", "发起会话失败", error);
+      Taro.showToast({ title: "请先登录", icon: "none" });
+    }
+  };
+
+  const handleDelete = () => {
+    Taro.showModal({
+      title: "确认删除",
+      content: `是否删除《${book.name}》？`,
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            await deleteBook(id);
+            cacheManager.remove("v1_books");
+            Taro.showToast({ title: "已删除", icon: "success" });
+            setTimeout(() => {
+              const pages = Taro.getCurrentPages();
+              pages.length > 1 ? Taro.navigateBack() : Taro.redirectTo({ url: "/modules/pages/book/index" });
+            }, 1000);
+          } catch (error) {
+            Taro.showToast({ title: "删除失败", icon: "none" });
+          }
+        }
+      },
+    });
   };
 
   const formatTime = (t) => {
@@ -252,6 +295,30 @@ export default function Index() {
           <AtIcon value={isFav ? "heart-2" : "heart"} size={22} color={isFav ? "#e74c3c" : "#000"} />
           <Text className="fav-text">{isFav ? "已收藏" : "收藏"}</Text>
         </View>
+        {/* 联系/编辑/删除 按钮（环境变量控制） */}
+        {process.env.TARO_APP_ENABLE_BOOK_TRADE === "true" && (
+          book.isPublisher ? (
+            <>
+              <View
+                className="edit-btn"
+                onClick={() =>
+                  Taro.navigateTo({
+                    url: `/modules/pages/book/edit/index?id=${id}`,
+                  })
+                }
+              >
+                <Text className="edit-btn-text">编辑</Text>
+              </View>
+              <View className="delete-btn" onClick={handleDelete}>
+                <Text className="delete-btn-text">删除</Text>
+              </View>
+            </>
+          ) : (
+            <View className="contact-btn" onClick={handleTalk}>
+              <Text className="contact-btn-text">联系</Text>
+            </View>
+          )
+        )}
 
       </View>
     </SafeAreaView>
