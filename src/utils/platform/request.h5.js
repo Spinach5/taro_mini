@@ -20,10 +20,12 @@ const createRequest = (baseURL, cookieManager) => {
 		withCredentials: true, // 允许跨域带 Cookie
 	});
 
-	// 请求拦截器：添加 Cookie 头
+	// 请求拦截器
+	// 注：H5 环境 "Cookie" 是浏览器禁止的请求头，手动设置会被静默丢弃。
+	// H5 依赖 Vite proxy 剥离 Set-Cookie 的 Domain 属性，
+	// 让浏览器自动管理 cookie（存储 → 请求时自动携带）。
 	instance.interceptors.request.use(
 		(config) => {
-			console.log("请求拦截器");
 			const cookieString = cookieManager.toString();
 			if (cookieString) {
 				config.headers["Cookie"] = cookieString;
@@ -36,23 +38,24 @@ const createRequest = (baseURL, cookieManager) => {
 		},
 	);
 
-	// 响应拦截器：提取并保存 Set-Cookie
+	// 响应拦截器
+	// 注：H5 环境 "Set-Cookie" 是浏览器禁止的响应头，JS 无法读取。
+	// H5 依赖 Vite proxy 剥离 Set-Cookie 的 Domain 属性，
+	// 浏览器收到响应后自动存储 cookie，无需 JS 介入。
 	instance.interceptors.response.use(
 		(response) => {
-			console.log("响应拦截器");
 			const setCookie = response.headers["set-cookie"];
 			if (setCookie) {
 				// 兼容数组（axios 会将多个同名头合并为数组）或字符串
 				const cookieHeaders = Array.isArray(setCookie)
 					? setCookie
 					: [setCookie];
-				console.log(cookieHeaders);
 				cookieHeaders.forEach((header) => {
 					cookieManager.parseAndMerge(header);
 				});
 			}
 
-			return response; //保留整个 response
+			return response;
 		},
 		(error) => {
 			const url = error?.config?.url || error?.config?.baseURL || "unknown";

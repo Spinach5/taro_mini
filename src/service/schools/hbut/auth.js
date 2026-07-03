@@ -272,10 +272,19 @@ export async function auth() {
     console.log(`[Auth] POST /admin/login → status=${httpStatus}`);
     console.log("[Auth] 登录后 cookies:", JSON.stringify(hbutCookies.getAll()));
 
-    // 检查是否有认证 cookie（puid/username/jw_uf 等登录成功才有的字段）
-    const allCookies = hbutCookies.getAll();
-    const hasAuthCookie = allCookies.puid && allCookies.username;
-    console.log("[Auth] 是否有认证 cookie:", hasAuthCookie, "keys:", Object.keys(allCookies).join(", "));
+    // 检查是否有认证 cookie（puid/username 等登录成功才有的字段）
+    // H5：JS 管理的 CookiesManager 始终为空（Set-Cookie 是浏览器禁止头），
+    // 改为检查 document.cookie（浏览器自动存储的 cookie）
+    let hasAuthCookie = false;
+    if (IS_H5) {
+      const docCookie = typeof document !== "undefined" ? document.cookie : "";
+      hasAuthCookie = docCookie.includes("puid") && docCookie.includes("username");
+      console.log("[Auth] H5 document.cookie 包含 puid:", docCookie.includes("puid"), "username:", docCookie.includes("username"));
+    } else {
+      const allCookies = hbutCookies.getAll();
+      hasAuthCookie = allCookies.puid && allCookies.username;
+      console.log("[Auth] 是否有认证 cookie:", hasAuthCookie, "keys:", Object.keys(allCookies).join(", "));
+    }
 
     if (hasAuthCookie) {
       return { success: true, message: "登录成功" };

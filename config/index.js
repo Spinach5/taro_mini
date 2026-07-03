@@ -208,7 +208,17 @@ export default defineConfig(async (merge, { command, mode }) => {
 						secure: false,
 						rewrite: (path) => path.replace(/^\/hbut_www/, ""),
 						configure: (proxy, options) => {
+							// 剥离 Set-Cookie 的 Domain/Secure，让浏览器存储到 localhost
 							proxy.on("proxyRes", (proxyRes, req, res) => {
+								const setCookie = proxyRes.headers["set-cookie"];
+								if (setCookie) {
+									const cookies = Array.isArray(setCookie) ? setCookie : [setCookie];
+									proxyRes.headers["set-cookie"] = cookies.map(c =>
+										c.replace(/;\s*Domain=[^;]+/gi, "")
+										 .replace(/;\s*Secure/gi, "")
+										 .replace(/;\s*SameSite\s*=\s*None/gi, "; SameSite=Lax")
+									);
+								}
 								console.log("proxyRes触发");
 								if (proxyRes.headers.location) {
 									let location = proxyRes.headers.location;
@@ -240,7 +250,17 @@ export default defineConfig(async (merge, { command, mode }) => {
 						agent: new https.Agent({ family: 4, keepAlive: true }),
 						rewrite: (path) => path.replace(/^\/hbut/, ""),
 						configure: (proxy, options) => {
+							// 剥离 Set-Cookie 的 Domain/Secure，让浏览器存储到 localhost
 							proxy.on("proxyRes", (proxyRes, req, res) => {
+								const setCookie = proxyRes.headers["set-cookie"];
+								if (setCookie) {
+									const cookies = Array.isArray(setCookie) ? setCookie : [setCookie];
+									proxyRes.headers["set-cookie"] = cookies.map(c =>
+										c.replace(/;\s*Domain=[^;]+/gi, "")
+										 .replace(/;\s*Secure/gi, "")
+										 .replace(/;\s*SameSite\s*=\s*None/gi, "; SameSite=Lax")
+									);
+								}
 								console.log("proxyRes触发");
 								if (proxyRes.headers.location) {
 									let location = proxyRes.headers.location;
@@ -359,6 +379,16 @@ export default defineConfig(async (merge, { command, mode }) => {
 							}
 						});
 						proxy.on("proxyRes", (proxyRes, req, res) => {
+							// 剥离 Set-Cookie 的 Domain/Secure，让浏览器存储到 localhost
+							const setCookie = proxyRes.headers["set-cookie"];
+							if (setCookie) {
+								const cookies = Array.isArray(setCookie) ? setCookie : [setCookie];
+								proxyRes.headers["set-cookie"] = cookies.map(c =>
+									c.replace(/;\s*Domain=[^;]+/gi, "")
+									 .replace(/;\s*Secure/gi, "")
+									 .replace(/;\s*SameSite\s*=\s*None/gi, "; SameSite=Lax")
+								);
+							}
 							console.log("proxyRes触发");
 							if (proxyRes.headers.location) {
 								let location = proxyRes.headers.location;
