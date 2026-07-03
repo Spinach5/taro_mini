@@ -270,6 +270,12 @@ export default defineConfig(async (merge, { command, mode }) => {
 						changeOrigin: true,
 						rewrite: (path) => path.replace(/^\/ipapi/, ""),
 						configure: (proxy, options) => {
+							// 伪造浏览器 User-Agent，避免 Cloudflare 403
+							proxy.on("proxyReq", (proxyReq, req, res) => {
+								proxyReq.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36");
+								proxyReq.setHeader("Accept", "application/json, text/plain, */*");
+								proxyReq.setHeader("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8");
+							});
 							proxy.on("proxyRes", (proxyRes, req, res) => {
 								console.log("proxyRes触发");
 								if (proxyRes.headers.location) {
