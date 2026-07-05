@@ -2,10 +2,10 @@
 import Taro from "@tarojs/taro";
 import CryptoJS from "crypto-js";
 import { hbutRequest, hbutCookies } from "../../../utils/platform/request";
+import { serverPost } from "../../../utils/platform/serverRequest";
 import { API_BASE } from "../../../config/api";
 import encryptPassword from "../../../utils/business/hbut/loginEncrypt";
 import userManager from "../../userInfo";
-import { cloudbase } from "../../../utils/platform/cloudbase";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 
 const CAPTCHA_ID = "fdHguSojgSJag5B74ij8Bu8ZAzWlNgXM";
@@ -103,9 +103,9 @@ async function solveCaptchaClient() {
       console.log("[Captcha] verifyToken:", verifyToken, "| dataToken:", imgData.data?.token, "| result:", imgData.result);
       if (!verifyToken) { console.warn("[Captcha] 未获取到 verifyToken, full response:", imgText); continue; }
 
-      // 4. 云函数计算缺口距离
-      const cloudRes = await cloudbase.callFunction({ name: "captcha", data: { shadeImage: vo.shadeImage, cutoutImage: vo.cutoutImage } });
-      const x = (cloudRes.result && cloudRes.result.x) || 0;
+      // 4. 请求服务器计算缺口距离
+      const captchaRes = await serverPost("/api/captcha/solve", { shadeImage: vo.shadeImage, cutoutImage: vo.cutoutImage });
+      const x = (captchaRes.success && captchaRes.data && captchaRes.data.x) || 0;
       console.log(`[Captcha] gap: ${x}px`);
       if (x < 10) continue;
 
