@@ -157,32 +157,6 @@ async function solveCaptchaClient() {
   return { success: false };
 }
 
-// ─── 将 cookie 数组解析为键值对对象 ─────────────────────────
-function parseResCookies(cookiesArray) {
-  const obj = {};
-  if (!cookiesArray || !Array.isArray(cookiesArray)) return obj;
-  cookiesArray.forEach(c => {
-    if (c.name) obj[c.name] = c.value || "";
-  });
-  return obj;
-}
-
-// ─── 从响应中提取并保存 cookie ───────────────────────────
-function saveCookiesFromRes(res, cookieManager) {
-  // 方式1：res.cookies（Taro 4.x，包含重定向链所有 cookie）
-  const cookieObj = parseResCookies(res.cookies);
-  // 方式2：res.header["set-cookie"]
-  const setCookieHeader = res.header["set-cookie"] || res.header["Set-Cookie"];
-  if (setCookieHeader) {
-    const headers = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
-    headers.forEach(h => cookieManager.parseAndMerge(h));
-  }
-  // 方式1 再合并一次（确保 res.cookies 的覆盖 header 解析的）
-  if (Object.keys(cookieObj).length > 0) {
-    cookieManager.setAll(cookieObj);
-  }
-}
-
 // ─── 登录 ────────────────────────────────────────────────
 // 流程：GET 登录页获取初始 cookie → POST 登录（跟随重定向）
 export async function auth() {
@@ -232,14 +206,9 @@ export async function auth() {
     // H5 通过代理（/hbut → Vite proxy → jwxt.hbut.edu.cn）避免 CORS
     // 微信小程序直接请求（无 CORS 限制）
     console.log("[Auth] 第2步：POST 登录...");
-    const cookieStr = hbutCookies.toString();
-
-    const postHeaders = { ...baseHeaders };
-    // H5 使用 hbutRequest (axios) 时，其请求拦截器会自动注入 Cookie，
+    // H5 和 Weapp 的 hbutRequest 都会在拦截器中自动注入 Cookie，
     // 此处不在 postHeaders 中手动添加，避免重复
-    if (!IS_H5 && cookieStr) {
-      postHeaders["Cookie"] = cookieStr;
-    }
+    const postHeaders = { ...baseHeaders };
 
     let postRes;
     if (IS_H5) {
@@ -255,16 +224,18 @@ export async function auth() {
       };
       // H5 的 axios 响应拦截器已在内部保存 Set-Cookie，无需额外调用 saveCookiesFromRes
     } else {
-      // 微信小程序：直接请求教务系统
-      const fullUrl = `${REFERER}/admin/login`;
-      postRes = await Taro.request({
-        url: fullUrl,
-        method: "POST",
-        data: params.toString(),
-        header: postHeaders,
+      // 微信小程序：使用 hbutRequest（requestCore），统一 redirect/cookie 管理
+      // requestCore 设置了 redirect: 'manual'，避免真机与模拟器重定向行为差异
+      const res = await hbutRequest.post("/admin/login", params.toString(), {
+        headers: postHeaders,
       });
-      // 保存重定向链中所有 cookie
-      saveCookiesFromRes(postRes, hbutCookies);
+      // 归一化为统一响应格式，供后续代码使用
+      postRes = {
+        data: res.data,
+        statusCode: res.status,
+        header: res.headers,
+      };
+      // cookie 已由 requestCore 自动保存，无需手动 saveCookiesFromRes
     }
 
     const httpStatus = postRes.statusCode;
