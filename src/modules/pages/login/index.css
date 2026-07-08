@@ -149,6 +149,24 @@
   gap: 16px;
 }
 
+.auto-login-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.auto-login-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.forgot-password {
+  font-size: 26px;
+  color: #2d8cff;
+}
+
 .checkbox {
   width: 36px;
   height: 36px;

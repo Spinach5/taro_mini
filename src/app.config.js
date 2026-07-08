@@ -60,6 +60,7 @@ export default defineAppConfig({
         "pages/join/index",
         "pages/feedback/index",
         "pages/weather/index",
+        "pages/webview/index",
       ];
       // 二手书交易 + 聊天界面：由环境变量控制是否打包
       if (process.env.TARO_APP_ENABLE_BOOK_TRADE === "true") {

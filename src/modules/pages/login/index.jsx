@@ -285,15 +285,31 @@ export default function Index() {
 						</View>
 					</View>
 
-					<View
-						className="agreement"
-						onClick={() => setAutoLogin(!autoLogin)}
-					>
-						<View className={`checkbox bora ${autoLogin ? "checked" : ""}`}>
-							{autoLogin && <Text className="checkmark">✓</Text>}
+					<View className="auto-login-row">
+						<View
+							className="auto-login-left"
+							onClick={() => setAutoLogin(!autoLogin)}
+						>
+							<View className={`checkbox bora ${autoLogin ? "checked" : ""}`}>
+								{autoLogin && <Text className="checkmark">✓</Text>}
+							</View>
+							<Text className="agreement-text">
+								自动登录
+							</Text>
 						</View>
-						<Text className="agreement-text">
-							自动登录
+						<Text
+							className="forgot-password"
+							onClick={() => {
+								if (process.env.TARO_ENV === "h5") {
+									window.location.href = "https://jwxt.hbut.edu.cn/admin/login";
+								} else {
+									Taro.navigateTo({
+										url: `/modules/pages/webview/index?url=${encodeURIComponent("https://jwxt.hbut.edu.cn/admin/login")}`,
+									});
+								}
+							}}
+						>
+							忘记密码
 						</Text>
 					</View>
 
