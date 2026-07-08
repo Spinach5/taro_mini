@@ -2,6 +2,7 @@
 import Taro from "@tarojs/taro";
 import { cleanH5Cookies } from "../utils/platform/cleanH5Cookies";
 import { hbutCookies, opendiffCookies, giteeCookies } from "../utils/platform/request";
+import { clearAutoLoginCreds } from "../utils/business/hbut/passwordStorage";
 import useUserStore from "../store/useUserStore";
 
 /**
@@ -125,9 +126,7 @@ class UserManager {
     // 清除所有持久化存储
     Taro.clearStorageSync();
     // 关闭自动登录（用户主动退出视为关闭）
-    // 必须在 clearStorage 之后，否则 zustand persist 会覆盖为旧值
-    useUserStore.getState().setAutoLogin(false);
-    useUserStore.getState().setSavedPassword('');
+    clearAutoLoginCreds();
     if (process.env.TARO_ENV === "h5") {
       cleanH5Cookies();
     }

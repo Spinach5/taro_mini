@@ -4,8 +4,7 @@ import { checkStuID } from "../utils/common/checkStuID";
 import userManager from "./userInfo";
 import { getSchool } from "./router";
 import runtimeLogger from "../utils/common/runtimeLogger";
-import { encryptPassword } from "../utils/business/hbut/passwordStorage";
-import useUserStore from "../store/useUserStore";
+import { encryptPassword, saveAutoLoginCreds, clearAutoLoginCreds } from "../utils/business/hbut/passwordStorage";
 
 const SUPPORTED_UNIVERSITIES = ["湖北工业大学", ""];
 
@@ -80,18 +79,15 @@ export async function login(stuId, password, university, autoLogin = false) {
 		try {
 			const encrypted = encryptPassword(password);
 			console.log('[Login] 密码已加密, 长度:', encrypted.length);
-			useUserStore.getState().setSavedPassword(encrypted);
-			useUserStore.getState().setAutoLogin(true);
-			console.log('[Login] 自动登录状态已保存到 store');
+			// 直接写 storage，绕过 zustand，避免被 clearStorageSync 影响
+			saveAutoLoginCreds(true, encrypted);
+			console.log('[Login] 自动登录凭证已直接写入 storage');
 		} catch (e) {
-			// 加密失败不影响登录流程，仅关闭自动登录
 			runtimeLogger.error('Login', '保存自动登录密码失败', e?.message || e);
-			useUserStore.getState().setAutoLogin(false);
-			useUserStore.getState().setSavedPassword('');
+			clearAutoLoginCreds();
 		}
 	} else {
-		useUserStore.getState().setAutoLogin(false);
-		useUserStore.getState().setSavedPassword('');
+		clearAutoLoginCreds();
 	}
 
 	// 登录成功，补充用户详细信息

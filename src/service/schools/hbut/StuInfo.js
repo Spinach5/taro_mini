@@ -6,12 +6,14 @@ import runtimeLogger from "../../../utils/common/runtimeLogger";
 
 const CACHE_KEY = "StuInfo";
 
-export async function getStuInfo() {
-	// 1. 优先从缓存获取
-	const cached = cacheManager.get(CACHE_KEY);
-	if (cached) {
-		console.log("[getStuInfo] 从缓存获取个人信息");
-		return cached;
+export async function getStuInfo({ forceRefresh = false } = {}) {
+	// 1. 优先从缓存获取（forceRefresh 时跳过缓存）
+	if (!forceRefresh) {
+		const cached = cacheManager.get(CACHE_KEY);
+		if (cached) {
+			console.log("[getStuInfo] 从缓存获取个人信息");
+			return cached;
+		}
 	}
 
 	const fetchStuInfo = async () => {
