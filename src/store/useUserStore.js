@@ -40,6 +40,10 @@ const useUserStore = create(
       serverToken: '',
       encryptedPassword: '',
 
+      // 自动登录
+      autoLoginEnabled: false,
+      savedPassword: '',
+
       // Actions
       login: (userData) =>
         set({
@@ -83,6 +87,10 @@ const useUserStore = create(
       setEncryptedPassword: (pwd) => set({ encryptedPassword: pwd }),
 
       setSchoolId: (id) => set({ schoolId: id }),
+
+      setAutoLogin: (enabled) => set({ autoLoginEnabled: enabled }),
+
+      setSavedPassword: (pwd) => set({ savedPassword: pwd }),
     }),
     {
       name: 'user-store',
@@ -99,6 +107,8 @@ const useUserStore = create(
         isLoggedIn: state.isLoggedIn,
         serverToken: state.serverToken,
         encryptedPassword: state.encryptedPassword,
+        autoLoginEnabled: state.autoLoginEnabled,
+        savedPassword: state.savedPassword,
       }),
     },
   ),
