@@ -1,6 +1,7 @@
 // src/service/autoLogin.js
 // 应用启动时自动检测登录状态，若 cookie 过期则自动重新登录
 import Taro from '@tarojs/taro';
+import useUserStore from '../store/useUserStore';
 import { hbutCookies } from '../utils/platform/request';
 import { decryptPassword, getAutoLoginCreds, clearAutoLoginCreds } from '../utils/business/hbut/passwordStorage';
 import userManager from './userInfo';
@@ -23,6 +24,10 @@ export async function checkAndAutoLogin() {
     const stuInfo = await school.getStuInfo({ forceRefresh: true });
     if (stuInfo) {
       userManager.setFields(stuInfo);
+      // getStuInfo 不包含 university，保持已有值或兜底
+      if (!useUserStore.getState().university) {
+        userManager.setField('university', '湖北工业大学');
+      }
       userManager.setField('isLoggedIn', true);
       runtimeLogger.info('AutoLogin', 'cookie 有效，自动登录成功');
       return;
@@ -57,6 +62,10 @@ export async function checkAndAutoLogin() {
     }
 
     userManager.setFields(stuInfo);
+    // getStuInfo 不包含 university，保持已有值或兜底
+    if (!useUserStore.getState().university) {
+      userManager.setField('university', '湖北工业大学');
+    }
     userManager.setField('isLoggedIn', true);
     runtimeLogger.info('AutoLogin', '重新登录成功');
   } catch (err) {

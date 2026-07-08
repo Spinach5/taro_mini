@@ -52,6 +52,8 @@ export default function Index() {
 	useDidShow(() => {
 		if (!userManager.checkLogin()) {
 			setBannerList([]);
+		} else {
+			fetchBanners();
 		}
 	});
 
