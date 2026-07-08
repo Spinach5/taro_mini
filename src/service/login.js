@@ -4,10 +4,12 @@ import { checkStuID } from "../utils/common/checkStuID";
 import userManager from "./userInfo";
 import { getSchool } from "./router";
 import runtimeLogger from "../utils/common/runtimeLogger";
+import { encryptPassword } from "../utils/business/hbut/passwordStorage";
+import useUserStore from "../store/useUserStore";
 
 const SUPPORTED_UNIVERSITIES = ["湖北工业大学", ""];
 
-export async function login(stuId, password, university) {
+export async function login(stuId, password, university, autoLogin = false) {
 	// 清除旧缓存
 	userManager.logout();
 
@@ -70,6 +72,16 @@ export async function login(stuId, password, university) {
 		userManager.logout(); // 登录失败，清除已保存的信息
 		await Taro.showModal({ title: "登录失败", content: "获取用户信息失败，请重试", showCancel: false, confirmText: "知道了" });
 		return false;
+	}
+
+	// 登录成功，处理自动登录选项
+	if (autoLogin) {
+		useUserStore.getState().setAutoLogin(true);
+		const encrypted = encryptPassword(password);
+		useUserStore.getState().setSavedPassword(encrypted);
+	} else {
+		useUserStore.getState().setAutoLogin(false);
+		useUserStore.getState().setSavedPassword('');
 	}
 
 	// 登录成功，补充用户详细信息
