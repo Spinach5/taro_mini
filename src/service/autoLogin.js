@@ -68,6 +68,9 @@ export async function checkAndAutoLogin() {
     runtimeLogger.info('AutoLogin', '重新登录成功');
   } catch (err) {
     runtimeLogger.error('AutoLogin', '自动登录失败', err?.message || err);
+    // 登录失败（密码错误等）清除自动登录状态，避免每次启动都弹 toast
+    useUserStore.getState().setAutoLogin(false);
+    useUserStore.getState().setSavedPassword('');
     Taro.showToast({ title: '自动登录失败，请手动登录', icon: 'none', duration: 2000 });
   }
 }
