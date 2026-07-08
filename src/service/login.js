@@ -75,11 +75,14 @@ export async function login(stuId, password, university, autoLogin = false) {
 	}
 
 	// 登录成功，处理自动登录选项
+	console.log('[Login] autoLogin 参数:', autoLogin);
 	if (autoLogin) {
 		try {
 			const encrypted = encryptPassword(password);
+			console.log('[Login] 密码已加密, 长度:', encrypted.length);
 			useUserStore.getState().setSavedPassword(encrypted);
 			useUserStore.getState().setAutoLogin(true);
+			console.log('[Login] 自动登录状态已保存到 store');
 		} catch (e) {
 			// 加密失败不影响登录流程，仅关闭自动登录
 			runtimeLogger.error('Login', '保存自动登录密码失败', e?.message || e);

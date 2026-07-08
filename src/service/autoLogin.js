@@ -9,10 +9,12 @@ import { getSchool } from './router';
 import runtimeLogger from '../utils/common/runtimeLogger';
 
 export async function checkAndAutoLogin() {
-  const { autoLoginEnabled, savedPassword } = useUserStore.getState();
+  console.log('[AutoLogin] checkAndAutoLogin 被调用');
+  const state = useUserStore.getState();
+  console.log('[AutoLogin] autoLoginEnabled:', state.autoLoginEnabled, 'savedPassword length:', (state.savedPassword || '').length);
 
   // 未开启自动登录或无保存的密码，跳过
-  if (!autoLoginEnabled || !savedPassword) {
+  if (!state.autoLoginEnabled || !state.savedPassword) {
     runtimeLogger.info('AutoLogin', '自动登录未开启或无保存密码，跳过');
     return;
   }
@@ -39,7 +41,7 @@ export async function checkAndAutoLogin() {
     hbutCookies.clear();
 
     // Step 3: 解密密码
-    const plainPassword = decryptPassword(savedPassword);
+    const plainPassword = decryptPassword(state.savedPassword);
     if (!plainPassword) {
       Taro.showToast({ title: '自动登录失败，请手动登录', icon: 'none' });
       useUserStore.getState().setAutoLogin(false);
