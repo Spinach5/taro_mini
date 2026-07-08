@@ -88,6 +88,7 @@ export default function Index() {
 	const [studentId, setStudentId] = useState("");
 	const [password, setPassword] = useState("");
 	const [agreed, setAgreed] = useState(false);
+	const [autoLogin, setAutoLogin] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [studentIdError, setStudentIdError] = useState(false);
 	const [modalType, setModalType] = useState(null); // null | "agreement" | "privacy"
@@ -123,7 +124,7 @@ export default function Index() {
 
 			// 调用登录接口
 			console.log("login", studentId, password);
-			const res = await login(studentId, password, university);
+			const res = await login(studentId, password, university, autoLogin);
 			Taro.hideLoading();
 			if (!res) {
 				return;
@@ -282,6 +283,18 @@ export default function Index() {
 								)}
 							</Text>
 						</View>
+					</View>
+
+					<View
+						className="agreement"
+						onClick={() => setAutoLogin(!autoLogin)}
+					>
+						<View className={`checkbox bora ${autoLogin ? "checked" : ""}`}>
+							{autoLogin && <Text className="checkmark">✓</Text>}
+						</View>
+						<Text className="agreement-text">
+							自动登录
+						</Text>
 					</View>
 
 					<Button className="login-btn bora" onClick={handleLogin}>
