@@ -5,10 +5,11 @@ import GridItem from "./GridItem";
 
 const STORAGE_KEY_FEATURES = "settings_feature_toggles";
 const ALWAYS_VISIBLE = [
-  { url: "/modules/pages/exam/index", icon: "clipboard-text-outline", text: "考试" },
+  { url: "/modules/pages/exam/index", icon: "clipboard-text", text: "考试" },
   { url: "/modules/pages/student/index", icon: "finance", text: "成绩" },
   { url: "/modules/pages/empty_room/index", icon: "door-open", text: "空教室" },
   { url: "/modules/pages/muyu/index", icon: "instrument-triangle", text: "电子木鱼" },
+  { url: "/modules/pages/plan/index", icon: "arrange-bring-forward", text: "培养方案" }
 ];
 
 const TOGGLEABLE = [

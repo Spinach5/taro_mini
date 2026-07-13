@@ -112,7 +112,7 @@ const useWeatherStore = create(
       /** 获取当前天气 */
       getCurrentWeather: () => {
         const { weatherData } = get();
-        if (!weatherData?.current) return null;
+        if (!weatherData || !weatherData.current) return null;
         const { current } = weatherData;
         const info = getWeatherInfo(current.weather_code);
         return {
@@ -132,7 +132,10 @@ const useWeatherStore = create(
 
       /** 获取当前温度 */
       getCurrentTemperature: () => {
-        return get().weatherData?.current?.temperature_2m ?? null;
+        const weatherData = get().weatherData;
+        if (!weatherData || !weatherData.current) return null;
+        const temp = weatherData.current.temperature_2m;
+        return (temp !== null && temp !== undefined) ? temp : null;
       },
 
       /** 获取位置信息 */
@@ -144,7 +147,7 @@ const useWeatherStore = create(
       /** 获取 24 小时预报 */
       get24HourForecast: () => {
         const { weatherData } = get();
-        if (!weatherData?.hourly) return [];
+        if (!weatherData || !weatherData.hourly) return [];
         const { time, temperature_2m, weather_code, precipitation_probability } = weatherData.hourly;
         if (!time || !Array.isArray(time) || time.length === 0) return [];
 
@@ -157,14 +160,14 @@ const useWeatherStore = create(
         const endIndex = Math.min(startIndex + 24, time.length);
         const forecast = [];
         for (let i = startIndex; i < endIndex; i++) {
-          const info = getWeatherInfo(weather_code?.[i]);
+          const info = getWeatherInfo(weather_code && weather_code[i]);
           forecast.push({
             time: time[i],
-            temperature: temperature_2m?.[i] ?? null,
-            weatherCode: weather_code?.[i] ?? null,
+            temperature: (temperature_2m && temperature_2m[i] !== null && temperature_2m[i] !== undefined) ? temperature_2m[i] : null,
+            weatherCode: (weather_code && weather_code[i] !== null && weather_code[i] !== undefined) ? weather_code[i] : null,
             weatherDescription: info.description,
             weatherIcon: info.icon,
-            precipitationProbability: precipitation_probability?.[i] ?? null,
+            precipitationProbability: (precipitation_probability && precipitation_probability[i] !== null && precipitation_probability[i] !== undefined) ? precipitation_probability[i] : null,
           });
         }
         return forecast;
@@ -173,19 +176,19 @@ const useWeatherStore = create(
       /** 获取每日预报 */
       getDailyForecast: () => {
         const { weatherData } = get();
-        if (!weatherData?.daily) return [];
+        if (!weatherData || !weatherData.daily) return [];
         const { time, weather_code, temperature_2m_max, temperature_2m_min } = weatherData.daily;
         if (!time || !Array.isArray(time) || time.length === 0) return [];
 
         return time.map((t, i) => {
-          const info = getWeatherInfo(weather_code?.[i]);
+          const info = getWeatherInfo(weather_code && weather_code[i]);
           return {
             time: t,
-            weatherCode: weather_code?.[i] ?? null,
+            weatherCode: (weather_code && weather_code[i] !== null && weather_code[i] !== undefined) ? weather_code[i] : null,
             weatherDescription: info.description,
             weatherIcon: info.icon,
-            tempMax: temperature_2m_max?.[i] ?? null,
-            tempMin: temperature_2m_min?.[i] ?? null,
+            tempMax: (temperature_2m_max && temperature_2m_max[i] !== null && temperature_2m_max[i] !== undefined) ? temperature_2m_max[i] : null,
+            tempMin: (temperature_2m_min && temperature_2m_min[i] !== null && temperature_2m_min[i] !== undefined) ? temperature_2m_min[i] : null,
           };
         });
       },

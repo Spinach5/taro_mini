@@ -8,7 +8,7 @@ function readLogsRaw() {
 	try {
 		const raw = Taro.getStorageSync(CACHE_KEY);
 		if (!raw) return [];
-		const data = raw?.data ?? raw;
+		const data = raw && raw.data ? raw.data : raw;
 		return Array.isArray(data) ? data : [];
 	} catch {
 		return [];
@@ -75,18 +75,19 @@ class RuntimeLogger {
 		writeLogsRaw(logs);
 
 		const line = this.formatEntry(entry);
+		const extraStr = (extra !== null && extra !== undefined) ? extra : "";
 		switch (level) {
 			case LEVELS.ERROR:
-				console.error(line, extra ?? "");
+				console.error(line, extraStr);
 				break;
 			case LEVELS.WARN:
-				console.warn(line, extra ?? "");
+				console.warn(line, extraStr);
 				break;
 			case LEVELS.DEBUG:
-				console.debug(line, extra ?? "");
+				console.debug(line, extraStr);
 				break;
 			default:
-				console.log(line, extra ?? "");
+				console.log(line, extraStr);
 		}
 		return entry;
 	}

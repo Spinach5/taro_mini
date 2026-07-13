@@ -13,3 +13,8 @@ export const API_BASE = {
 	captcha: isH5 ? "/captcha" : "https://captcha.chaoxing.com/captcha",
 	isbn: isH5 ? "/isbn" : "https://data.isbn.work",
 };
+
+/** 大学忘记密码页面映射 — key 为大学名称，value 为教务系统登录页 */
+export const UNIVERSITY_FORGOT_PASSWORD_URL = {
+	"湖北工业大学": "https://jwxt.hbut.edu.cn/admin/login",
+};

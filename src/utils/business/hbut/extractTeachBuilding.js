@@ -44,3 +44,23 @@ export function extractTeachBuildingCategory(html) {
 
   return result;
 }
+
+export function extractCourseProperty(html) {
+  const result = {};
+
+  // 提取 <select name="kcxz"> 内部的所有 <option>
+  const selectMatch = html.match(/<select[^>]*name="kcxz"[^>]*>([\s\S]*?)<\/select>/i);
+  if (!selectMatch) return result;
+
+  const optionRegex = /<option\s+value="([^"]*)"[^>]*>([^<]*)<\/option>/gi;
+  let match;
+  while ((match = optionRegex.exec(selectMatch[1])) !== null) {
+    const value = match[1];
+    const text = match[2].trim();
+    if (value !== "" && !(text in result)) {
+      result[text] = value;
+    }
+  }
+
+  return result;
+}

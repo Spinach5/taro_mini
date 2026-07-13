@@ -6,6 +6,7 @@ import SafeAreaView from "../../../components/base/SafeAreaView";
 import Taro from "@tarojs/taro";
 import { checkStuID } from "../../../utils/common/checkStuID";
 import { login } from "../../../service";
+import { UNIVERSITY_FORGOT_PASSWORD_URL } from "../../../config/api";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 import { AtIcon } from "taro-ui";
 
@@ -300,11 +301,13 @@ export default function Index() {
 						<Text
 							className="forgot-password"
 							onClick={() => {
+								const forgotUrl = UNIVERSITY_FORGOT_PASSWORD_URL[university];
+								if (!forgotUrl) return;
 								if (process.env.TARO_ENV === "h5") {
-									window.location.href = "https://jwxt.hbut.edu.cn/admin/login";
+									window.location.href = forgotUrl;
 								} else {
 									Taro.navigateTo({
-										url: `/modules/pages/webview/index?url=${encodeURIComponent("https://jwxt.hbut.edu.cn/admin/login")}`,
+										url: `/modules/pages/webview/index?url=${encodeURIComponent(forgotUrl)}`,
 									});
 								}
 							}}

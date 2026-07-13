@@ -57,12 +57,12 @@ export default function CourseHeader({
 					onChange={onSemesterChange}
 				>
 					<Btn>
-						<Text>{currentSemester ?? "选择学期"}</Text>
+						<Text>{(currentSemester !== null && currentSemester !== undefined) ? currentSemester : "选择学期"}</Text>
 						<AtIcon value="chevron-down" size={20} />
 					</Btn>
 				</SemesterPicker>
 				<Btn onClick={() => setShowWeekPicker(true)}>
-					<Text>第{currentWeek ?? "?"}周</Text>
+					<Text>第{(currentWeek !== null && currentWeek !== undefined) ? currentWeek : "?"}周</Text>
 					<AtIcon value="chevron-down" size={20} />
 				</Btn>
 			</View>

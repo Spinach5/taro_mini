@@ -157,7 +157,7 @@ export default function Index() {
           onChange={handleSemesterChange}
         >
           <Btn>
-            <Text>{currentSemester ?? "选择学期"}</Text>
+            <Text>{(currentSemester !== null && currentSemester !== undefined) ? currentSemester : "选择学期"}</Text>
             <AtIcon value="chevron-down" size={20} />
           </Btn>
         </SemesterSelector>
