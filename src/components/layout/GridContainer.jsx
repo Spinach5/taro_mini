@@ -9,7 +9,8 @@ const ALWAYS_VISIBLE = [
   { url: "/modules/pages/student/index", icon: "finance", text: "成绩" },
   { url: "/modules/pages/empty_room/index", icon: "door-open", text: "空教室" },
   { url: "/modules/pages/muyu/index", icon: "instrument-triangle", text: "电子木鱼" },
-  { url: "/modules/pages/plan/index", icon: "arrange-bring-forward", text: "培养方案" }
+  { url: "/modules/pages/plan/index", icon: "arrange-bring-forward", text: "培养方案" },
+  { url: "/modules/pages/material/index", icon: "book-open", text: "教材" }
 ];
 
 const TOGGLEABLE = [

@@ -55,6 +55,7 @@ export default defineAppConfig({
         "pages/book/index",
         "pages/book/detail/index",
         "pages/runtimeLog/index",
+        "pages/material/index",
         "pages/repo/index",
         "pages/settings/index",
         "pages/join/index",

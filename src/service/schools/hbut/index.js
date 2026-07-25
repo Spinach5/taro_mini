@@ -25,3 +25,4 @@ export { getEmptyRoom }      from "./getEmptyClassRoom"
 export { getBanner }         from "./Banner"
 export { getCourseProperty } from './getCourseProperty'
 export { getTrainPlan }       from './trainPlan'
+export { getMaterialList, getMaterialDetail, getMaterialSemesters, getMaterialClasses } from './material'
