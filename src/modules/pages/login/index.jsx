@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, Text, Input, Button, Picker } from "@tarojs/components";
 import "./index.css";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import Taro from "@tarojs/taro";
 import { checkStuID } from "../../../utils/common/checkStuID";
@@ -210,14 +210,8 @@ export default function Index() {
 
 	return (
 		<SafeAreaView>
+			<PageHeader title="登录" onBack={() => Taro.switchTab({ url: "/pages/user/index" })} />
 			<View className="login-container">
-				<AtIcon
-					value="arrow-left"
-					color="#ffffff"
-					onClick={() => Taro.switchTab({ url: "/pages/user/index" })}
-				/>
-				<HeadStatus text="登录" />
-
 				<View className="header">
 					<Picker
 						mode="selector"

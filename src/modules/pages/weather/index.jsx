@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { View, Text, ScrollView } from "@tarojs/components";
 import Taro, { useDidShow, usePullDownRefresh } from "@tarojs/taro";
-import { AtIcon } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import Loading from "../../../components/base/Loading";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import weatherManager from "../../../service/weatherInfo";
 import "./index.scss";
 
@@ -126,35 +125,19 @@ export default function Weather() {
     });
   });
 
-  // ====== Loading state ======
   if (loading) {
     return (
       <SafeAreaView>
-        <View className="uniform-page-header">
-          <AtIcon
-            value="arrow-left"
-            color="#ffffff"
-            onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-          />
-          <HeadStatus text="天气" />
-        </View>
+        <PageHeader title="天气" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
         <Loading />
       </SafeAreaView>
     );
   }
 
-  // ====== Error state (no cached data) ======
   if (error) {
     return (
       <SafeAreaView>
-        <View className="uniform-page-header">
-          <AtIcon
-            value="arrow-left"
-            color="#ffffff"
-            onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-          />
-          <HeadStatus text="天气" />
-        </View>
+        <PageHeader title="天气" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
         <View className="error-view">
           <Text className="error-text">加载失败</Text>
           <View className="retry-btn" onClick={() => fetchData(true)}>
@@ -165,21 +148,13 @@ export default function Weather() {
     );
   }
 
-  // ====== Main content ======
   const locationText = [area.province, area.city, area.locality]
     .filter((s) => s && s !== "-")
     .join(" ");
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-        />
-        <HeadStatus text="天气" />
-      </View>
+      <PageHeader title="天气" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
 
       <ScrollView scrollY className="weather-page">
         {/* ===== Current Weather Card ===== */}

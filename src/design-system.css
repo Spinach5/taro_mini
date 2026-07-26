@@ -128,15 +128,6 @@ body[data-theme="dark"] {
 	border-radius: var(--radius-sm);
 }
 
-/* 统一页面头部 */
-.uniform-page-header {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 8px;
-	padding: 0 4px;
-}
-
 /* 统一卡片 */
 .card-base {
 	background: var(--color-bg-card);

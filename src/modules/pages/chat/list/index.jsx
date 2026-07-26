@@ -1,9 +1,9 @@
 import { View, Text, ScrollView } from "@tarojs/components";
 import Taro, { useLoad } from "@tarojs/taro";
 import { useState, useCallback } from "react";
-import { AtIcon, AtActivityIndicator } from "taro-ui";
+import { AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../../components/base/SafeAreaView";
-import HeadStatus from "../../../../components/layout/HeadStatus";
+import PageHeader from "../../../../components/business/PageHeader";
 import { getConversations } from "../../../../service/schools/hbut/chat";
 import { getColorFromName } from "../../../../utils/common/getHashCode";
 import runtimeLogger from "../../../../utils/common/runtimeLogger";
@@ -51,12 +51,7 @@ export default function Index() {
   if (loading) {
     return (
       <SafeAreaView>
-        <View className="uniform-page-header">
-          <View className="back-btn" onClick={handleBack}>
-            <AtIcon value="arrow-left" color="#ffffff" size={20} />
-          </View>
-          <HeadStatus text="消息" />
-        </View>
+        <PageHeader title="消息" onBack={handleBack} />
         <View className="chat-list-loading">
           <AtActivityIndicator isOpened size={32} mode="center" />
         </View>
@@ -66,12 +61,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <View className="back-btn" onClick={handleBack}>
-          <AtIcon value="arrow-left" color="#ffffff" size={20} />
-        </View>
-        <HeadStatus text="消息" />
-      </View>
+      <PageHeader title="消息" onBack={handleBack} />
 
       {error ? (
         <View className="chat-error-box">

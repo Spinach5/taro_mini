@@ -4,7 +4,7 @@ import { useState, useCallback, useMemo, useRef } from "react";
 import { AtIcon } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
 import SafeAreaView from "../../../components/base/SafeAreaView";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import { getBookList, getBookCategories, getFavoriteBookIds } from "../../../service";
 import { getColorFromName } from "../../../utils/common/getHashCode";
 import userManager from "../../../service/userInfo";
@@ -161,14 +161,10 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-        />
-        <HeadStatus text="书籍" />
-      </View>
+      <PageHeader
+        title="书籍"
+        onBack={() => Taro.switchTab({ url: "/pages/index/index" })}
+      />
 
       {/* 卖书/买书 双按钮（环境变量控制） */}
       {process.env.TARO_APP_ENABLE_BOOK_TRADE === "true" && (

@@ -3,7 +3,7 @@ import Taro from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon } from "taro-ui";
 import SafeAreaView from "../../../../components/base/SafeAreaView";
-import HeadStatus from "../../../../components/layout/HeadStatus";
+import PageHeader from "../../../../components/business/PageHeader";
 import userManager from "../../../../service/userInfo";
 import { addClub } from "../../../../service";
 import runtimeLogger from "../../../../utils/common/runtimeLogger";
@@ -77,10 +77,7 @@ export default function Index() {
 
 	return (
 		<SafeAreaView>
-			<View className="uniform-page-header">
-				<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.navigateBack()} />
-				<HeadStatus text="添加社团" />
-			</View>
+			<PageHeader title="添加社团" onBack={() => Taro.navigateBack()} />
 
 			<ScrollView scrollY className="form-scroll" enhanced bounces={false}>
 				{/* 社团名称 */}

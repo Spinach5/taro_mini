@@ -3,10 +3,6 @@ import Taro from '@tarojs/taro';
 import { AtIcon } from 'taro-ui';
 import './index.css';
 
-/**
- * 统一页面头部组件
- * 蓝色渐变背景 + 返回按钮 + 标题 + 右侧操作区
- */
 export default function PageHeader({
   title,
   showBack = true,
@@ -31,7 +27,7 @@ export default function PageHeader({
     <View className={`page-header ${className}`}>
       {showBack && (
         <View className="page-header__back" onClick={handleBack}>
-          <AtIcon value="arrow-left" color="#ffffff" size={20} />
+          <AtIcon value="arrow-left" color="#ffffff" size={24} />
         </View>
       )}
       <Text className="page-header__title">{title}</Text>

@@ -3,8 +3,8 @@ import { View, Text, ScrollView, Picker } from "@tarojs/components";
 import Taro, { useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import Loading from "../../../components/base/Loading";
-import HeadStatus from "../../../components/layout/HeadStatus";
-import { AtIcon } from "taro-ui";
+import PageHeader from "../../../components/business/PageHeader";
+import DetailModal from "../../../components/business/DetailModal";
 import { getMaterialList, getMaterialSemesters, getMaterialClasses } from "../../../service/schools/hbut/material";
 import userManager from "../../../service/userInfo";
 import "./index.scss";
@@ -135,14 +135,10 @@ export default function MaterialIndex() {
   if (!isLoggedIn) {
     return (
       <SafeAreaView>
-        <View className="uniform-page-header">
-          <AtIcon
-            value="arrow-left"
-            color="#ffffff"
-            onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-          />
-          <HeadStatus text="教材查询" />
-        </View>
+        <PageHeader
+          title="教材查询"
+          onBack={() => Taro.switchTab({ url: "/pages/index/index" })}
+        />
         <View className="empty-view">
           <Text className="empty-text">请先登录!</Text>
         </View>
@@ -152,14 +148,10 @@ export default function MaterialIndex() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-        />
-        <HeadStatus text="教材查询" />
-      </View>
+      <PageHeader
+        title="教材查询"
+        onBack={() => Taro.switchTab({ url: "/pages/index/index" })}
+      />
 
       <View className="filter-bar">
         <Picker
@@ -263,50 +255,48 @@ export default function MaterialIndex() {
       </View>
 
       {showDetail && currentMaterial && (
-        <View className="detail-modal" onClick={() => setShowDetail(false)}>
-          <View className="detail-content" onClick={(e) => e.stopPropagation()}>
-            <View className="detail-close" onClick={() => setShowDetail(false)}>
-              <AtIcon value="close" color="#999" size={24} />
-            </View>
-            <Text className="detail-title">{currentMaterial.title}</Text>
-            <View className="detail-info-row">
-              <Text className="detail-info-label">ISBN</Text>
-              <Text className="detail-info-value">{currentMaterial.isbn || "-"}</Text>
-            </View>
-            <View className="detail-info-row">
-              <Text className="detail-info-label">作者</Text>
-              <Text className="detail-info-value">{currentMaterial.author || "-"}</Text>
-            </View>
-            <View className="detail-info-row">
-              <Text className="detail-info-label">出版社</Text>
-              <Text className="detail-info-value">{currentMaterial.publisher || "-"}</Text>
-            </View>
-            <View className="detail-info-row">
-              <Text className="detail-info-label">价格</Text>
-              <Text className="detail-info-value">¥{currentMaterial.price || 0}</Text>
-            </View>
-            <View className="detail-info-row">
-              <Text className="detail-info-label">学期</Text>
-              <Text className="detail-info-value">{currentMaterial.semester || "-"}</Text>
-            </View>
-            {currentMaterial.extra_info && (
-              <View className="detail-info-row">
-                <Text className="detail-info-label">备注</Text>
-                <Text className="detail-info-value">{currentMaterial.extra_info}</Text>
-              </View>
-            )}
-            {currentMaterial.classes && currentMaterial.classes.length > 0 && (
-              <View className="detail-info-row">
-                <Text className="detail-info-label">适用班级</Text>
-                <View className="detail-info-value" style={{ display: "flex", flexDirection: "column", gap: "8rpx" }}>
-                  {currentMaterial.classes.map((cls, idx) => (
-                    <Text key={idx} className="class-tag">{cls}</Text>
-                  ))}
-                </View>
-              </View>
-            )}
+        <DetailModal
+          visible={showDetail}
+          title={currentMaterial.title}
+          onClose={() => setShowDetail(false)}
+        >
+          <View className="detail-row">
+            <Text className="detail-label">ISBN</Text>
+            <Text className="detail-value">{currentMaterial.isbn || "-"}</Text>
           </View>
-        </View>
+          <View className="detail-row">
+            <Text className="detail-label">作者</Text>
+            <Text className="detail-value">{currentMaterial.author || "-"}</Text>
+          </View>
+          <View className="detail-row">
+            <Text className="detail-label">出版社</Text>
+            <Text className="detail-value">{currentMaterial.publisher || "-"}</Text>
+          </View>
+          <View className="detail-row">
+            <Text className="detail-label">价格</Text>
+            <Text className="detail-value">¥{currentMaterial.price || 0}</Text>
+          </View>
+          <View className="detail-row">
+            <Text className="detail-label">学期</Text>
+            <Text className="detail-value">{currentMaterial.semester || "-"}</Text>
+          </View>
+          {currentMaterial.extra_info && (
+            <View className="detail-row">
+              <Text className="detail-label">备注</Text>
+              <Text className="detail-value">{currentMaterial.extra_info}</Text>
+            </View>
+          )}
+          {currentMaterial.classes && currentMaterial.classes.length > 0 && (
+            <View className="detail-row">
+              <Text className="detail-label">适用班级</Text>
+              <View className="detail-value" style={{ display: "flex", flexDirection: "column", gap: "8rpx" }}>
+                {currentMaterial.classes.map((cls, idx) => (
+                  <Text key={idx} className="class-tag">{cls}</Text>
+                ))}
+              </View>
+            </View>
+          )}
+        </DetailModal>
       )}
     </SafeAreaView>
   );

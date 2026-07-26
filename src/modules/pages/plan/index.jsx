@@ -3,12 +3,13 @@ import { View, Text, ScrollView, Picker } from "@tarojs/components";
 import Taro, { useDidShow } from "@tarojs/taro";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import Loading from "../../../components/base/Loading";
+import PageHeader from "../../../components/business/PageHeader";
+import DetailModal from "../../../components/business/DetailModal";
 import { getTrainPlan } from "../../../service/schools/hbut/trainPlan";
 import { getCourseProperty } from "../../../service/schools/hbut/getCourseProperty";
 import { getColorFromName } from "../../../utils/common/getHashCode";
 import userManager from "../../../service/userInfo";
 import { AtIcon } from "taro-ui";
-import HeadStatus from "../../../components/layout/HeadStatus";
 import "./index.css";
 
 const GRADE_OPTIONS = ["大一", "大二", "大三", "大四"];
@@ -69,69 +70,6 @@ function CourseCard({ course, propertyMap, onClick }) {
       <Text className="course-property" style={{ color: propertyColor }}>
         {propertyName}
       </Text>
-    </View>
-  );
-}
-
-function DetailModal({ course, propertyMap, onClose }) {
-  if (!course) return null;
-
-  const propertyName = propertyMap[course.kcxz] || course.kcxz || "未知";
-  const propertyColor = getColorFromName(propertyName);
-
-  return (
-    <View className="modal-overlay" onClick={onClose}>
-      <View className="modal-content bora" onClick={(e) => e.stopPropagation()}>
-        <View className="modal-header">
-          <Text className="modal-title">{course.kcmc}</Text>
-          <View className="modal-close" onClick={onClose}>
-            <Text className="close-icon">×</Text>
-          </View>
-        </View>
-        <ScrollView scrollY className="modal-body">
-          <View className="detail-row">
-            <Text className="detail-label">课程编号</Text>
-            <Text className="detail-value">{course.kcbh || "-"}</Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">课程性质</Text>
-            <Text className="detail-value" style={{ color: propertyColor }}>
-              {propertyName}
-            </Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">学分</Text>
-            <Text className="detail-value">{course.xf || "-"}</Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">总学时</Text>
-            <Text className="detail-value">{course.zongxs || "-"}</Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">开课学院</Text>
-            <Text className="detail-value">{course.kkyxmc || "-"}</Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">是否必修</Text>
-            <Text className="detail-value">{course.sfbx}</Text>
-          </View>
-          <View className="detail-row">
-            <Text className="detail-label">是否实践环节</Text>
-            <Text className="detail-value">{course.sfsjhj === "1" ? "是" : course.sfsjhj === "0" ? "否" : "-"}</Text>
-          </View>
-          {course.sjzs && (
-            <View className="detail-row">
-              <Text className="detail-label">实践周数</Text>
-              <Text className="detail-value">{course.sjzs} 周</Text>
-            </View>
-          )}
-        </ScrollView>
-        <View className="modal-footer">
-          <View className="confirm-btn bora" onClick={onClose}>
-            <Text className="confirm-text">关闭</Text>
-          </View>
-        </View>
-      </View>
     </View>
   );
 }
@@ -245,14 +183,7 @@ export default function Index() {
   if (!isLoggedIn) {
     return (
       <SafeAreaView>
-        <View className="uniform-page-header">
-          <AtIcon
-            value="arrow-left"
-            color="#ffffff"
-            onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-          />
-          <HeadStatus text="培养计划" />
-        </View>
+        <PageHeader title="培养计划" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
         <View className="notLoginView">
           <Text className="notLoginText">请先登录!</Text>
         </View>
@@ -262,14 +193,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-        />
-        <HeadStatus text="培养计划" />
-      </View>
+      <PageHeader title="培养计划" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
       <View className="plan-page">
         <FilterBar
           selectedGrade={selectedGrade}
@@ -314,10 +238,55 @@ export default function Index() {
       </View>
 
       <DetailModal
-        course={selectedCourse}
-        propertyMap={propertyMap}
+        visible={!!selectedCourse}
+        title={selectedCourse?.kcmc || ''}
         onClose={handleCloseModal}
-      />
+      >
+        {selectedCourse && (() => {
+          const propertyName = propertyMap[selectedCourse.kcxz] || selectedCourse.kcxz || "未知";
+          const propertyColor = getColorFromName(propertyName);
+          return (
+            <>
+              <View className="detail-row">
+                <Text className="detail-label">课程编号</Text>
+                <Text className="detail-value">{selectedCourse.kcbh || "-"}</Text>
+              </View>
+              <View className="detail-row">
+                <Text className="detail-label">课程性质</Text>
+                <Text className="detail-value" style={{ color: propertyColor }}>
+                  {propertyName}
+                </Text>
+              </View>
+              <View className="detail-row">
+                <Text className="detail-label">学分</Text>
+                <Text className="detail-value">{selectedCourse.xf || "-"}</Text>
+              </View>
+              <View className="detail-row">
+                <Text className="detail-label">总学时</Text>
+                <Text className="detail-value">{selectedCourse.zongxs || "-"}</Text>
+              </View>
+              <View className="detail-row">
+                <Text className="detail-label">开课学院</Text>
+                <Text className="detail-value">{selectedCourse.kkyxmc || "-"}</Text>
+              </View>
+              <View className="detail-row">
+                <Text className="detail-label">是否必修</Text>
+                <Text className="detail-value">{selectedCourse.sfbx}</Text>
+              </View>
+              <View className="detail-row">
+                <Text className="detail-label">是否实践环节</Text>
+                <Text className="detail-value">{selectedCourse.sfsjhj === "1" ? "是" : selectedCourse.sfsjhj === "0" ? "否" : "-"}</Text>
+              </View>
+              {selectedCourse.sjzs && (
+                <View className="detail-row">
+                  <Text className="detail-label">实践周数</Text>
+                  <Text className="detail-value">{selectedCourse.sjzs} 周</Text>
+                </View>
+              )}
+            </>
+          );
+        })()}
+      </DetailModal>
     </SafeAreaView>
   );
 }

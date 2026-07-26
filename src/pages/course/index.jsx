@@ -7,7 +7,7 @@ import WeekHeader from "../../components/feature/WeekHeader";
 import TimeColumn from "../../components/feature/TimeColumn";
 import CourseGrid from "../../components/feature/CourseGrid";
 import Loading from "../../components/base/Loading";
-import CourseInfoModal from "../../components/feature/CourseInfoModal";
+import DetailModal from "../../components/business/DetailModal";
 import PracticeCard from "../../components/feature/PracticeCard";
 import {
 	getCurrentWeek,
@@ -651,12 +651,52 @@ export default function Index() {
 				</View>
 			)}
 
-			{/* 课程详情弹窗 */}
-			<CourseInfoModal
+			<DetailModal
 				visible={modalVisible}
-				course={currentCourse}
+				title={currentCourse?.name || '课程信息'}
 				onClose={closeModal}
-			/>
+			>
+				{currentCourse && (
+					<>
+						<View className="detail-row">
+							<Text className="detail-label">课程名称</Text>
+							<Text className="detail-value">{currentCourse.name || '-'}</Text>
+						</View>
+						<View className="detail-row">
+							<Text className="detail-label">教师</Text>
+							<Text className="detail-value">{currentCourse.teacher || '-'}</Text>
+						</View>
+						<View className="detail-row">
+							<Text className="detail-label">教室</Text>
+							<Text className="detail-value">{currentCourse.room || '-'}</Text>
+						</View>
+						<View className="detail-row">
+							<Text className="detail-label">课程性质</Text>
+							<Text className="detail-value">{currentCourse.kcxz || '-'}</Text>
+						</View>
+						<View className="detail-row">
+							<Text className="detail-label">学分</Text>
+							<Text className="detail-value">{currentCourse.xf || '-'}</Text>
+						</View>
+						<View className="detail-row">
+							<Text className="detail-label">教学班组成</Text>
+							<Text className="detail-value">{currentCourse.jxbzc || '-'}</Text>
+						</View>
+						<View className="detail-row">
+							<Text className="detail-label">周次</Text>
+							<Text className="detail-value">{currentCourse.weeks || '-'}</Text>
+						</View>
+						<View className="detail-row">
+							<Text className="detail-label">节次</Text>
+							<Text className="detail-value">{currentCourse.periods || '-'}</Text>
+						</View>
+						<View className="detail-row">
+							<Text className="detail-label">星期</Text>
+							<Text className="detail-value">星期{currentCourse.weekDay || '-'}</Text>
+						</View>
+					</>
+				)}
+			</DetailModal>
 		</SafeAreaView>
 	);
 }

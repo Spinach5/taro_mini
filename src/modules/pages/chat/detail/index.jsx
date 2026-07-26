@@ -3,7 +3,7 @@ import Taro, { useLoad } from "@tarojs/taro";
 import { useState, useCallback, useRef, useEffect } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../../components/base/SafeAreaView";
-import HeadStatus from "../../../../components/layout/HeadStatus";
+import PageHeader from "../../../../components/business/PageHeader";
 import { getMessages, sendMessage } from "../../../../service/schools/hbut/chat";
 import { getColorFromName } from "../../../../utils/common/getHashCode";
 import userManager from "../../../../service/userInfo";
@@ -205,12 +205,7 @@ export default function Index() {
   if (loading) {
     return (
       <SafeAreaView>
-        <View className="uniform-page-header">
-          <View className="back-btn" onClick={handleBack}>
-            <AtIcon value="arrow-left" color="#ffffff" size={20} />
-          </View>
-          <HeadStatus text={otherName || "聊天"} />
-        </View>
+        <PageHeader title={otherName || "聊天"} onBack={handleBack} />
         <View className="chat-detail-loading">
           <AtActivityIndicator isOpened size={32} mode="center" />
         </View>
@@ -220,12 +215,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <View className="back-btn" onClick={handleBack}>
-          <AtIcon value="arrow-left" color="#ffffff" size={20} />
-        </View>
-        <HeadStatus text={otherName || "聊天"} />
-      </View>
+      <PageHeader title={otherName || "聊天"} onBack={handleBack} />
 
       <View className="chat-detail-page">
         {/* 顶部书籍信息栏 */}

@@ -2,8 +2,7 @@ import { useState, useCallback } from "react";
 import { View, Text, ScrollView } from "@tarojs/components";
 import Taro, { useDidShow } from "@tarojs/taro";
 import SafeAreaView from "../../../components/base/SafeAreaView";
-import HeadStatus from "../../../components/layout/HeadStatus";
-import { AtIcon } from "taro-ui";
+import PageHeader from "../../../components/business/PageHeader";
 import runtimeLogger, { RUNTIME_LOGS_CACHE_KEY } from "../../../utils/common/runtimeLogger";
 import "./index.css";
 
@@ -50,15 +49,8 @@ export default function Index() {
 
 	return (
 		<SafeAreaView>
+			<PageHeader title="运行日志" onBack={() => Taro.navigateBack()} />
 			<View className="runtime-log-page">
-				<View className="runtime-log-header">
-					<AtIcon
-						value="arrow-left"
-						color="#ffffff"
-						onClick={() => Taro.navigateBack()}
-					/>
-					<HeadStatus text="运行日志" />
-				</View>
 				<Text className="runtime-log-count">共 {logs.length} 条记录</Text>
 
 				<ScrollView scrollY className="runtime-log-scroll bora" showScrollbar>

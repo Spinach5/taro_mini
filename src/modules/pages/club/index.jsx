@@ -3,7 +3,7 @@ import Taro, { useLoad, useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import { useState, useCallback } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../components/base/SafeAreaView";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import userManager from "../../../service/userInfo";
 import { getAllClub } from "../../../service";
 import { getColorFromName } from "../../../utils/common/getHashCode";
@@ -70,14 +70,10 @@ export default function Index() {
 		Taro.navigateTo({ url: `/modules/pages/club/detail/index?id=${id}` });
 	};
 
-	// 鉴权未通过
 	if (authState === "login") {
 		return (
 			<SafeAreaView>
-				<View className="uniform-page-header">
-					<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.switchTab({ url: "/pages/index/index" })} />
-					<HeadStatus text="社团" />
-				</View>
+				<PageHeader title="社团" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
 				<View className="notLoginView">
 					<Text className="notLoginText">请先登录</Text>
 				</View>
@@ -88,10 +84,7 @@ export default function Index() {
 	if (authState === "register") {
 		return (
 			<SafeAreaView>
-				<View className="uniform-page-header">
-					<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.switchTab({ url: "/pages/index/index" })} />
-					<HeadStatus text="社团" />
-				</View>
+				<PageHeader title="社团" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
 				<View className="notLoginView">
 					<Text className="notLoginText">请先在设置中注册拓展功能</Text>
 				</View>
@@ -101,10 +94,7 @@ export default function Index() {
 
 	return (
 		<SafeAreaView>
-			<View className="uniform-page-header">
-				<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.switchTab({ url: "/pages/index/index" })} />
-				<HeadStatus text="社团" />
-			</View>
+			<PageHeader title="社团" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
 
 			{/* 轮播图占位 */}
 			<View className="club-banner">

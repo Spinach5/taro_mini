@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import { MaterialCommunityIcons } from "taro-icons";
 import SafeAreaView from "../../../../components/base/SafeAreaView";
-import HeadStatus from "../../../../components/layout/HeadStatus";
+import PageHeader from "../../../../components/business/PageHeader";
 import {
   getBookCategories,
   createBook,
@@ -214,12 +214,7 @@ export default function Index() {
   if (!fetched) {
     return (
       <SafeAreaView>
-        <View className="uniform-page-header">
-          <View className="back-btn" onClick={handleBack}>
-            <AtIcon value="arrow-left" color="#ffffff" size={20} />
-          </View>
-          <HeadStatus text="发布求购" />
-        </View>
+        <PageHeader title="发布求购" onBack={handleBack} />
         <View className="edit-loading">
           <AtActivityIndicator isOpened size={32} mode="center" />
         </View>
@@ -229,12 +224,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <View className="back-btn" onClick={handleBack}>
-          <AtIcon value="arrow-left" color="#ffffff" size={20} />
-        </View>
-        <HeadStatus text="发布求购" />
-      </View>
+      <PageHeader title="发布求购" onBack={handleBack} />
 
       <ScrollView scrollY className="edit-scroll" enhanced bounces={false}>
 

@@ -133,13 +133,6 @@ body[data-theme="dark"] {
 
 /* 原子类 */
 .bora { border-radius: 8px; }
-.uniform-page-header {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 8px;
-	padding: 0 4px;
-}
 
 /* 模态框 */
 .modal-mask {

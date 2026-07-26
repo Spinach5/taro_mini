@@ -3,7 +3,6 @@
   align-items: center;
   height: 88rpx;
   padding: 0 24rpx;
-  background: var(--gradient-header, linear-gradient(135deg, #47a5fd 0%, #6db9ff 100%));
   position: relative;
 }
 
@@ -17,17 +16,14 @@
 }
 
 .page-header__title {
-  flex: 1;
-  font-size: var(--font-size-lg, 32rpx);
-  font-weight: var(--font-weight-medium, 500);
+  font-size: 44rpx;
+  font-weight: 700;
   color: #ffffff;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.1);
 }
 
 .page-header__right {
   display: flex;
   align-items: center;
-  margin-left: 16rpx;
+  margin-left: auto;
 }

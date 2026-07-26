@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { View, Text, Textarea, Input } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import { sendFeedback } from "../../../service/sendFeedback";
 import { AtIcon } from "taro-ui";
@@ -76,14 +76,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.navigateBack()}
-        />
-        <HeadStatus text="反馈与建议" />
-      </View>
+      <PageHeader title="反馈与建议" onBack={() => Taro.navigateBack()} />
 
       <View className="feedback-content">
         <View className="feedback-card bora">

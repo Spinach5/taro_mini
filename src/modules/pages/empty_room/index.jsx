@@ -3,6 +3,8 @@ import { View, Text, ScrollView, Picker } from "@tarojs/components";
 import Taro, { useDidShow } from "@tarojs/taro";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import Loading from "../../../components/base/Loading";
+import PageHeader from "../../../components/business/PageHeader";
+import { AtIcon } from "taro-ui";
 import { getTeachBuilding, getTeachBuildingCategory } from "../../../service/schools/hbut/getTeachBuilding";
 import { getAllWeek } from "../../../service/schools/hbut/GetAllWeek";
 import { getTimeTable } from "../../../service/schools/hbut/GetTimeTable";
@@ -11,8 +13,6 @@ import { getCurrentWeek } from "../../../service/schools/hbut/CurrentWeek";
 import { getSemesterList } from "../../../service/schools/hbut/CurrentSemester";
 import { getColorFromName } from "../../../utils/common/getHashCode";
 import userManager from "../../../service/userInfo";
-import { AtIcon } from "taro-ui";
-import HeadStatus from "../../../components/layout/HeadStatus"
 import "./index.scss";
 
 const WEEKDAY_OPTIONS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
@@ -271,14 +271,7 @@ export default function Index() {
   if (!isLoggedIn) {
     return (
       <SafeAreaView>
-		 <View className="uniform-page-header">
-				<AtIcon
-				  value="arrow-left"
-				  color="#ffffff"
-				  onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-				/>
-				<HeadStatus text="空教室" />
-			  </View>
+        <PageHeader title="空教室" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
         <View className="notLoginView">
           <Text className="notLoginText">请先登录!</Text>
         </View>
@@ -288,14 +281,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-		<View className="uniform-page-header">
-						<AtIcon
-							value="arrow-left"
-							color="#ffffff"
-							onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-						/>
-						<HeadStatus text="空教室" />
-					</View>
+      <PageHeader title="空教室" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
       <View className="empty-room-page">
         <FilterBar
           buildingNames={buildingNames}

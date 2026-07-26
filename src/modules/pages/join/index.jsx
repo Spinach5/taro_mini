@@ -1,6 +1,6 @@
 import { View, Text, Image} from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import { AtIcon } from "taro-ui";
 import "./index.css";
@@ -15,14 +15,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.navigateBack()}
-        />
-        <HeadStatus text="关于我们" />
-      </View>
+      <PageHeader title="关于我们" onBack={() => Taro.navigateBack()} />
 
       <View className="join-content">
         <View className="join-hero bora">

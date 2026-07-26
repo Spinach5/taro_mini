@@ -2,9 +2,8 @@ import { useState } from "react";
 import { View, ScrollView, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import SafeAreaView from "../base/SafeAreaView";
-import HeadStatus from "../layout/HeadStatus";
+import PageHeader from "../business/PageHeader";
 import InputBar from "./InputBar";
-import { AtIcon } from "taro-ui";
 import "./StaticListPage.css";
 
 /**
@@ -28,14 +27,7 @@ export default function StaticListPage({
 
 	return (
 		<SafeAreaView>
-			<View className="uniform-page-header">
-			<AtIcon
-				value="arrow-left"
-				color="#ffffff"
-				onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-			/>
-			<HeadStatus text={title} />
-			</View>
+			<PageHeader title={title} onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
 			{searchPlaceholder && (
 				<View className="static-list-header">
 					<InputBar

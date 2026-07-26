@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import "./index.css";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import { getContributor } from "../../../service/getContributor";
 import { getRepos } from "../../../service/getRepos";
@@ -8,7 +8,6 @@ import { getLatestCommit } from "../../../service/getLatestCommit";
 import { getHashCode } from "../../../utils/common/getHashCode";
 import Taro, { usePullDownRefresh } from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
-import { AtIcon } from "taro-ui";
 
 function hashToHsl(str) {
   const hue = getHashCode(str) % 360;
@@ -115,14 +114,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.switchTab({ url: "/pages/user/index" })}
-        />
-        <HeadStatus text="项目仓库" />
-      </View>
+      <PageHeader title="项目仓库" onBack={() => Taro.switchTab({ url: "/pages/user/index" })} />
       <View className="repo-page-content">
         <View className="repo-info-card bora">
           <Text className="repo-name">taro_mini</Text>

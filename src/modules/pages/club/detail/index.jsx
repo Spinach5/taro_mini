@@ -3,7 +3,7 @@ import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../../components/base/SafeAreaView";
-import HeadStatus from "../../../../components/layout/HeadStatus";
+import PageHeader from "../../../../components/business/PageHeader";
 import { getClubDetail } from "../../../../service";
 import runtimeLogger from "../../../../utils/common/runtimeLogger";
 import "./index.css";
@@ -59,10 +59,7 @@ export default function Index() {
 	if (loading) {
 		return (
 			<SafeAreaView>
-				<View className="uniform-page-header">
-					<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.navigateBack()} />
-					<HeadStatus text="社团详情" />
-				</View>
+				<PageHeader title="社团详情" onBack={() => Taro.navigateBack()} />
 				<View className="loading-view">
 					<AtActivityIndicator isOpened size={32} mode="center" />
 				</View>
@@ -73,10 +70,7 @@ export default function Index() {
 	if (!club) {
 		return (
 			<SafeAreaView>
-				<View className="uniform-page-header">
-					<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.navigateBack()} />
-					<HeadStatus text="社团详情" />
-				</View>
+				<PageHeader title="社团详情" onBack={() => Taro.navigateBack()} />
 				<View className="empty-view">
 					<Text>社团数据为空</Text>
 				</View>
@@ -88,10 +82,7 @@ export default function Index() {
 
 	return (
 		<SafeAreaView>
-			<View className="uniform-page-header">
-				<AtIcon value="arrow-left" color="#ffffff" onClick={() => Taro.navigateBack()} />
-				<HeadStatus text="社团详情" />
-			</View>
+			<PageHeader title="社团详情" onBack={() => Taro.navigateBack()} />
 
 			<View className="detail-scroll">
 				{/* 图片占位 */}

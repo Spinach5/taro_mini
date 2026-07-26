@@ -3,7 +3,7 @@ import Taro, { useLoad } from "@tarojs/taro";
 import { useState } from "react";
 import { AtIcon, AtActivityIndicator } from "taro-ui";
 import SafeAreaView from "../../../../components/base/SafeAreaView";
-import HeadStatus from "../../../../components/layout/HeadStatus";
+import PageHeader from "../../../../components/business/PageHeader";
 import {
   getBookDetail,
   toggleWantBook,
@@ -147,12 +147,7 @@ export default function Index() {
   if (loading) {
     return (
       <SafeAreaView>
-        <View className="uniform-page-header">
-          <View className="back-btn" onClick={goBack}>
-            <AtIcon value="arrow-left" color="#ffffff" size={20} />
-          </View>
-          <HeadStatus text="书籍详情" />
-        </View>
+        <PageHeader title="书籍详情" onBack={goBack} />
         <View className="loading-view">
           <AtActivityIndicator isOpened size={32} mode="center" />
         </View>
@@ -165,12 +160,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <View className="back-btn" onClick={goBack}>
-          <AtIcon value="arrow-left" color="#ffffff" size={20} />
-        </View>
-        <HeadStatus text="书籍详情" />
-      </View>
+      <PageHeader title="书籍详情" onBack={goBack} />
 
       <ScrollView scrollY className="detail-scroll" enhanced bounces={false}>
         {/* 发布者信息 */}

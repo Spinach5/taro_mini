@@ -4,7 +4,7 @@ import Taro, { useRouter, useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import Loading from "../../../components/base/Loading";
 import SemesterSelector from "../../../components/feature/SemesterSelector";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import Btn from "../../../components/feature/Btn";
 import { AtIcon } from "taro-ui";
 import { getSemesterList } from "../../../service/schools/hbut/CurrentSemester";
@@ -122,15 +122,8 @@ export default function Index() {
 
   if (!isLoggedIn) {
     return (
-      <SafeAreaView >
-		 <View className="uniform-page-header">
-				<AtIcon
-				  value="arrow-left"
-				  color="#ffffff"
-				  onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-				/>
-				<HeadStatus text="考试" />
-			  </View>
+      <SafeAreaView>
+        <PageHeader title="考试" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
         <View className="notLoginView">
           <Text className="notLoginText">请先登录!</Text>
         </View>
@@ -140,14 +133,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-        />
-        <HeadStatus text="考试" />
-      </View>
+      <PageHeader title="考试" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
 
       <View className="semester-bar">
 		<Text className="semester-label">学期选择:</Text>

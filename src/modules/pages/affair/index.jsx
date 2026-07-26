@@ -2,23 +2,12 @@ import { View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
 import "./index.css";
 import SafeAreaView from "../../../components/base/SafeAreaView";
-import HeadStatus from "../../../components/layout/HeadStatus";
-import { AtIcon } from "taro-ui";
+import PageHeader from "../../../components/business/PageHeader";
 
 export default function Index() {
 	return (
 		<SafeAreaView className="safearea">
-			{/* 返回按钮 */}
-			<View className="uniform-page-header">
-				<AtIcon
-					value="arrow-left"
-					color="#ffffff"
-					onClick={() =>
-						Taro.switchTab({ url: "/pages/index/index" })
-					}
-				/>
-				<HeadStatus text="行政" />
-			</View>
+			<PageHeader title="行政" onBack={() => Taro.switchTab({ url: "/pages/index/index" })} />
 			<View className="header">
 				{/* 搜索组件 */}
 				{/* <InputBar placeholder={"搜索"} onInput={(input) => {

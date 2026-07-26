@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Picker } from "@tarojs/components";
 import Taro, { useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import Loading from "../../../components/base/Loading";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import { AtIcon } from "taro-ui";
 import { getScores } from "../../../service/schools/hbut/getScores";
 import { getSemesterList } from "../../../service/schools/hbut/CurrentSemester";
@@ -142,14 +142,10 @@ export default function Index() {
   if (!isLoggedIn) {
     return (
       <SafeAreaView>
-		 <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
+        <PageHeader
+          title="成绩"
+          onBack={() => Taro.switchTab({ url: "/pages/index/index" })}
         />
-        <HeadStatus text="成绩" />
-      </View>
         <View className="notLoginView">
           <Text className="notLoginText">请先登录!</Text>
         </View>
@@ -159,14 +155,10 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.switchTab({ url: "/pages/index/index" })}
-        />
-        <HeadStatus text="成绩" />
-      </View>
+      <PageHeader
+        title="成绩"
+        onBack={() => Taro.switchTab({ url: "/pages/index/index" })}
+      />
 
       <View className="filter-bar">
         <Picker

@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { View, Text } from "@tarojs/components";
 import Taro from "@tarojs/taro";
-import HeadStatus from "../../../components/layout/HeadStatus";
+import PageHeader from "../../../components/business/PageHeader";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import userManager from "../../../service/userInfo";
 import encryptPassword from "../../../utils/business/hbut/loginEncrypt";
 import { useTheme } from "../../../utils/react/theme";
 import { serverGet, serverPost } from "../../../utils/platform/serverRequest";
-import { AtIcon, AtActivityIndicator } from "taro-ui";
+import { AtActivityIndicator, AtIcon } from "taro-ui";
 import "./index.css";
 
 const STORAGE_KEY_FORCE = "settings_force_update";
@@ -256,14 +256,7 @@ export default function Index() {
 
   return (
     <SafeAreaView>
-      <View className="uniform-page-header">
-        <AtIcon
-          value="arrow-left"
-          color="#ffffff"
-          onClick={() => Taro.switchTab({ url: "/pages/user/index" })}
-        />
-        <HeadStatus text="设置" />
-      </View>
+      <PageHeader title="设置" onBack={() => Taro.switchTab({ url: "/pages/user/index" })} />
 
       <View className="settings-content">
         <View className="settings-group bora">
