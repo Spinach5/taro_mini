@@ -16,6 +16,93 @@
   border: 1px solid #e8e8e8;
 }
 
+.class-input-wrapper {
+  flex: 1;
+}
+
+.class-input-row {
+  display: flex;
+  align-items: center;
+  margin-top: 8rpx;
+}
+
+.class-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  padding: 8rpx 0;
+  min-height: 48rpx;
+  line-height: 48rpx;
+}
+
+.class-input-placeholder {
+  color: #bbb;
+  font-size: 28rpx;
+}
+
+.clear-btn {
+  width: 40rpx;
+  height: 40rpx;
+  background: #e0e0e0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12rpx;
+}
+
+.clear-icon {
+  font-size: 20rpx;
+  color: #fff;
+}
+
+.class-suggestions {
+  background: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+  margin: 0 24rpx 16rpx;
+  max-height: 400rpx;
+  overflow-y: auto;
+}
+
+.class-suggestions.empty {
+  padding: 24rpx;
+  text-align: center;
+}
+
+.no-result {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.suggestion-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item-hover {
+  background: #f5f5f5;
+}
+
+.suggestion-name {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+}
+
+.suggestion-major {
+  font-size: 24rpx;
+  color: #999;
+  margin-left: 16rpx;
+}
+
 .filter-label {
   font-size: 24rpx;
   color: #999;
@@ -124,4 +211,21 @@
   color: #1565c0;
   font-size: 22rpx;
   border-radius: 8rpx;
+  display: inline-block;
+}
+
+.classes-row {
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.classes-row .detail-label {
+  width: auto;
+  margin-bottom: 8rpx;
+}
+
+.classes-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
 }
