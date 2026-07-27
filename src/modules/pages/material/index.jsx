@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { View, Text, ScrollView, Picker, Input } from "@tarojs/components";
+import { View, Text, ScrollView, Picker, Input, Image } from "@tarojs/components";
 import Taro, { useDidShow, usePullDownRefresh } from "@tarojs/taro";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import Loading from "../../../components/base/Loading";
@@ -7,6 +7,8 @@ import PageHeader from "../../../components/business/PageHeader";
 import DetailModal from "../../../components/business/DetailModal";
 import { getMaterialList, getMaterialSemesters, getMaterialClasses } from "../../../service/schools/hbut/material";
 import userManager from "../../../service/userInfo";
+import { API_BASE } from "../../../config/api";
+import runtimeLogger from "../../../utils/common/runtimeLogger";
 import "./index.scss";
 
 const safeText = (val) => {
@@ -22,7 +24,7 @@ const safeText = (val) => {
 };
 
 export default function MaterialIndex() {
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [authState, setAuthState] = useState(null); // null=loading, "login"=need login, "register"=need expand, "ok"=passed
   const [semesterList, setSemesterList] = useState([]);
   const [classList, setClassList] = useState([]);
   const [materials, setMaterials] = useState([]);
@@ -35,6 +37,8 @@ export default function MaterialIndex() {
   const [showClassSuggestions, setShowClassSuggestions] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [currentMaterial, setCurrentMaterial] = useState(null);
+  const [coverUrl, setCoverUrl] = useState(null);
+  const [coverLoading, setCoverLoading] = useState(false);
 
   const semesterOptions = useMemo(() => ["请选择学期", ...semesterList], [semesterList]);
 
@@ -44,32 +48,35 @@ export default function MaterialIndex() {
     return classList.filter(c => c.class_name.toLowerCase().includes(keyword)).slice(0, 10);
   }, [classKeyword, classList]);
 
-  const checkLoginStatus = useCallback(() => {
+  const checkAuth = useCallback(() => {
     try {
-      const loggedIn = userManager.checkLogin();
-      if (loggedIn && !isLoggedIn) {
-        setIsLoggedIn(true);
-      } else if (!loggedIn && isLoggedIn === true) {
-        setIsLoggedIn(false);
-      } else if (isLoggedIn === null) {
-        setIsLoggedIn(loggedIn);
+      if (!userManager.checkLogin()) {
+        if (authState !== "login") setAuthState("login");
+        return false;
       }
+      if (!userManager.getServerToken()) {
+        if (authState !== "register") setAuthState("register");
+        return false;
+      }
+      if (authState !== "ok") setAuthState("ok");
+      return true;
     } catch (error) {
       console.error("获取登录状态失败", error);
-      setIsLoggedIn(false);
+      setAuthState("login");
+      return false;
     }
-  }, [isLoggedIn]);
+  }, [authState]);
 
   useEffect(() => {
-    checkLoginStatus();
-  }, [checkLoginStatus]);
+    checkAuth();
+  }, [checkAuth]);
 
   useDidShow(() => {
-    checkLoginStatus();
+    checkAuth();
   });
 
   const initData = useCallback(async (forceRefresh = false) => {
-    if (!isLoggedIn) return;
+    if (authState !== "ok") return;
     try {
       const [semesters, classes] = await Promise.all([
         getMaterialSemesters(forceRefresh),
@@ -84,10 +91,10 @@ export default function MaterialIndex() {
     } finally {
       setLoading(false);
     }
-  }, [isLoggedIn]);
+  }, [authState]);
 
   const fetchMaterialList = useCallback(async () => {
-    if (!isLoggedIn) return;
+    if (authState !== "ok") return;
     setLoading(true);
     try {
       const selectedSemester = semesterIdx > 0 ? semesterList[semesterIdx - 1] : null;
@@ -106,12 +113,12 @@ export default function MaterialIndex() {
     } finally {
       setLoading(false);
     }
-  }, [isLoggedIn, semesterIdx, selectedClassItem, semesterList]);
+  }, [authState, semesterIdx, selectedClassItem, semesterList]);
 
   useEffect(() => {
-    if (isLoggedIn !== true) return;
+    if (authState !== "ok") return;
     initData();
-  }, [isLoggedIn, initData]);
+  }, [authState, initData]);
 
   usePullDownRefresh(() => {
     initData(true).finally(() => {
@@ -156,12 +163,46 @@ export default function MaterialIndex() {
     await fetchMaterialList();
   }, [semesterIdx, fetchMaterialList]);
 
+  const fetchIsbnCover = useCallback(async (isbnCode) => {
+    if (!isbnCode) {
+      setCoverUrl(null);
+      return;
+    }
+    setCoverLoading(true);
+    setCoverUrl(null);
+    try {
+      const apiKey = process.env.ISBN_KEY || "";
+      const apiUrl = `${API_BASE.isbn}/openApi/getInfoByIsbn?isbn=${encodeURIComponent(isbnCode)}&appKey=${encodeURIComponent(apiKey)}`;
+      const res = await Taro.request({ url: apiUrl, method: "GET" });
+      const json = res.data;
+      if (json && json.success && json.code === 0 && json.data) {
+        let pics = [];
+        try {
+          pics = typeof json.data.pictures === "string" ? JSON.parse(json.data.pictures) : json.data.pictures;
+        } catch { /* ignore */ }
+        if (Array.isArray(pics) && pics.length > 0) {
+          setCoverUrl(pics[0]);
+        } else {
+          setCoverUrl(null);
+        }
+      } else {
+        setCoverUrl(null);
+      }
+    } catch (error) {
+      runtimeLogger.error("Material", "获取教材封面失败", error);
+      setCoverUrl(null);
+    } finally {
+      setCoverLoading(false);
+    }
+  }, []);
+
   const handleMaterialClick = useCallback((material) => {
     setCurrentMaterial(material);
     setShowDetail(true);
-  }, []);
+    fetchIsbnCover(safeText(material.isbn));
+  }, [fetchIsbnCover]);
 
-  if (isLoggedIn === null) {
+  if (authState === null) {
     return (
       <SafeAreaView>
         <Loading />
@@ -169,7 +210,7 @@ export default function MaterialIndex() {
     );
   }
 
-  if (!isLoggedIn) {
+  if (authState === "login") {
     return (
       <SafeAreaView>
         <PageHeader
@@ -177,7 +218,21 @@ export default function MaterialIndex() {
           onBack={() => Taro.switchTab({ url: "/pages/index/index" })}
         />
         <View className="empty-view">
-          <Text className="empty-text">请先登录!</Text>
+          <Text className="empty-text">请先登录</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (authState === "register") {
+    return (
+      <SafeAreaView>
+        <PageHeader
+          title="教材查询"
+          onBack={() => Taro.switchTab({ url: "/pages/index/index" })}
+        />
+        <View className="empty-view">
+          <Text className="empty-text">请先在设置中注册拓展功能</Text>
         </View>
       </SafeAreaView>
     );
@@ -189,6 +244,8 @@ export default function MaterialIndex() {
         title="教材查询"
         onBack={() => Taro.switchTab({ url: "/pages/index/index" })}
       />
+
+      <View className="page-content" onClick={() => setShowClassSuggestions(false)}>
 
       <View className="filter-bar">
         <Picker
@@ -218,9 +275,6 @@ export default function MaterialIndex() {
               placeholderClass="class-input-placeholder"
               onInput={handleClassInput}
               onFocus={() => setShowClassSuggestions(true)}
-              onBlur={() => {
-                setTimeout(() => setShowClassSuggestions(false), 300);
-              }}
               confirmType="search"
             />
             {classKeyword && (
@@ -239,7 +293,7 @@ export default function MaterialIndex() {
               key={item.class_id}
               className="suggestion-item"
               hoverClass="suggestion-item-hover"
-              onClick={() => handleSelectClass(item)}
+              onClick={(e) => { e.stopPropagation(); handleSelectClass(item); }}
             >
               <Text className="suggestion-name">{safeText(item.class_name)}</Text>
               <Text className="suggestion-major">{safeText(item.major)}</Text>
@@ -309,17 +363,12 @@ export default function MaterialIndex() {
                 {item.extra_info && (
                   <Text className="card-extra">{safeText(item.extra_info)}</Text>
                 )}
-                {item.classes && item.classes.length > 0 && (
-                  <View className="card-classes">
-                    {item.classes.map((cls, idx) => (
-                      <Text key={idx} className="class-tag">{safeText(cls)}</Text>
-                    ))}
-                  </View>
-                )}
               </View>
             ))}
           </ScrollView>
         )}
+      </View>
+
       </View>
 
       {showDetail && currentMaterial && (
@@ -328,6 +377,27 @@ export default function MaterialIndex() {
           title={safeText(currentMaterial.title)}
           onClose={() => setShowDetail(false)}
         >
+          <View className="detail-cover-row">
+            <View className="detail-label">封面</View>
+            <View className="detail-cover-wrapper">
+              {coverLoading ? (
+                <View className="cover-placeholder">
+                  <Text className="cover-placeholder-text">加载中...</Text>
+                </View>
+              ) : coverUrl ? (
+                <Image
+                  className="detail-cover"
+                  src={coverUrl}
+                  mode="widthFix"
+                  lazyLoad
+                />
+              ) : (
+                <View className="cover-placeholder">
+                  <Text className="cover-placeholder-text">未知</Text>
+                </View>
+              )}
+            </View>
+          </View>
           <View className="detail-row">
             <Text className="detail-label">ISBN</Text>
             <Text className="detail-value">{safeText(currentMaterial.isbn) || "-"}</Text>

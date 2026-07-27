@@ -16,7 +16,7 @@
 .modal-content {
   width: 100%;
   max-width: 85%;
-  max-height: 70vh;
+  max-height: calc(100vh - 40px);
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -28,21 +28,23 @@
 .modal-header {
   display: flex;
   align-items: center;
+  justify-content: center;
   padding: 24px 28px;
   border-bottom: 1px solid #f0f0f0;
   background: #fafafa;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .modal-title {
   font-size: 32px;
   font-weight: bold;
   color: #1a1a1a;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  min-width: 0;
+  text-align: center;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  white-space: normal;
+  line-height: 1.4;
 }
 
 .modal-body {
@@ -51,12 +53,15 @@
   overflow-y: auto;
   box-sizing: border-box;
   min-width: 0;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-footer {
   padding: 20px 28px;
   border-top: 1px solid #f0f0f0;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .confirm-btn {

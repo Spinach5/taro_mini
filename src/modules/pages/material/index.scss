@@ -1,3 +1,9 @@
+.page-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .filter-bar {
   display: flex;
   gap: 16rpx;
@@ -198,13 +204,6 @@
   border-top: 1px solid #f0f0f0;
 }
 
-.card-classes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12rpx;
-  margin-top: 12rpx;
-}
-
 .class-tag {
   padding: 6rpx 16rpx;
   background: #e3f2fd;
@@ -228,4 +227,47 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12rpx;
+}
+
+.detail-cover-row {
+  display: flex;
+  padding: 16rpx 0 24rpx;
+  border-bottom: 1px solid #f5f5f5;
+  gap: 16rpx;
+  align-items: flex-start;
+}
+
+.detail-cover-row .detail-label {
+  width: 140rpx;
+  flex-shrink: 0;
+}
+
+.detail-cover-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.detail-cover {
+  width: 240rpx;
+  max-width: 100%;
+  border-radius: 8rpx;
+}
+
+.cover-placeholder {
+  width: 240rpx;
+  height: 320rpx;
+  max-width: 100%;
+  background: #f5f5f5;
+  border: 1px dashed #ddd;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-placeholder-text {
+  font-size: 26rpx;
+  color: #999;
 }
