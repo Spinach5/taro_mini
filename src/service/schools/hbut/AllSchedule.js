@@ -1,5 +1,6 @@
 // 获取所有课表
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import { getXhid } from "./GetXhid";
 import { extractCourseData } from "../../../utils/business/hbut/courseHelper";
 import { AutoRetry } from "./autoRetry";
@@ -17,8 +18,8 @@ const _cachedAllSchedule = withCache(
 				headers: {
 					"Content-Type":
 						"application/x-www-form-urlencoded; charset=UTF-8",
-					Referer: "https://jwxt.hbut.edu.cn",
-					Origin: "https://jwxt.hbut.edu.cn",
+					Referer: HBUT_ORIGIN,
+					Origin: HBUT_ORIGIN,
 				},
 				withCredentials: true,
 			};

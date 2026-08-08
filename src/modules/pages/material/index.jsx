@@ -7,7 +7,7 @@ import PageHeader from "../../../components/business/PageHeader";
 import DetailModal from "../../../components/business/DetailModal";
 import { getMaterialList, getMaterialSemesters, getMaterialClasses } from "../../../service/schools/hbut/material";
 import userManager from "../../../service/userInfo";
-import { API_BASE } from "../../../config/api";
+import { API_BASE, ISBN_KEY } from "../../../config/api";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 import "./index.scss";
 
@@ -171,7 +171,7 @@ export default function MaterialIndex() {
     setCoverLoading(true);
     setCoverUrl(null);
     try {
-      const apiKey = process.env.ISBN_KEY || "";
+      const apiKey = ISBN_KEY;
       const apiUrl = `${API_BASE.isbn}/openApi/getInfoByIsbn?isbn=${encodeURIComponent(isbnCode)}&appKey=${encodeURIComponent(apiKey)}`;
       const res = await Taro.request({ url: apiUrl, method: "GET" });
       const json = res.data;

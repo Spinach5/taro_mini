@@ -4,12 +4,13 @@ import cacheManager from "../../../utils/common/cache";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 import userManager from "../../userInfo";
 import withCache from "../../../utils/common/withCache";
+import { SERVER_BASE } from "../../../config/api";
 
 const CACHE_KEY_FAVORITES = "v1_favorite_book_ids";
 const IS_DEV = process.env.NODE_ENV === "development";
 const IS_WEAPP = process.env.TARO_ENV === "weapp";
 // 小程序直接用域名；H5 开发走本地，生产走相对路径（通过 /server 代理）
-const ASSET_BASE = IS_WEAPP ? "https://spinach.cc.cd" : (IS_DEV ? "http://localhost:3001" : "");
+const ASSET_BASE = IS_WEAPP ? SERVER_BASE : (IS_DEV ? "http://localhost:3001" : "");
 
 /** 构建鉴权参数：学校id、学号、RSA加密密码 */
 function getAuthParams() {

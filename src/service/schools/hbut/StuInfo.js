@@ -1,4 +1,5 @@
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import cacheManager from "../../../utils/common/cache";
 import { getXhid } from "./GetXhid";
 import { AutoRetry } from "./autoRetry";
@@ -21,8 +22,8 @@ export async function getStuInfo({ forceRefresh = false } = {}) {
 			headers: {
 				"Content-Type":
 					"application/x-www-form-urlencoded; charset=UTF-8",
-				Referer: "https://jwxt.hbut.edu.cn",
-				Origin: "https://jwxt.hbut.edu.cn",
+				Referer: HBUT_ORIGIN,
+				Origin: HBUT_ORIGIN,
 			},
 			withCredentials: true,
 		};

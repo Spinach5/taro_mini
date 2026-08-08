@@ -1,4 +1,5 @@
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import cacheManager from "../../../utils/common/cache";
 import { extractRanks } from "../../../utils/business/hbut/academicHelper";
 import { AutoRetry } from "./autoRetry";
@@ -19,8 +20,8 @@ export async function getCredits() {
 			headers: {
 				"Content-Type":
 					"application/x-www-form-urlencoded; charset=UTF-8",
-				Referer: "https://jwxt.hbut.edu.cn",
-				Origin: "https://jwxt.hbut.edu.cn",
+				Referer: HBUT_ORIGIN,
+				Origin: HBUT_ORIGIN,
 			},
 			withCredentials: true,
 			dataType: "text", // 期望返回 HTML

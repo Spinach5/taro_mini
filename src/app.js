@@ -3,6 +3,7 @@ import "./app.css";
 import "taro-ui/lib/style/index.scss";
 import runtimeLogger from "./utils/common/runtimeLogger";
 import { checkAndAutoLogin } from "./service/autoLogin";
+import { WEAPP_CLOUD_ENV } from "./config/api";
 import { ThemeProvider } from "./utils/react/theme";
 import "taro-icons/scss/MaterialCommunityIcons.scss";
 
@@ -16,7 +17,7 @@ function App({ children }) {
 	useLoad(() => {
 		if(process.env.TARO_ENV === "weapp"){
 			Taro.cloud.init({
-			env: process.env.TARO_WEAPP_CLOUD,
+			env: WEAPP_CLOUD_ENV,
 		});
 		}
 

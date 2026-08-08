@@ -2,8 +2,7 @@
 import Taro from "@tarojs/taro";
 import userManager from '../../service/userInfo';
 import runtimeLogger from '../common/runtimeLogger';
-
-const SERVER_BASE = "https://spinach.cc.cd";
+import { SERVER_BASE } from "../../config/api";
 
 /**
  * 统一请求函数（直接请求服务器，不走云函数）

@@ -1,6 +1,7 @@
 // 学生成绩绩点
 // https://hbut.jw.chaoxing.com/admin/xsd/xskp/xyqk?fasz=1&xhid=...
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import withCache from "../../../utils/common/withCache";
 import { getXhid } from "./GetXhid"; // 需要获取 xhid
 import { AutoRetry } from "./autoRetry";
@@ -11,8 +12,8 @@ const _cachedScores = withCache("v1_scores", 60 * 60 * 1000, async () => {
 		headers: {
 			"Content-Type":
 				"application/x-www-form-urlencoded; charset=UTF-8",
-			Referer: "https://jwxt.hbut.edu.cn",
-			Origin: "https://jwxt.hbut.edu.cn",
+			Referer: HBUT_ORIGIN,
+			Origin: HBUT_ORIGIN,
 		},
 		withCredentials: true,
 	};

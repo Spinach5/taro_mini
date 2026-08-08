@@ -1,5 +1,6 @@
 // src/service/hbut/GetXhid.js
 import cacheManager from "../../../utils/common/cache";
+import { HBUT_ORIGIN } from "../../../config/api";
 import { hbutRequest } from "../../../utils/platform/request";
 import { AutoRetry } from "./autoRetry";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
@@ -19,8 +20,8 @@ export async function getXhid() {
 			headers: {
 				"Content-Type":
 					"application/x-www-form-urlencoded; charset=UTF-8",
-				Referer: "https://jwxt.hbut.edu.cn",
-				Origin: "https://jwxt.hbut.edu.cn",
+				Referer: HBUT_ORIGIN,
+				Origin: HBUT_ORIGIN,
 			},
 			withCredentials: true,
 		};

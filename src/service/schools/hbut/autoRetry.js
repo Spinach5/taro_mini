@@ -1,5 +1,6 @@
 // utils/requestWithRetry.js
 import { auth } from "./auth";
+import { HBUT_ORIGIN } from "../../../config/api";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 
 /**
@@ -58,7 +59,7 @@ export async function AutoRetry(requestFn, options = {}) {
 
       // 检测到验证码/封禁页面，直接报错，不重试
       if (isCaptchaOrBan(response)) {
-        throw new Error("教务系统需要手动验证，请用浏览器打开 https://jwxt.hbut.edu.cn 登录一次后再试");
+        throw new Error(`教务系统需要手动验证，请用浏览器打开 ${HBUT_ORIGIN} 登录一次后再试`);
       }
 
       // 检查是否需要重登

@@ -12,7 +12,7 @@ import {
 } from "../../../../service";
 import cacheManager from "../../../../utils/common/cache";
 import runtimeLogger from "../../../../utils/common/runtimeLogger";
-import { API_BASE } from "../../../../config/api";
+import { API_BASE, ISBN_KEY } from "../../../../config/api";
 import "../edit/index.css";
 
 const DRAFT_KEY = "v1_buy_draft";
@@ -85,7 +85,7 @@ export default function Index() {
 
   const fetchIsbnInfo = async (isbnCode) => {
     setIsbnFetching(true);
-    const apiKey = process.env.ISBN_KEY || "";
+    const apiKey = ISBN_KEY;
     const apiUrl = `${API_BASE.isbn}/openApi/getInfoByIsbn?isbn=${encodeURIComponent(isbnCode)}&appKey=${encodeURIComponent(apiKey)}`;
     try {
       const res = await Taro.request({ url: apiUrl, method: "GET" });

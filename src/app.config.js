@@ -1,4 +1,6 @@
 
+import { ENABLE_BOOK_TRADE } from "./config/api";
+
 export default defineAppConfig({
   lazyCodeLoading: "requiredComponents", // 按需加载
   pages: ["pages/index/index", "pages/course/index", "pages/user/index"],
@@ -65,7 +67,7 @@ export default defineAppConfig({
         "pages/plan/index",
       ];
       // 二手书交易 + 聊天界面：由环境变量控制是否打包
-      if (process.env.TARO_APP_ENABLE_BOOK_TRADE === "true") {
+      if (ENABLE_BOOK_TRADE) {
         base.push(
           "pages/book/edit/index",
           "pages/book/buy/index",

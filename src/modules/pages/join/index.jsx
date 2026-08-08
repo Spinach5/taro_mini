@@ -4,8 +4,7 @@ import PageHeader from "../../../components/business/PageHeader";
 import SafeAreaView from "../../../components/base/SafeAreaView";
 import { AtIcon } from "taro-ui";
 import "./index.css";
-
-const CONTACT_EMAIL = "super_spinach@qq.com";
+import { CONTACT_EMAIL, CONTACT_AVATAR } from "../../../config/api";
 
 export default function Index() {
   const handleCopyEmail = () => {
@@ -20,7 +19,7 @@ export default function Index() {
       <View className="join-content">
         <View className="join-hero bora">
           <View className="join-illustration bora">
-            <Image className="join-illustration-icon bora" src="https://foruda.gitee.com/avatar/1777480666913616794/16193480_damn_2_1777480666.png"></Image>
+            <Image className="join-illustration-icon bora" src={CONTACT_AVATAR}></Image>
           </View>
           <Text className="join-tagline">好家伙</Text>
         </View>

@@ -10,6 +10,7 @@ import { getColorFromName } from "../../../utils/common/getHashCode";
 import userManager from "../../../service/userInfo";
 import cacheManager from "../../../utils/common/cache";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
+import { ENABLE_BOOK_TRADE } from "../../../config/api";
 import "./index.css";
 
 const BOOK_TYPE_OPTIONS = [
@@ -167,7 +168,7 @@ export default function Index() {
       />
 
       {/* 卖书/买书 双按钮（环境变量控制） */}
-      {process.env.TARO_APP_ENABLE_BOOK_TRADE === "true" && (
+      {ENABLE_BOOK_TRADE && (
         <View className="trade-btn-row">
           <View
             className="trade-btn trade-btn-sell"
@@ -362,7 +363,7 @@ export default function Index() {
       )}
 
       {/* FAB 悬浮按钮 — 消息图标（环境变量控制） */}
-      {process.env.TARO_APP_ENABLE_BOOK_TRADE === "true" && (
+      {ENABLE_BOOK_TRADE && (
         <View
           className="fab-btn"
           onClick={() => Taro.navigateTo({ url: "/modules/pages/chat/list/index" })}

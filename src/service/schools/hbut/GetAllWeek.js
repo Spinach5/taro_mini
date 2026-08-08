@@ -1,5 +1,6 @@
 // 获取排课周次（所有周次信息）
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import withCache from "../../../utils/common/withCache";
 import { extractZc } from "../../../utils/business/hbut/weekHelper";
 import { AutoRetry } from "./autoRetry";
@@ -14,8 +15,8 @@ const _cachedAllWeek = withCache(
 				headers: {
 					"Content-Type":
 						"application/x-www-form-urlencoded; charset=UTF-8",
-					Referer: "https://jwxt.hbut.edu.cn",
-					Origin: "https://jwxt.hbut.edu.cn",
+					Referer: HBUT_ORIGIN,
+					Origin: HBUT_ORIGIN,
 				},
 				withCredentials: true,
 			};

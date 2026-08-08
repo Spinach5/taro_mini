@@ -3,14 +3,14 @@ import Taro from "@tarojs/taro";
 import CryptoJS from "crypto-js";
 import { hbutRequest, hbutCookies } from "../../../utils/platform/request";
 import { serverPost } from "../../../utils/platform/serverRequest";
-import { API_BASE } from "../../../config/api";
+import { API_BASE, HBUT_ORIGIN } from "../../../config/api";
 import encryptPassword from "../../../utils/business/hbut/loginEncrypt";
 import userManager from "../../userInfo";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 
 const CAPTCHA_ID = "fdHguSojgSJag5B74ij8Bu8ZAzWlNgXM";
 const CAPTCHA = API_BASE.captcha;
-const REFERER = "https://jwxt.hbut.edu.cn";
+const REFERER = HBUT_ORIGIN;
 const REFERER_LOGIN = REFERER + "/admin/login";
 const IS_H5 = process.env.TARO_ENV === "h5";
 

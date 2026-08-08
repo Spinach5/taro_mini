@@ -1,4 +1,5 @@
 import { getSemesterList as buildSemesterList } from "../../../utils/business/semesterHelper";
+import { HBUT_ORIGIN } from "../../../config/api";
 import { getGrade } from "../../userInfo";
 import { hbutRequest } from "../../../utils/platform/request";
 import withCache from "../../../utils/common/withCache";
@@ -10,8 +11,8 @@ const _cachedSemesterList = withCache("v1_semester_list", 24 * 60 * 60 * 1000, a
 		headers: {
 			"Content-Type":
 				"application/x-www-form-urlencoded; charset=UTF-8",
-			Referer: "https://jwxt.hbut.edu.cn",
-			Origin: "https://jwxt.hbut.edu.cn",
+			Referer: HBUT_ORIGIN,
+			Origin: HBUT_ORIGIN,
 		},
 		withCredentials: true,
 	};

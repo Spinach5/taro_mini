@@ -1,5 +1,6 @@
 // 获取空教室
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import { extractEmpytClassRoom } from "../../../utils/business/hbut/emptyClassRoom";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 
@@ -22,8 +23,8 @@ export async function getEmptyRoom(Building, weekNum, week, sectionStr) {
         credentials: "include",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-          Referer: "https://jwxt.hbut.edu.cn",
-          Origin: "https://jwxt.hbut.edu.cn",
+          Referer: HBUT_ORIGIN,
+          Origin: HBUT_ORIGIN,
         },
       });
       const json = await resp.json();
@@ -46,8 +47,8 @@ export async function getEmptyRoom(Building, weekNum, week, sectionStr) {
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            Referer: "https://jwxt.hbut.edu.cn",
-            Origin: "https://jwxt.hbut.edu.cn",
+            Referer: HBUT_ORIGIN,
+            Origin: HBUT_ORIGIN,
           },
           withCredentials: true,
         },

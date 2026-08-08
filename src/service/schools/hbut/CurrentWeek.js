@@ -1,6 +1,7 @@
 // 获取当前周数
 // 改为正常 cache-first 模式：缓存命中直接返回，未命中则请求网络
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import withCache from "../../../utils/common/withCache";
 import { AutoRetry } from "./autoRetry";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
@@ -12,8 +13,8 @@ const _cachedCurrentWeek = withCache("v1_current_week", 60 * 60 * 1000, async ()
 		headers: {
 			"Content-Type":
 				"application/x-www-form-urlencoded; charset=UTF-8",
-			Referer: "https://jwxt.hbut.edu.cn",
-			Origin: "https://jwxt.hbut.edu.cn",
+			Referer: HBUT_ORIGIN,
+			Origin: HBUT_ORIGIN,
 		},
 		withCredentials: true,
 	};

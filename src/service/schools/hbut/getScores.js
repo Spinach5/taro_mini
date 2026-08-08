@@ -1,6 +1,7 @@
 // 获取考试成绩
 //admin/xsd/xsdcjcx/xsdQueryXscjList?page.size=80
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import cacheManager from "../../../utils/common/cache";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 import { extractScores } from "../../../utils/business/hbut/scoresHelper"
@@ -24,8 +25,8 @@ export async function getScores(semester, forceRefresh = false) {
 			headers: {
 				"Content-Type":
 					"application/x-www-form-urlencoded; charset=UTF-8",
-				Referer: "https://jwxt.hbut.edu.cn",
-				Origin: "https://jwxt.hbut.edu.cn",
+				Referer: HBUT_ORIGIN,
+				Origin: HBUT_ORIGIN,
 			},
 			withCredentials: true,
 		};

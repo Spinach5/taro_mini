@@ -1,4 +1,5 @@
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import withCache from "../../../utils/common/withCache";
 import runtimeLogger from "../../../utils/common/runtimeLogger";
 import { extractCourseProperty } from "../../../utils/business/hbut/extractTeachBuilding";
@@ -14,8 +15,8 @@ function _fetchHtml(forceRefresh) {
 	const loginConfig = {
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-			Referer: "https://jwxt.hbut.edu.cn",
-			Origin: "https://jwxt.hbut.edu.cn",
+			Referer: HBUT_ORIGIN,
+			Origin: HBUT_ORIGIN,
 		},
 		withCredentials: true,
 		responseType: "text",

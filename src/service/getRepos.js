@@ -1,5 +1,6 @@
 import { giteeRequest } from "../utils/platform/request";
 import cacheManager from "../utils/common/cache";
+import { GITEE_TOKEN } from "../config/api";
 
 const CACHE_KEY = "GiteeRepos";
 const PER_PAGE = 100;
@@ -11,7 +12,7 @@ export async function getRepos(force = false) {
     return cached;
   }
 
-  const token = process.env.TARO_APP_GITEE;
+  const token = GITEE_TOKEN;
   if (!token) {
     console.warn("[getRepos] TARO_APP_GITEE 未配置");
     return [];

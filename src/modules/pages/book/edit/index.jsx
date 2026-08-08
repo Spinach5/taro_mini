@@ -14,6 +14,7 @@ import {
 } from "../../../../service";
 import cacheManager from "../../../../utils/common/cache";
 import runtimeLogger from "../../../../utils/common/runtimeLogger";
+import { API_BASE, ISBN_KEY } from "../../../../config/api";
 import "./index.css";
 
 const CONDITION_OPTIONS = ["全新", "几乎全新", "有笔记", "较旧"];
@@ -121,18 +122,11 @@ export default function Index() {
   // 调用 ISBN API 获取书籍信息
   const fetchIsbnInfo = async (isbnCode) => {
     setIsbnFetching(true);
-    const isH5 = process.env.TARO_ENV === "h5";
-    const apiKey = process.env.ISBN_KEY || "";
-    const apiUrl = `https://data.isbn.work/openApi/getInfoByIsbn?isbn=${encodeURIComponent(isbnCode)}&appKey=${encodeURIComponent(apiKey)}`;
+    const apiKey = ISBN_KEY;
+    const apiUrl = `${API_BASE.isbn}/openApi/getInfoByIsbn?isbn=${encodeURIComponent(isbnCode)}&appKey=${encodeURIComponent(apiKey)}`;
     try {
-      let json;
-      if (isH5) {
-        const fetchRes = await fetch(apiUrl);
-        json = await fetchRes.json();
-      } else {
-        const res = await Taro.request({ url: apiUrl, method: "GET" });
-        json = res.data;
-      }
+      const res = await Taro.request({ url: apiUrl, method: "GET" });
+      const json = res.data;
       if (!json) {
         Taro.showToast({ title: "查询失败，请重试", icon: "none" });
         return;

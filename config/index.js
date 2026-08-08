@@ -60,6 +60,39 @@ export default defineConfig(async (merge, { command, mode }) => {
 			"process.env.TARO_APP_ENABLE_BOOK_TRADE": JSON.stringify(
 				process.env.TARO_APP_ENABLE_BOOK_TRADE || "false",
 			),
+			"process.env.TARO_APP_SERVER_BASE": JSON.stringify(
+				process.env.TARO_APP_SERVER_BASE || "",
+			),
+			"process.env.TARO_APP_CONTACT_EMAIL": JSON.stringify(
+				process.env.TARO_APP_CONTACT_EMAIL || "",
+			),
+			"process.env.TARO_APP_CONTACT_AVATAR": JSON.stringify(
+				process.env.TARO_APP_CONTACT_AVATAR || "",
+			),
+			"process.env.TARO_APP_HBUT_ORIGIN": JSON.stringify(
+				process.env.TARO_APP_HBUT_ORIGIN || "",
+			),
+			"process.env.TARO_APP_HBUT_WWW": JSON.stringify(
+				process.env.TARO_APP_HBUT_WWW || "",
+			),
+			"process.env.TARO_APP_GITEE_BASE": JSON.stringify(
+				process.env.TARO_APP_GITEE_BASE || "",
+			),
+			"process.env.TARO_APP_IPAPI_BASE": JSON.stringify(
+				process.env.TARO_APP_IPAPI_BASE || "",
+			),
+			"process.env.TARO_APP_BIGDATA_BASE": JSON.stringify(
+				process.env.TARO_APP_BIGDATA_BASE || "",
+			),
+			"process.env.TARO_APP_OPEN_METEO_BASE": JSON.stringify(
+				process.env.TARO_APP_OPEN_METEO_BASE || "",
+			),
+			"process.env.TARO_APP_CAPTCHA_BASE": JSON.stringify(
+				process.env.TARO_APP_CAPTCHA_BASE || "",
+			),
+			"process.env.TARO_APP_ISBN_BASE": JSON.stringify(
+				process.env.TARO_APP_ISBN_BASE || "",
+			),
 		},
 		copy: {
 			patterns: [],

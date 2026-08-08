@@ -1,6 +1,7 @@
 //https://jwxt.hbut.edu.cn/admin/api/getZclistByXnxq?xnxq=2025-2026-2&role=&userId=&xqid=1
 //获取时间作息数组
 import { getSortedClassTimes } from "../../../utils/business/hbut/timeHelper";
+import { HBUT_ORIGIN } from "../../../config/api";
 import cacheManager from "../../../utils/common/cache";
 import { hbutRequest } from "../../../utils/platform/request";
 import { AutoRetry } from "./autoRetry";
@@ -19,8 +20,8 @@ export async function getTimeTable(semester) {
 			headers: {
 				"Content-Type":
 					"application/x-www-form-urlencoded; charset=UTF-8",
-				Referer: "https://jwxt.hbut.edu.cn",
-				Origin: "https://jwxt.hbut.edu.cn",
+				Referer: HBUT_ORIGIN,
+				Origin: HBUT_ORIGIN,
 			},
 			withCredentials: true,
 		};

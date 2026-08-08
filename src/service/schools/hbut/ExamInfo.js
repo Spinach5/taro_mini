@@ -1,6 +1,7 @@
 // 获取考试信息
 // https://jwxt.hbut.edu.cn/admin/xsd/kwglXsdKscx/ajaxXsksList
 import { hbutRequest } from "../../../utils/platform/request";
+import { HBUT_ORIGIN } from "../../../config/api";
 import withCache from "../../../utils/common/withCache";
 import { AutoRetry } from "./autoRetry";
 import { extractExamInfo } from "../../../utils/business/hbut/examHelper";
@@ -15,8 +16,8 @@ const _cachedExamInfo = withCache(
 				headers: {
 					"Content-Type":
 						"application/x-www-form-urlencoded; charset=UTF-8",
-					Referer: "https://jwxt.hbut.edu.cn",
-					Origin: "https://jwxt.hbut.edu.cn",
+					Referer: HBUT_ORIGIN,
+					Origin: HBUT_ORIGIN,
 				},
 				withCredentials: true,
 			};

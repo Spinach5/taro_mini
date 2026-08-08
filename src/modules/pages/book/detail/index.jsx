@@ -17,6 +17,7 @@ import { getColorFromName } from "../../../../utils/common/getHashCode";
 import userManager from "../../../../service/userInfo";
 import cacheManager from "../../../../utils/common/cache";
 import runtimeLogger from "../../../../utils/common/runtimeLogger";
+import { ENABLE_BOOK_TRADE } from "../../../../config/api";
 import "./index.css";
 
 export default function Index() {
@@ -286,7 +287,7 @@ export default function Index() {
           <Text className="fav-text">{isFav ? "已收藏" : "收藏"}</Text>
         </View>
         {/* 联系/编辑/删除 按钮（环境变量控制） */}
-        {process.env.TARO_APP_ENABLE_BOOK_TRADE === "true" && (
+        {ENABLE_BOOK_TRADE && (
           book.isPublisher ? (
             <>
               <View
