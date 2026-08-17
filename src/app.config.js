@@ -65,6 +65,7 @@ export default defineAppConfig({
         "pages/weather/index",
         "pages/webview/index",
         "pages/plan/index",
+        "pages/notification/index",
       ];
       // 二手书交易 + 聊天界面：由环境变量控制是否打包
       if (ENABLE_BOOK_TRADE) {

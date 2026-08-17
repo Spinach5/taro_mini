@@ -33,6 +33,8 @@ export const removeFavoriteBookId  = api('removeFavoriteBookId');
 export const isFavoriteBook        = api('isFavoriteBook');
 export const getBanner       = api('getBanner');
 export const getCourseProperty = api('getCourseProperty');
+export const getNoticeFilterOptions = api('getNoticeFilterOptions');
+export const getNoticeList    = api('getNoticeList');
 
 // auth 直接转发
 export const auth = (...args) => getSchool().auth(...args);

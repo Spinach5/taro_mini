@@ -26,3 +26,4 @@ export { getBanner }         from "./Banner"
 export { getCourseProperty } from './getCourseProperty'
 export { getTrainPlan }       from './trainPlan'
 export { getMaterialList, getMaterialDetail, getMaterialSemesters, getMaterialClasses } from './material'
+export { getNoticeFilterOptions, getNoticeList } from './notification'
